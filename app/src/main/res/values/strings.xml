@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Shopping</string>
+
+    <!-- LOGIN -->
+    <string name="txt_login">Đăng nhập</string>
+    <string name="txt_username">Tên đăng nhập</string>
+    <string name="txt_password">Mật khẩu</string>
+
+    <!-- REGISTER -->
+    <string name="txt_createAccount">Đăng ký</string>
+</resources>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    tools:context=".LoginActivity">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="330dp"
+        android:layout_height="450dp"
+        android:layout_centerInParent="true"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/neosansintel"
+                android:text="@string/txt_login"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:textStyle="bold"></TextView>
+
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLogin"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="30dp"
+                android:drawableLeft="@drawable/ic_person"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/neosansintel"
+                android:hint="@string/txt_username"
+                android:inputType="text"
+                android:padding="15dp"></EditText>
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etUsername"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_lock"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/neosansintel"
+                android:hint="@string/txt_password"
+                android:inputType="textPassword"
+                android:padding="15dp"></EditText>
+
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/etPassword"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:text="Quên mật khẩu?"
+                android:textColor="@color/light_green"
+                android:textStyle="italic"></TextView>
+
+            <Button
+                android:id="@+id/btnLogin"
+                style="@style/MaterialAlertDialog.Material3"
+                android:layout_width="200dp"
+                android:layout_height="55dp"
+                android:layout_below="@+id/tvForgotPassword"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/light_green"
+                android:elevation="5dp"
+                android:text="ĐĂNG NHẬP"
+                android:textSize="16sp"
+                android:textStyle="bold"></Button>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/btnLogin"
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@+id/tvOtherMethod"
+                android:background="#D0DCD7"></View>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/btnLogin"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginRight="70dp"
+                android:layout_toRightOf="@+id/tvOtherMethod"
+                android:background="#D0DCD7"></View>
+
+
+            <TextView
+                android:id="@+id/tvOtherMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnLogin"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15sp"
+                android:fontFamily="@font/neosansintel"
+                android:text="hoặc"></TextView>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tvOtherMethod"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginVertical="20dp">
+
+                <ImageView
+                    android:id="@+id/ivGoogle"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="40dp"
+                    android:elevation="5dp"
+                    android:src="@drawable/google"></ImageView>
+
+                <ImageView
+                    android:id="@+id/ivFacebook"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="40dp"
+                    android:src="@drawable/facebook"></ImageView>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtRegister"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="@font/neosansintel"
+        android:text="Chưa có tài khoản?"
+        android:textSize="16sp"></TextView>
+
+    <TextView
+        android:id="@+id/txtRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:text="ĐĂNG KÝ"
+        android:textColor="@color/light_green"
+        android:textSize="18sp"
+        android:textStyle="bold"></TextView>
+
+
+</RelativeLayout>
