@@ -1,4 +1,4 @@
-USE AndroidApp
+USE "db-android-app"
 
 DROP TABLE like_list
 DROP TABLE product_review
