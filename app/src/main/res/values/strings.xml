@@ -8,4 +8,11 @@
 
     <!-- REGISTER -->
     <string name="txt_createAccount">Đăng ký</string>
+    <string name="txt_email">E-mail</string>
+    <string name="txt_repassword">Nhập lại mật khẩu</string>
+    <string name="txt_phone">Số điện thoại</string>
+
+    <string name="txt_purchase">Mua hàng</string>
+    <string name="txt_sell">Bán hàng</string>
+
 </resources>
