@@ -37,4 +37,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation group: 'com.google.android.material', name: 'material', version: '1.6.0-alpha03'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 }

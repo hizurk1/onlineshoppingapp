@@ -7,11 +7,48 @@
     tools:context=".MainActivity">
 
 
-    <TextView
+    <Button
+        android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ở đây có bán sản phẩm"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:text="Đăng xuất"
+        style="@style/MaterialAlertDialog.Material3"
+        android:backgroundTint="@color/light_green"></Button>
+
+    <TextView
+        android:id="@+id/signinbygoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in by Google: "
         android:layout_centerInParent="true"></TextView>
+
+    <TextView
+        android:id="@+id/txtInfoGg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Info: "
+        android:layout_below="@+id/signinbygoogle"
+        android:layout_centerHorizontal="true"></TextView>
+
+    <TextView
+        android:id="@+id/signinbyfacebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in by Facebook: "
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/signinbygoogle"
+        android:layout_marginTop="50dp"></TextView>
+
+    <TextView
+        android:id="@+id/txtInfoFb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Info: "
+        android:layout_below="@+id/signinbyfacebook"
+        android:layout_centerHorizontal="true"></TextView>
 
 
 </RelativeLayout>

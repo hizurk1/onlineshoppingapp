@@ -5,7 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 public class SplashActivity extends Activity {
+
+    private GoogleSignInOptions gso;
+    private GoogleSignInClient gsc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -13,10 +22,9 @@ public class SplashActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // direct to login activity
-                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-                // close splash activity
+                // navigate to login page
                 finish();
+                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
             }
         }, 500);
     }
