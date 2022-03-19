@@ -202,11 +202,10 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, textViewListDay.getText().toString() +
                             "/" + textViewListMonth.getText().toString() +
                             "/" + textViewListYear.getText().toString()
-                            + " | " + accountType, Toast.LENGTH_SHORT).show();
+                            + " | Loại tài khoản: " + accountType, Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     // ----------------------- Function ------------------------
