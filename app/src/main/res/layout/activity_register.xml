@@ -46,13 +46,15 @@
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="15dp"
                 android:hint="@string/txt_username"
-                app:errorEnabled="false"
-                app:startIconDrawable="@drawable/ic_person">
+                app:startIconDrawable="@drawable/ic_person"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTxtUsername"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:maxLength="20"
                     android:inputType="text"></com.google.android.material.textfield.TextInputEditText>
 
 
@@ -68,7 +70,9 @@
                 android:layout_marginTop="10dp"
                 android:hint="@string/txt_email"
                 app:errorEnabled="false"
-                app:startIconDrawable="@drawable/ic_email">
+                app:startIconDrawable="@drawable/ic_email"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTxtEmail"
@@ -88,8 +92,9 @@
                 android:layout_marginTop="10dp"
                 android:hint="@string/txt_password"
                 app:endIconMode="password_toggle"
-                app:errorEnabled="false"
-                app:startIconDrawable="@drawable/ic_lock">
+                app:startIconDrawable="@drawable/ic_lock"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTxtPassword"
@@ -110,7 +115,9 @@
                 android:hint="@string/txt_repassword"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="false"
-                app:startIconDrawable="@drawable/ic_lock">
+                app:startIconDrawable="@drawable/ic_lock"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTxtRePassword"
@@ -129,7 +136,9 @@
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="10dp"
                 android:hint="@string/txt_phone"
-                app:startIconDrawable="@drawable/ic_phone">
+                app:startIconDrawable="@drawable/ic_phone"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTxtPhone"
