@@ -2,13 +2,19 @@ package com.android.onlineshoppingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +26,31 @@ import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private ImageView imageViewBack;
     private AutoCompleteTextView textViewListDay, textViewListMonth, textViewListYear;
     private ArrayList<Integer> arrayListDay, arrayListMonth, arrayListYear;
     private TextInputEditText editTextUsername, editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
     private TextInputLayout txtLayoutUsername, txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
+    private Button btnRegister;
+    private RadioGroup radioGroupAccountType;
+    private RadioButton radioButtonPurchase, radioButtonSell;
+    private String accountType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        // Click on back button
+        imageViewBack = findViewById(R.id.ivBackRegister);
+        imageViewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // navigate to login activity
+                finish();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+            }
+        });
 
         // Check null input data: username
         editTextUsername = findViewById(R.id.editTxtUsername);
@@ -88,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (editTextRePassword.getText().toString().equals(editTextPassword.getText().toString()))
                         txtLayoutRePassword.setHelperTextEnabled(false);
                     else
-                        txtLayoutRePassword.setHelperText("Xác nhận mật khẩu không khớp!");
+                        txtLayoutRePassword.setHelperText("Xác nhận mật khẩu không đúng!");
                 }
             }
         });
@@ -135,7 +157,7 @@ public class RegisterActivity extends AppCompatActivity {
         );
         textViewListMonth.setAdapter(listMonthAdapter);
 
-        //List of Year
+        // List of Year
         textViewListYear = findViewById(R.id.tvListYear);
         arrayListYear = new ArrayList<>();
         int currentYear = LocalDateTime.now().getYear();
@@ -149,7 +171,96 @@ public class RegisterActivity extends AppCompatActivity {
         );
         textViewListYear.setAdapter(listYearAdapter);
 
+        // Choose type of account
+        radioGroupAccountType = findViewById(R.id.rgAccType);
+        radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
+        radioButtonSell = findViewById(R.id.radioBtnSell);
+
+        radioGroupAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.radioBtnPurchase:
+                        accountType = radioButtonPurchase.getText().toString();
+                        break;
+                    case R.id.radioBtnSell:
+                        accountType = radioButtonSell.getText().toString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        // Click on Register button
+        btnRegister = findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // validate date of birth
+                if (validateDateOfBirth()) {
+                    Toast.makeText(RegisterActivity.this, textViewListDay.getText().toString() +
+                            "/" + textViewListMonth.getText().toString() +
+                            "/" + textViewListYear.getText().toString()
+                            + " | " + accountType, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
+    // ----------------------- Function ------------------------
+
+    private boolean validateDateOfBirth() {
+        int day = Integer.valueOf(textViewListDay.getText().toString());
+        int month = Integer.valueOf(textViewListMonth.getText().toString());
+        int year = Integer.valueOf(textViewListYear.getText().toString());
+
+        // check leap year
+        if (!checkLeapYear(year)) {
+            if (day > dayOfMonth(month)) {
+                Toast.makeText(this, "Bạn vừa nhập ngày không tồn tại!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } else {
+            if (month == 2 && day > 29) {
+                Toast.makeText(this, "Bạn vừa nhập ngày không tồn tại!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int dayOfMonth(int month) {
+        int m = 0;
+        switch (month) {
+            case 2:
+                m = 28;
+                break;
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                m = 31;
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                m = 30;
+                break;
+            default:
+                break;
+        }
+        return m;
+    }
+
+    private boolean checkLeapYear(int year) {
+        return (((year % 4 == 0) && (year % 100 != 0)) ||
+                (year % 400 == 0));
+    }
 
 }

@@ -78,7 +78,8 @@
                     android:id="@+id/editTxtEmail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textEmailAddress"></com.google.android.material.textfield.TextInputEditText>
+                    android:inputType="textEmailAddress"
+                    android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -100,7 +101,8 @@
                     android:id="@+id/editTxtPassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"></com.google.android.material.textfield.TextInputEditText>
+                    android:inputType="textPassword"
+                    android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,7 +125,8 @@
                     android:id="@+id/editTxtRePassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="textPassword"></com.google.android.material.textfield.TextInputEditText>
+                    android:inputType="textPassword"
+                    android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,7 +147,8 @@
                     android:id="@+id/editTxtPhone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:inputType="phone"></com.google.android.material.textfield.TextInputEditText>
+                    android:inputType="phone"
+                    android:maxLength="12"></com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,7 +160,9 @@
                 android:layout_below="@+id/txtFieldPhone"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="12dp"
-                android:hint="Ngày">
+                android:hint="Ngày"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
                 <AutoCompleteTextView
                     android:id="@+id/tvListDay"
@@ -241,7 +247,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
                         android:paddingRight="12dp"
-                        android:text="@string/txt_purchase"></RadioButton>
+                        android:text="@string/txt_purchase"
+                        android:checked="true"></RadioButton>
 
                     <RadioButton
                         android:id="@+id/radioBtnSell"
