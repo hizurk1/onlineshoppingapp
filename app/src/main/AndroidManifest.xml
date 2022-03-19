@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_logoapp_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineShoppingApp">
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
