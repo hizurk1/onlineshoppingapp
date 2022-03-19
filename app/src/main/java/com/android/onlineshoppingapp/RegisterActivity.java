@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnRegister;
     private RadioGroup radioGroupAccountType;
     private RadioButton radioButtonPurchase, radioButtonSell;
+    private CheckBox checkBoxAgree;
     private String accountType;
 
     @Override
@@ -192,6 +195,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Click on check box
+        checkBoxAgree = findViewById(R.id.checkBoxAgree);
+
         // Click on Register button
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -199,10 +205,22 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // validate date of birth
                 if (validateDateOfBirth()) {
-                    Toast.makeText(RegisterActivity.this, textViewListDay.getText().toString() +
-                            "/" + textViewListMonth.getText().toString() +
-                            "/" + textViewListYear.getText().toString()
-                            + " | Loại tài khoản: " + accountType, Toast.LENGTH_SHORT).show();
+                    if (checkBoxAgree.isChecked()) {
+                        Toast.makeText(RegisterActivity.this,
+                                "Username: " + editTextUsername.getText().toString() +
+                                        "\nEmail: " + editTextEmail.getText().toString() +
+                                        "\nPassword: " + editTextPassword.getText().toString() +
+                                        "\nPhone: " + editTextPhone.getText().toString() +
+                                        "\nSN: " + textViewListDay.getText().toString() +
+                                        "/" + textViewListMonth.getText().toString() +
+                                        "/" + textViewListYear.getText().toString() +
+                                        "\nLoại tài khoản: " + accountType +
+                                        "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(RegisterActivity.this,
+                                "Bạn phải đồng ý với các Điều khoản dịch vụ \n\t\t\t\t\t\t\t\tvà Chính sách bảo mật!",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

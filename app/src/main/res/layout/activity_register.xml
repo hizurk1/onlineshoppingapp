@@ -263,7 +263,7 @@
             </LinearLayout>
 
             <CheckBox
-                android:id="@+id/checkBoxAccept"
+                android:id="@+id/checkBoxAgree"
                 android:layout_width="310dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layoutAccType"
@@ -278,7 +278,7 @@
                 style="@style/Widget.Material3.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/checkBoxAccept"
+                android:layout_below="@id/checkBoxAgree"
                 android:layout_centerHorizontal="true"
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginTop="5dp"
