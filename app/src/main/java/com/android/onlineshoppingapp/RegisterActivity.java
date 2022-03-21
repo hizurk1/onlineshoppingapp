@@ -34,10 +34,10 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText editTextUsername, editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
     private TextInputLayout txtLayoutUsername, txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
     private Button btnRegister;
-    private RadioGroup radioGroupAccountType;
-    private RadioButton radioButtonPurchase, radioButtonSell;
+    private RadioGroup radioGroupAccountType, radioGroupSex;
+    private RadioButton radioButtonPurchase, radioButtonSell, radioButtonMale, radioButtonFemale, radioButtonOther;
     private CheckBox checkBoxAgree;
-    private String accountType;
+    private String accountType, sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +134,33 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Choose sex
+        sex = "Nam";
+        radioGroupSex = findViewById(R.id.radioGroupSex);
+        radioButtonMale = findViewById(R.id.radioBtnMale);
+        radioButtonFemale = findViewById(R.id.radioBtnFemale);
+        radioButtonOther = findViewById(R.id.radioBtnOther);
+
+        radioGroupSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.radioBtnMale:
+                        sex = radioButtonMale.getText().toString();
+                        break;
+                    case R.id.radioBtnFemale:
+                        sex = radioButtonFemale.getText().toString();
+                        break;
+                    case R.id.radioBtnOther:
+                        sex = radioButtonOther.getText().toString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+
         // List of Day
         textViewListDay = findViewById(R.id.tvListDay);
         arrayListDay = new ArrayList<Integer>();
@@ -175,6 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
         textViewListYear.setAdapter(listYearAdapter);
 
         // Choose type of account
+        accountType = "Mua hàng";
         radioGroupAccountType = findViewById(R.id.rgAccType);
         radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
         radioButtonSell = findViewById(R.id.radioBtnSell);
@@ -211,6 +239,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         "\nEmail: " + editTextEmail.getText().toString() +
                                         "\nPassword: " + editTextPassword.getText().toString() +
                                         "\nPhone: " + editTextPhone.getText().toString() +
+                                        "\nGiới tính: " + sex +
                                         "\nSN: " + textViewListDay.getText().toString() +
                                         "/" + textViewListMonth.getText().toString() +
                                         "/" + textViewListYear.getText().toString() +
