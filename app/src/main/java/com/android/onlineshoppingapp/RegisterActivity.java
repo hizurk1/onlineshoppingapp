@@ -135,12 +135,12 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Choose sex
-        sex = "Nam";
         radioGroupSex = findViewById(R.id.radioGroupSex);
         radioButtonMale = findViewById(R.id.radioBtnMale);
         radioButtonFemale = findViewById(R.id.radioBtnFemale);
         radioButtonOther = findViewById(R.id.radioBtnOther);
 
+        sex = "Nam";
         radioGroupSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -202,11 +202,11 @@ public class RegisterActivity extends AppCompatActivity {
         textViewListYear.setAdapter(listYearAdapter);
 
         // Choose type of account
-        accountType = "Mua hàng";
         radioGroupAccountType = findViewById(R.id.rgAccType);
         radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
         radioButtonSell = findViewById(R.id.radioBtnSell);
 
+        accountType = "Mua hàng";
         radioGroupAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
