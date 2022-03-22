@@ -9,8 +9,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.fragments.EnterCodeFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Random;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -56,10 +59,33 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 if (textInputEditTextEmail.getText().toString().equals("")) {
                     textInputLayoutEmail.setHelperText("Email không được bỏ trống!");
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, "Send code to " +
-                            textInputEditTextEmail.getText().toString(), Toast.LENGTH_SHORT).show();
+                    EnterCodeFragment enterCodeFragment = new EnterCodeFragment();
+
+                    // prepare data
+                    Bundle data = new Bundle();
+                    data.putString("userEmail", textInputEditTextEmail.getText().toString());
+
+                    // create CODE
+                    Random random = new Random();
+                    String verifyCode = String.valueOf(random.nextInt(999999 - 100000) + 100000);
+                    data.putString("verifyCode", verifyCode);
+
+                    System.out.println("Code: " + verifyCode);
+
+                    // send to fragment
+                    enterCodeFragment.setArguments(data);
+
+                    // call fragment
+                    callEnterCodeFragment(enterCodeFragment);
                 }
             }
         });
     }
+
+    // ------------------ Function -----------------
+    private void callEnterCodeFragment(EnterCodeFragment fragment) {
+        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_forgotpass, fragment)
+                .commit();
+    }
+
 }
