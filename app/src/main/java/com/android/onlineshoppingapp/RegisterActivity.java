@@ -277,7 +277,7 @@ public class RegisterActivity extends AppCompatActivity {
         char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         for (int i = 0; i < str.length(); i++) {
             for (int j = 0; j < alphabet.length; j++) {
-                if (str.charAt(i) == alphabet[j])
+                if (str.toLowerCase().charAt(i) == alphabet[j])
                     return true;
             }
         }
