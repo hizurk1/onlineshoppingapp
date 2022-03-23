@@ -12,9 +12,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class SplashActivity extends Activity {
 
-    private GoogleSignInOptions gso;
-    private GoogleSignInClient gsc;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

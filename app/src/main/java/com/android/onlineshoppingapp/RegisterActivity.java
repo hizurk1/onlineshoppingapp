@@ -34,10 +34,10 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText editTextUsername, editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
     private TextInputLayout txtLayoutUsername, txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
     private Button btnRegister;
-    private RadioGroup radioGroupAccountType;
-    private RadioButton radioButtonPurchase, radioButtonSell;
+    private RadioGroup radioGroupAccountType, radioGroupSex;
+    private RadioButton radioButtonPurchase, radioButtonSell, radioButtonMale, radioButtonFemale, radioButtonOther;
     private CheckBox checkBoxAgree;
-    private String accountType;
+    private String accountType, sex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!onFocus) {
                     if (editTextUsername.getText().toString().equals("")) {
                         txtLayoutUsername.setHelperText("Tên đăng nhập không được để trống!");
+                    } else if (!includeCharInAlphabet(editTextUsername.getText().toString())) {
+                        txtLayoutUsername.setHelperText("Tên đăng nhập phải chứa ít nhất 1 ký tự chữ");
                     }
                 } else {
                     txtLayoutUsername.setHelperTextEnabled(false);
@@ -80,7 +82,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!onFocus) {
                     if (editTextEmail.getText().toString().equals("")) {
                         txtLayoutEmail.setHelperText("Email không được để trống!");
-                    }
+                    } else if (!hasCharacter(editTextEmail.getText().toString(), '@'))
+                        txtLayoutEmail.setHelperText("Email bạn vừa nhập không đúng định dạng");
                 } else {
                     txtLayoutEmail.setHelperTextEnabled(false);
                 }
@@ -96,6 +99,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!onFocus) {
                     if (editTextPassword.getText().toString().equals("")) {
                         txtLayoutPassword.setHelperText("Mật khẩu không được để trống!");
+                    } else if (!isLongEnough(editTextPassword.getText().toString(), 8)) {
+                        txtLayoutPassword.setHelperText("Mật khẩu phải có ít nhất 8 kí tự");
                     }
                 } else {
                     txtLayoutPassword.setHelperTextEnabled(false);
@@ -110,10 +115,12 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextRePassword.getText().toString().equals(editTextPassword.getText().toString()))
+                    if (editTextRePassword.getText().toString().equals(editTextPassword.getText().toString())) {
                         txtLayoutRePassword.setHelperTextEnabled(false);
-                    else
+                    }
+                    else {
                         txtLayoutRePassword.setHelperText("Xác nhận mật khẩu không đúng!");
+                    }
                 }
             }
         });
@@ -127,12 +134,40 @@ public class RegisterActivity extends AppCompatActivity {
                 if (!onFocus) {
                     if (editTextPhone.getText().toString().equals("")) {
                         txtLayoutPhone.setHelperText("Số điện thoại không được để trống!");
-                    }
+                    } else if (!isLongEnough(editTextPhone.getText().toString(), 6))
+                        txtLayoutPhone.setHelperText("Số điện thoại bạn vừa nhập không hợp lệ");
                 } else {
                     txtLayoutPhone.setHelperTextEnabled(false);
                 }
             }
         });
+
+        // Choose sex
+        radioGroupSex = findViewById(R.id.radioGroupSex);
+        radioButtonMale = findViewById(R.id.radioBtnMale);
+        radioButtonFemale = findViewById(R.id.radioBtnFemale);
+        radioButtonOther = findViewById(R.id.radioBtnOther);
+
+        sex = radioButtonMale.getText().toString();
+        radioGroupSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i) {
+                    case R.id.radioBtnMale:
+                        sex = radioButtonMale.getText().toString();
+                        break;
+                    case R.id.radioBtnFemale:
+                        sex = radioButtonFemale.getText().toString();
+                        break;
+                    case R.id.radioBtnOther:
+                        sex = radioButtonOther.getText().toString();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
 
         // List of Day
         textViewListDay = findViewById(R.id.tvListDay);
@@ -179,6 +214,7 @@ public class RegisterActivity extends AppCompatActivity {
         radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
         radioButtonSell = findViewById(R.id.radioBtnSell);
 
+        accountType = radioButtonPurchase.getText().toString();
         radioGroupAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -205,28 +241,65 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // validate date of birth
                 if (validateDateOfBirth()) {
-                    if (checkBoxAgree.isChecked()) {
-                        Toast.makeText(RegisterActivity.this,
-                                "Username: " + editTextUsername.getText().toString() +
-                                        "\nEmail: " + editTextEmail.getText().toString() +
-                                        "\nPassword: " + editTextPassword.getText().toString() +
-                                        "\nPhone: " + editTextPhone.getText().toString() +
-                                        "\nSN: " + textViewListDay.getText().toString() +
-                                        "/" + textViewListMonth.getText().toString() +
-                                        "/" + textViewListYear.getText().toString() +
-                                        "\nLoại tài khoản: " + accountType +
-                                        "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(RegisterActivity.this,
-                                "Bạn phải đồng ý với các Điều khoản dịch vụ \n\t\t\t\t\t\t\t\tvà Chính sách bảo mật!",
+                    if (editTextUsername.getText().toString().equals("") ||
+                            editTextEmail.getText().toString().equals("") ||
+                            editTextPassword.getText().toString().equals("")) {
+                        Toast.makeText(RegisterActivity.this, "Bạn chưa điền đầy đủ thông tin!",
                                 Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (checkBoxAgree.isChecked()) {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Username: " + editTextUsername.getText().toString() +
+                                            "\nEmail: " + editTextEmail.getText().toString() +
+                                            "\nPassword: " + editTextPassword.getText().toString() +
+                                            "\nPhone: " + editTextPhone.getText().toString() +
+                                            "\nGiới tính: " + sex +
+                                            "\nSN: " + textViewListDay.getText().toString() +
+                                            "/" + textViewListMonth.getText().toString() +
+                                            "/" + textViewListYear.getText().toString() +
+                                            "\nLoại tài khoản: " + accountType +
+                                            "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Bạn phải đồng ý với các Điều khoản dịch vụ \n\t\t\t\t\t\t\t\tvà Chính sách bảo mật!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                 }
             }
         });
     }
 
     // ----------------------- Function ------------------------
+
+    private boolean includeCharInAlphabet(String str) {
+        char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = 0; j < alphabet.length; j++) {
+                if (str.toLowerCase().charAt(i) == alphabet[j])
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasCharacter(String str, char target) {
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == target)
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isLongEnough(String str, int num) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            count++;
+        }
+        if (count >= num) return true;
+            else return false;
+    }
 
     private boolean validateDateOfBirth() {
         int day = Integer.valueOf(textViewListDay.getText().toString());
