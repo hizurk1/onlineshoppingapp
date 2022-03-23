@@ -1,54 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <FrameLayout
+        android:id="@+id/frame_layout_main"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="20dp"
-        android:text="Đăng xuất"
-        style="@style/MaterialAlertDialog.Material3"
-        android:backgroundTint="@color/light_green"></Button>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
-    <TextView
-        android:id="@+id/signinbygoogle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign in by Google: "
-        android:layout_centerInParent="true"></TextView>
-
-    <TextView
-        android:id="@+id/txtInfoGg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Info: "
-        android:layout_below="@+id/signinbygoogle"
-        android:layout_centerHorizontal="true"></TextView>
-
-    <TextView
-        android:id="@+id/signinbyfacebook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign in by Facebook: "
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/signinbygoogle"
-        android:layout_marginTop="50dp"></TextView>
-
-    <TextView
-        android:id="@+id/txtInfoFb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Info: "
-        android:layout_below="@+id/signinbyfacebook"
-        android:layout_centerHorizontal="true"></TextView>
-
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
