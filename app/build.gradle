@@ -30,6 +30,10 @@ android {
         exclude 'META-INF/NOTICE.md'
         exclude 'META-INF/LICENSE.md'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
