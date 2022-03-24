@@ -1,16 +1,16 @@
 package com.android.onlineshoppingapp;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,54 +43,45 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.etUsername);
         editTextPassword = findViewById(R.id.etPassword);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnLogin.setOnClickListener(view -> {
 
-                if (checkNullInputData()) {
-                    Toast.makeText(LoginActivity.this,
-                            "Tên đăng nhập và mật khẩu\n\t\t không được để trống!",
-                            Toast.LENGTH_SHORT).show();
+            if (checkNullInputData()) {
+                Toast.makeText(LoginActivity.this,
+                        "Tên đăng nhập và mật khẩu\n\t\t không được để trống!",
+                        Toast.LENGTH_SHORT).show();
+            } else {
+
+                // Notice: for testing purpose
+                if (editTextUsername.getText().toString().equals("admin")
+                        && editTextPassword.getText().toString().equals("admin")) {
+
+                    // Access to main activity
+                    finish();
+                    Intent directToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(directToMainActivity);
                 } else {
-
-                    // Notice: for testing purpose
-                    if (editTextUsername.getText().toString().equals("admin")
-                            && editTextPassword.getText().toString().equals("admin")) {
-
-                        // Access to main activity
-                        finish();
-                        Intent directToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(directToMainActivity);
-                    } else {
-                        Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
+                    Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
+                            Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
         // Click on Forgot password
         textViewForgotPass = findViewById(R.id.tvForgotPassword);
 
-        textViewForgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // navigate to Forgot password activity
-                finish();
-                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
-            }
+        textViewForgotPass.setOnClickListener(view -> {
+            // navigate to Forgot password activity
+            finish();
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
         // Click on Register
         textViewRegister = findViewById(R.id.txtRegister);
 
-        textViewRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //navigate to register activity
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
+        textViewRegister.setOnClickListener(view -> {
+            //navigate to register activity
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         // Click on Google
@@ -99,23 +90,15 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
 
-        imageViewGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        imageViewGoogle.setOnClickListener(view -> {
 //                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
-                googleSignIn();
-            }
+            googleSignIn();
         });
 
         // CLick on Facebook
         imageViewFacebook = findViewById(R.id.ivFacebook);
 
-        imageViewFacebook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Facebook", Toast.LENGTH_SHORT).show();
-            }
-        });
+        imageViewFacebook.setOnClickListener(view -> Toast.makeText(LoginActivity.this, "Facebook", Toast.LENGTH_SHORT).show());
 
     }
 
@@ -138,9 +121,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkNullInputData() {
-        if (editTextUsername.getText().toString().equals("") || editTextPassword.getText().toString().equals(""))
-            return true;
-        return false;
+        return editTextUsername.getText().toString().equals("") || editTextPassword.getText().toString().equals("");
     }
 
     private void googleSignIn() {
@@ -160,7 +141,8 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
             } catch (ApiException e) {
-                Toast.makeText(this, "Đã xảy ra lỗi. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đã xảy ra lỗi. Vui lòng thử lại!", Toast.LENGTH_LONG).show();
+                Log.e("Error: ", e.getMessage());
             }
         }
     }
