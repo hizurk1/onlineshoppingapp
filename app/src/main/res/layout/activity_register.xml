@@ -39,7 +39,66 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="799dp">
+                android:layout_height="900dp"> <!--Change height of page here-->
+
+                <RelativeLayout
+                    android:id="@+id/layoutName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginHorizontal="40dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtFieldLastname"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/splitTxtFieldName"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginRight="5dp"
+                        android:hint="@string/txt_lastname"
+                        app:helperTextEnabled="true"
+                        app:helperTextTextColor="@color/red_error"
+                        app:startIconDrawable="@drawable/ic_rename">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTxtLastname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="text"
+                            android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:id="@+id/splitTxtFieldName"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_centerInParent="true"></View>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtFieldFirstname"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/txt_firstname"
+                        android:layout_toRightOf="@+id/splitTxtFieldName"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="5dp"
+                        app:helperTextEnabled="true"
+                        app:helperTextTextColor="@color/red_error">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTxtFirstname"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:inputType="text"
+                            android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </RelativeLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/txtFieldUsername"
@@ -47,8 +106,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="40dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="10dp"
                     android:hint="@string/txt_username"
+                    android:layout_below="@+id/layoutName"
                     app:helperTextEnabled="true"
                     app:helperTextTextColor="@color/red_error"
                     app:startIconDrawable="@drawable/ic_person">
@@ -82,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textEmailAddress"
-                        android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+                        android:maxLength="40"></com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -166,7 +226,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingVertical="20dp"
+                        android:paddingVertical="18dp"
                         android:paddingRight="20dp"
                         android:text="Giới tính:"
                         android:textSize="16sp"></TextView>
@@ -333,7 +393,7 @@
                     android:layout_below="@id/checkBoxAgree"
                     android:layout_centerHorizontal="true"
                     android:layout_marginHorizontal="40dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:text="TẠO TÀI KHOẢN"
                     android:textSize="16sp"></Button>
 
@@ -342,7 +402,7 @@
                     android:layout_height="1dp"
                     android:layout_below="@+id/btnRegister"
                     android:layout_marginLeft="70dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginRight="8dp"
                     android:layout_toLeftOf="@+id/tvOtherMethod"
                     android:background="#D0DCD7"></View>
@@ -352,7 +412,7 @@
                     android:layout_height="1dp"
                     android:layout_below="@+id/btnRegister"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:layout_marginRight="70dp"
                     android:layout_toRightOf="@+id/tvOtherMethod"
                     android:background="#D0DCD7"></View>
@@ -364,7 +424,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btnRegister"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10sp"
+                    android:layout_marginTop="20sp"
                     android:text="hoặc"></TextView>
 
                 <RelativeLayout
@@ -372,7 +432,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvOtherMethod"
                     android:layout_marginHorizontal="60dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="20dp">
 
                     <ImageView
                         android:id="@+id/ivGoogle"

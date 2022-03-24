@@ -123,7 +123,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
 
             mimeMessage.setSubject("[OnlineShoppingApp] Mã xác minh thay đổi mật khẩu");
-            mimeMessage.setText("Xin chào bạn," +
+            mimeMessage.setText("Xin chào," +
                     "\n\nBạn vừa yêu cầu mã xác minh để thay đổi mật khẩu của bạn " +
                     "cho địa chỉ email: " + receiverEmail +
                     "\n\nMã xác minh: " + verificationCode +

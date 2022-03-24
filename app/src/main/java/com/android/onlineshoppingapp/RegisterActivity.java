@@ -31,8 +31,10 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView imageViewBack;
     private AutoCompleteTextView textViewListDay, textViewListMonth, textViewListYear;
     private ArrayList<Integer> arrayListDay, arrayListMonth, arrayListYear;
-    private TextInputEditText editTextUsername, editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
-    private TextInputLayout txtLayoutUsername, txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
+    private TextInputEditText editTextFirstName, editTextLastName, editTextUsername;
+    private TextInputEditText editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
+    private TextInputLayout txtLayoutFirstName, txtLayoutLastName, txtLayoutUsername;
+    private TextInputLayout txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
     private Button btnRegister;
     private RadioGroup radioGroupAccountType, radioGroupSex;
     private RadioButton radioButtonPurchase, radioButtonSell, radioButtonMale, radioButtonFemale, radioButtonOther;
@@ -52,6 +54,44 @@ public class RegisterActivity extends AppCompatActivity {
                 // navigate to login activity
                 finish();
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+            }
+        });
+
+        // check null input data: first name
+        editTextFirstName = findViewById(R.id.editTxtFirstname);
+        txtLayoutFirstName = findViewById(R.id.txtFieldFirstname);
+
+        editTextFirstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (editTextFirstName.getText().toString().equals("")) {
+                        txtLayoutFirstName.setHelperText("Tên không được để trống");
+                    } else if (!includeCharInAlphabet(editTextFirstName.getText().toString())) {
+                        txtLayoutFirstName.setHelperText("Tên không hợp lệ");
+                    }
+                } else {
+                    txtLayoutFirstName.setHelperTextEnabled(false);
+                }
+            }
+        });
+
+        // check null input data: last name
+        editTextLastName = findViewById(R.id.editTxtLastname);
+        txtLayoutLastName = findViewById(R.id.txtFieldLastname);
+
+        editTextLastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (editTextLastName.getText().toString().equals("")) {
+                        txtLayoutLastName.setHelperText("Họ không được để trống");
+                    } else if (!includeCharInAlphabet(editTextLastName.getText().toString())) {
+                        txtLayoutLastName.setHelperText("Họ không hợp lệ");
+                    }
+                } else {
+                    txtLayoutLastName.setHelperTextEnabled(false);
+                }
             }
         });
 
@@ -249,7 +289,9 @@ public class RegisterActivity extends AppCompatActivity {
                     } else {
                         if (checkBoxAgree.isChecked()) {
                             Toast.makeText(RegisterActivity.this,
-                                    "Username: " + editTextUsername.getText().toString() +
+                                    "Họ và tên: " + editTextLastName.getText().toString() +
+                                            " " + editTextFirstName.getText().toString() +
+                                            "\nUsername: " + editTextUsername.getText().toString() +
                                             "\nEmail: " + editTextEmail.getText().toString() +
                                             "\nPassword: " + editTextPassword.getText().toString() +
                                             "\nPhone: " + editTextPhone.getText().toString() +
