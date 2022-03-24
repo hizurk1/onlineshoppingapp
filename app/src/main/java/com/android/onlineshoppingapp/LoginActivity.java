@@ -25,8 +25,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextUsername, editTextPassword;
     private TextView textViewForgotPass, textViewRegister;
     private ImageView imageViewGoogle, imageViewFacebook;
+
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Check login status if the user is logged in or not
-//        checkGoogleSignIn();
+        checkGoogleSignIn();
 
         // Click on LOGIN button
         btnLogin = findViewById(R.id.btnLogin);
@@ -92,18 +94,18 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // Click on Google
-//        imageViewGoogle = findViewById(R.id.ivGoogle);
-//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail().build();
-//        gsc = GoogleSignIn.getClient(this, gso);
-//
-//        imageViewGoogle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
-//                googleSignIn();
-//            }
-//        });
+        imageViewGoogle = findViewById(R.id.ivGoogle);
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().build();
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        imageViewGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
+                googleSignIn();
+            }
+        });
 
         // CLick on Facebook
         imageViewFacebook = findViewById(R.id.ivFacebook);
@@ -120,20 +122,20 @@ public class LoginActivity extends AppCompatActivity {
     // -------------- Function -----------------
 
 
-//    private void checkGoogleSignIn() {
-//
-//        // Get data from Google sign in account
-//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail().build();
-//        gsc = GoogleSignIn.getClient(this, gso);
-//
-//        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-//        if (signInAccount != null) {
-//            // navigate to main activity if user is logged in
-//            finish();
-//            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//        }
-//    }
+    private void checkGoogleSignIn() {
+
+        // Get data from Google sign in account
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail().build();
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (signInAccount != null) {
+            // navigate to main activity if user is logged in
+            finish();
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
+    }
 
     private boolean checkNullInputData() {
         if (editTextUsername.getText().toString().equals("") || editTextPassword.getText().toString().equals(""))
@@ -141,25 +143,25 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
-//    private void googleSignIn() {
-//        Intent signInIntent = gsc.getSignInIntent();
-//        startActivityForResult(signInIntent, 1000);
-//    }
+    private void googleSignIn() {
+        Intent signInIntent = gsc.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == 1000) {
-//            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-//            try {
-//                task.getResult(ApiException.class);
-//                // navigate to main activity
-//                finish();
-//                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//            } catch (ApiException e) {
-//                Toast.makeText(this, "Đã xảy ra lỗi. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                task.getResult(ApiException.class);
+                // navigate to main activity
+                finish();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            } catch (ApiException e) {
+                Toast.makeText(this, "Đã xảy ra lỗi. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
