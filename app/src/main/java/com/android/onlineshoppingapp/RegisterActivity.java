@@ -46,8 +46,35 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Click on back button
         imageViewBack = findViewById(R.id.ivBackRegister);
+        editTextFirstName = findViewById(R.id.editTxtFirstname);
+        txtLayoutFirstName = findViewById(R.id.txtFieldFirstname);
+        editTextLastName = findViewById(R.id.editTxtLastname);
+        txtLayoutLastName = findViewById(R.id.txtFieldLastname);
+        editTextUsername = findViewById(R.id.editTxtUsername);
+        txtLayoutUsername = findViewById(R.id.txtFieldUsername);
+        editTextEmail = findViewById(R.id.editTxtEmail);
+        txtLayoutEmail = findViewById(R.id.txtFieldEmail);
+        editTextPassword = findViewById(R.id.editTxtPassword);
+        txtLayoutPassword = findViewById(R.id.txtFieldPassword);
+        editTextRePassword = findViewById(R.id.editTxtRePassword);
+        txtLayoutRePassword = findViewById(R.id.txtFieldRePassword);
+        editTextPhone = findViewById(R.id.editTxtPhone);
+        txtLayoutPhone = findViewById(R.id.txtFieldPhone);
+        radioGroupSex = findViewById(R.id.radioGroupSex);
+        radioButtonMale = findViewById(R.id.radioBtnMale);
+        radioButtonFemale = findViewById(R.id.radioBtnFemale);
+        radioButtonOther = findViewById(R.id.radioBtnOther);
+        textViewListDay = findViewById(R.id.tvListDay);
+        textViewListMonth = findViewById(R.id.tvListMonth);
+        textViewListYear = findViewById(R.id.tvListYear);
+        radioGroupAccountType = findViewById(R.id.rgAccType);
+        radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
+        radioButtonSell = findViewById(R.id.radioBtnSell);
+        checkBoxAgree = findViewById(R.id.checkBoxAgree);
+        btnRegister = findViewById(R.id.btnRegister);
+
+        // Click on back button
         imageViewBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,16 +85,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // check null input data: first name
-        editTextFirstName = findViewById(R.id.editTxtFirstname);
-        txtLayoutFirstName = findViewById(R.id.txtFieldFirstname);
-
         editTextFirstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextFirstName.getText().toString().equals("")) {
+                    if (editTextFirstName.getText().toString().trim().equals("")) {
                         txtLayoutFirstName.setHelperText("Tên không được để trống");
-                    } else if (!includeCharInAlphabet(editTextFirstName.getText().toString())) {
+                    } else if (!includeCharInAlphabet(editTextFirstName.getText().toString().trim())) {
                         txtLayoutFirstName.setHelperText("Tên không hợp lệ");
                     }
                 } else {
@@ -77,16 +101,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // check null input data: last name
-        editTextLastName = findViewById(R.id.editTxtLastname);
-        txtLayoutLastName = findViewById(R.id.txtFieldLastname);
-
         editTextLastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextLastName.getText().toString().equals("")) {
+                    if (editTextLastName.getText().toString().trim().equals("")) {
                         txtLayoutLastName.setHelperText("Họ không được để trống");
-                    } else if (!includeCharInAlphabet(editTextLastName.getText().toString())) {
+                    } else if (!includeCharInAlphabet(editTextLastName.getText().toString().trim())) {
                         txtLayoutLastName.setHelperText("Họ không hợp lệ");
                     }
                 } else {
@@ -96,15 +117,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Check null input data: username
-        editTextUsername = findViewById(R.id.editTxtUsername);
-        txtLayoutUsername = findViewById(R.id.txtFieldUsername);
         editTextUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextUsername.getText().toString().equals("")) {
+                    if (editTextUsername.getText().toString().trim().equals("")) {
                         txtLayoutUsername.setHelperText("Tên đăng nhập không được để trống!");
-                    } else if (!includeCharInAlphabet(editTextUsername.getText().toString())) {
+                    } else if (!includeCharInAlphabet(editTextUsername.getText().toString().trim())) {
                         txtLayoutUsername.setHelperText("Tên đăng nhập phải chứa ít nhất 1 ký tự chữ");
                     }
                 } else {
@@ -114,16 +133,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Check null input data: email
-        editTextEmail = findViewById(R.id.editTxtEmail);
-        txtLayoutEmail = findViewById(R.id.txtFieldEmail);
         editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextEmail.getText().toString().equals("")) {
+                    if (editTextEmail.getText().toString().trim().equals("")) {
                         txtLayoutEmail.setHelperText("Email không được để trống!");
-                    } else if (!hasCharacter(editTextEmail.getText().toString(), '@'))
+                    } else if (!isCorrectEmailFormat(editTextEmail.getText().toString().trim())) {
                         txtLayoutEmail.setHelperText("Email bạn vừa nhập không đúng định dạng");
+                    }
                 } else {
                     txtLayoutEmail.setHelperTextEnabled(false);
                 }
@@ -131,8 +149,6 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Check null input data: password
-        editTextPassword = findViewById(R.id.editTxtPassword);
-        txtLayoutPassword = findViewById(R.id.txtFieldPassword);
         editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
@@ -141,6 +157,8 @@ public class RegisterActivity extends AppCompatActivity {
                         txtLayoutPassword.setHelperText("Mật khẩu không được để trống!");
                     } else if (!isLongEnough(editTextPassword.getText().toString(), 8)) {
                         txtLayoutPassword.setHelperText("Mật khẩu phải có ít nhất 8 kí tự");
+                    } else if (isCorrectTextFormat(editTextPassword.getText().toString())) {
+                        txtLayoutPassword.setHelperText("Mật khẩu chỉ bao gồm số, chữ cái và các kí tự _ . -");
                     }
                 } else {
                     txtLayoutPassword.setHelperTextEnabled(false);
@@ -149,16 +167,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Check null input data: Re-password
-        editTextRePassword = findViewById(R.id.editTxtRePassword);
-        txtLayoutRePassword = findViewById(R.id.txtFieldRePassword);
         editTextRePassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
                     if (editTextRePassword.getText().toString().equals(editTextPassword.getText().toString())) {
                         txtLayoutRePassword.setHelperTextEnabled(false);
-                    }
-                    else {
+                    } else {
                         txtLayoutRePassword.setHelperText("Xác nhận mật khẩu không đúng!");
                     }
                 }
@@ -166,16 +181,15 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Check null input data: phone
-        editTextPhone = findViewById(R.id.editTxtPhone);
-        txtLayoutPhone = findViewById(R.id.txtFieldPhone);
         editTextPhone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextPhone.getText().toString().equals("")) {
+                    if (editTextPhone.getText().toString().trim().equals("")) {
                         txtLayoutPhone.setHelperText("Số điện thoại không được để trống!");
-                    } else if (!isLongEnough(editTextPhone.getText().toString(), 6))
+                    } else if (!isLongEnough(editTextPhone.getText().toString().trim(), 6)) {
                         txtLayoutPhone.setHelperText("Số điện thoại bạn vừa nhập không hợp lệ");
+                    }
                 } else {
                     txtLayoutPhone.setHelperTextEnabled(false);
                 }
@@ -183,11 +197,6 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Choose sex
-        radioGroupSex = findViewById(R.id.radioGroupSex);
-        radioButtonMale = findViewById(R.id.radioBtnMale);
-        radioButtonFemale = findViewById(R.id.radioBtnFemale);
-        radioButtonOther = findViewById(R.id.radioBtnOther);
-
         sex = radioButtonMale.getText().toString();
         radioGroupSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -210,7 +219,6 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         // List of Day
-        textViewListDay = findViewById(R.id.tvListDay);
         arrayListDay = new ArrayList<Integer>();
         for (int i = 1; i <= 31; i++) {
             arrayListDay.add(i);
@@ -223,7 +231,6 @@ public class RegisterActivity extends AppCompatActivity {
         textViewListDay.setAdapter(listDayAdapter);
 
         // List of Month
-        textViewListMonth = findViewById(R.id.tvListMonth);
         arrayListMonth = new ArrayList<Integer>();
         for (int i = 1; i <= 12; i++) {
             arrayListMonth.add(i);
@@ -236,7 +243,6 @@ public class RegisterActivity extends AppCompatActivity {
         textViewListMonth.setAdapter(listMonthAdapter);
 
         // List of Year
-        textViewListYear = findViewById(R.id.tvListYear);
         arrayListYear = new ArrayList<>();
         int currentYear = LocalDateTime.now().getYear();
         for (int i = currentYear; i > currentYear - 100; i--) {
@@ -250,10 +256,6 @@ public class RegisterActivity extends AppCompatActivity {
         textViewListYear.setAdapter(listYearAdapter);
 
         // Choose type of account
-        radioGroupAccountType = findViewById(R.id.rgAccType);
-        radioButtonPurchase = findViewById(R.id.radioBtnPurchase);
-        radioButtonSell = findViewById(R.id.radioBtnSell);
-
         accountType = radioButtonPurchase.getText().toString();
         radioGroupAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -271,30 +273,29 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        // Click on check box
-        checkBoxAgree = findViewById(R.id.checkBoxAgree);
-
         // Click on Register button
-        btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // validate date of birth
                 if (validateDateOfBirth()) {
-                    if (editTextUsername.getText().toString().equals("") ||
-                            editTextEmail.getText().toString().equals("") ||
+                    if (editTextFirstName.getText().toString().trim().equals("") ||
+                            editTextLastName.getText().toString().trim().equals("") ||
+                            editTextUsername.getText().toString().trim().equals("") ||
+                            editTextEmail.getText().toString().trim().equals("") ||
+                            editTextPhone.getText().toString().trim().equals("") ||
                             editTextPassword.getText().toString().equals("")) {
                         Toast.makeText(RegisterActivity.this, "Bạn chưa điền đầy đủ thông tin!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         if (checkBoxAgree.isChecked()) {
                             Toast.makeText(RegisterActivity.this,
-                                    "Họ và tên: " + editTextLastName.getText().toString() +
-                                            " " + editTextFirstName.getText().toString() +
-                                            "\nUsername: " + editTextUsername.getText().toString() +
-                                            "\nEmail: " + editTextEmail.getText().toString() +
+                                    "Họ và tên: " + editTextLastName.getText().toString().trim() +
+                                            " " + editTextFirstName.getText().toString().trim() +
+                                            "\nUsername: " + editTextUsername.getText().toString().trim() +
+                                            "\nEmail: " + editTextEmail.getText().toString().trim() +
                                             "\nPassword: " + editTextPassword.getText().toString() +
-                                            "\nPhone: " + editTextPhone.getText().toString() +
+                                            "\nPhone: " + editTextPhone.getText().toString().trim() +
                                             "\nGiới tính: " + sex +
                                             "\nSN: " + textViewListDay.getText().toString() +
                                             "/" + textViewListMonth.getText().toString() +
@@ -315,6 +316,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     // ----------------------- Function ------------------------
 
+
     private boolean includeCharInAlphabet(String str) {
         char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         for (int i = 0; i < str.length(); i++) {
@@ -326,11 +328,16 @@ public class RegisterActivity extends AppCompatActivity {
         return false;
     }
 
-    private boolean hasCharacter(String str, char target) {
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == target)
-                return true;
-        }
+    private boolean isCorrectTextFormat(String str) {
+        if (str.matches("[^a-zA-Z0-9._-]"))
+            return true;
+        return false;
+    }
+
+    private boolean isCorrectEmailFormat(String str) {
+        if (str.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+") ||
+                str.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+\\.[a-z]+"))
+            return true;
         return false;
     }
 
@@ -340,7 +347,7 @@ public class RegisterActivity extends AppCompatActivity {
             count++;
         }
         if (count >= num) return true;
-            else return false;
+        else return false;
     }
 
     private boolean validateDateOfBirth() {

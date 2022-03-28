@@ -90,10 +90,10 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
 
-        imageViewGoogle.setOnClickListener(view -> {
-//                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
-            googleSignIn();
-        });
+//        imageViewGoogle.setOnClickListener(view -> {
+////                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
+//            googleSignIn();
+//        });
 
         // CLick on Facebook
         imageViewFacebook = findViewById(R.id.ivFacebook);

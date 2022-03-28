@@ -34,6 +34,14 @@ public class ProfilePageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
+
+        // return view
+        return view;
+    }
+
+    //--------------- Function ----------------
+
+    private void checkSignIn() {
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail().build();
         gsc = GoogleSignIn.getClient(getActivity(), gso);
@@ -46,20 +54,7 @@ public class ProfilePageFragment extends Fragment {
             Toast.makeText(getActivity(), "Name: " + userName + "\nEmail: " + userEmail, Toast.LENGTH_SHORT)
                     .show();
         }
-
-        btnLogout = view.findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
-
-        // return view
-        return view;
     }
-
-    //--------------- Function ----------------
 
     private void signOut() {
         gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
