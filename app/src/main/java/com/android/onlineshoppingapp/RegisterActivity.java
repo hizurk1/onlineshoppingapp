@@ -335,8 +335,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean isCorrectEmailFormat(String str) {
-        if (str.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+") ||
-                str.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-z]+\\.[a-z]+"))
+        if (str.matches("[a-zA-Z0-9._-]+@[a-z]+\\.[a-zA-Z0-9.]+"))
             return true;
         return false;
     }
