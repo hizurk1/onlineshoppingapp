@@ -27,7 +27,7 @@
                     android:id="@+id/btnSettings"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_toLeftOf="@+id/btnShoppingCart"
                     android:src="@drawable/settings" />
@@ -37,7 +37,9 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/shoppingcart" />
 
                 <TextView
@@ -95,21 +97,37 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <ImageView
-                    android:id="@+id/ivAvatar"
+                <androidx.cardview.widget.CardView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_below="@+id/btnSettings"
                     android:layout_alignParentRight="true"
                     android:layout_margin="20dp"
-                    android:background="@color/white"
-                    android:src="@drawable/ic_person" />
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="250dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="250dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@mipmap/ic_logoapp_round" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp">
+                android:layout_height="75dp"
+                android:background="@drawable/ic_bgcircleprofile">
 
                 <View
                     android:id="@+id/splitCardView"
@@ -120,10 +138,9 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCoin"
                     style="@style/Widget.Material3.CardView.Elevated"
-                    android:layout_width="160dp"
+                    android:layout_width="170dp"
                     android:layout_height="65dp"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@id/splitCardView"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp">
@@ -142,17 +159,18 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Shop Xu"
-                            android:textStyle="bold"
                             android:layout_marginLeft="60dp"
-                            android:layout_marginTop="12dp" />
+                            android:layout_marginTop="12dp"
+                            android:text="Shop Xu"
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvShopCoin"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="200"
-                            android:layout_marginTop="30dp"
-                            android:layout_marginLeft="60dp" />
+                            android:layout_marginLeft="60dp"
+                            android:layout_marginTop="32dp"
+                            android:text="200" />
 
                     </RelativeLayout>
 
@@ -161,10 +179,9 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCoupon"
                     style="@style/Widget.Material3.CardView.Elevated"
-                    android:layout_width="160dp"
+                    android:layout_width="170dp"
                     android:layout_height="65dp"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@id/splitCardView"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp">
@@ -183,23 +200,479 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mã giảm giá"
-                            android:textStyle="bold"
                             android:layout_marginLeft="60dp"
-                            android:layout_marginTop="12dp" />
+                            android:layout_marginTop="12dp"
+                            android:text="Mã giảm giá"
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvCoupon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2"
-                            android:layout_marginTop="30dp"
-                            android:layout_marginLeft="60dp" />
+                            android:layout_marginLeft="60dp"
+                            android:layout_marginTop="32dp"
+                            android:text="2" />
 
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
             </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/light_grey"
+                android:orientation="vertical"
+                android:paddingBottom="10dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/white"
+                    android:paddingBottom="15dp">
+
+                    <TextView
+                        android:id="@+id/tvMyOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Đơn hàng của tôi"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvMyOrder"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp">
+
+                        <LinearLayout
+                            android:id="@+id/layoutWaitForPay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_wallet" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Chờ thanh\n\t\t toán" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutChecking"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_checking" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Đang xử lý" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutDelivery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_devilerytruck" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Đang vận\n\tchuyển" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutWaitForFeedback"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_feedback" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Chờ đánh\n\t\t\tgiá" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutGiftBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/ivGiftBox"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_giftbox" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivGiftBox"
+                        android:text="Săn thưởng"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutFeedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/ivFeedback"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_feedback2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivFeedback"
+                        android:text="Đánh giá sản phẩm"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutProductBought"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/ivProductBought"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_box" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivProductBought"
+                        android:text="Sản phẩm đã mua"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/white"
+                    android:paddingBottom="15dp"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tvInterest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Quan tâm"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvInterest"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp">
+
+                        <LinearLayout
+                            android:id="@+id/layoutSeen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_seen" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:paddingLeft="10dp"
+                                android:text="Đã xem" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutLove"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_heart" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:paddingLeft="5dp"
+                                android:text="Yêu thích" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutDelay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_delay" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:paddingLeft="5dp"
+                                android:text="Xem sau" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutFollow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="65dp"
+                                android:layout_height="65dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_store" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="15dp"
+                                android:layout_marginTop="10dp"
+                                android:paddingLeft="5dp"
+                                android:text="Theo dõi" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutPaymentInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/ivPaymentInfo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_creditcard" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivPaymentInfo"
+                        android:text="Thông tin thanh toán"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/ivLocation"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_location" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivLocation"
+                        android:text="Sổ địa chỉ"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutGetHelp"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="10dp">
+
+                    <ImageView
+                        android:id="@+id/ivGetHelp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/ic_support" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toRightOf="@id/ivGetHelp"
+                        android:text="Hỗ trợ"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:rotation="180"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/light_green" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <!-- Next -->
 
         </LinearLayout>
 
