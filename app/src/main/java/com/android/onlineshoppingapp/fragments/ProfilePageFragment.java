@@ -14,10 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.SettingsActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -30,7 +33,8 @@ public class ProfilePageFragment extends Fragment {
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
 
-    private Button btnLogout;
+    private TextView textViewFullname;
+    private ImageView ivSettings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +42,17 @@ public class ProfilePageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
+        textViewFullname = view.findViewById(R.id.tvFullName);
+        textViewFullname.setText("Nguyễn Văn A");
+
+        ivSettings = view.findViewById(R.id.btnSettings);
+        ivSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // return view
         return view;
