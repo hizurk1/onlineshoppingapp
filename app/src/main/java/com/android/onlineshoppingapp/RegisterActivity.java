@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -21,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,7 +31,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -48,6 +56,8 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox checkBoxAgree;
     private String accountType, sex;
     private FirebaseAuth fAuth;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +92,8 @@ public class RegisterActivity extends AppCompatActivity {
         checkBoxAgree = findViewById(R.id.checkBoxAgree);
         btnRegister = findViewById(R.id.btnRegister);
         fAuth = FirebaseAuth.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance("https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        databaseReference = firebaseDatabase.getReference("Users");
 
         // Click on back button
         imageViewBack.setOnClickListener(new View.OnClickListener() {
@@ -311,7 +323,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             "/" + textViewListYear.getText().toString() +
                                             "\nLoại tài khoản: " + accountType +
                                             "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
-                            fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(),editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(), editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
@@ -321,7 +333,27 @@ public class RegisterActivity extends AppCompatActivity {
                                                         " " + editTextFirstName.getText().toString())
                                                 .build();
                                         user.updateProfile(profileUpdates);
-                                        startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+                                        try {
+                                            UserInformation userInformation = new UserInformation(editTextFirstName.getText().toString(), editTextLastName.getText().toString(), editTextUsername.getText().toString().trim(), editTextEmail.getText().toString().trim(), editTextPhone.getText().toString().trim(), sex, new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() + "/" + textViewListMonth.getText().toString() + "/" + textViewListYear.getText().toString()), accountType);
+                                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    databaseReference.child(user.getUid()).setValue(userInformation);
+                                                    Toast.makeText(RegisterActivity.this,"Successful",Toast.LENGTH_SHORT);
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Toast.makeText(RegisterActivity.this,"Failed",Toast.LENGTH_SHORT);
+
+                                                }
+                                            });
+                                        }
+                                        catch (Exception ex) {
+                                            Log.e("Error: ", ex.getMessage());
+                                        }
+
+                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
 
                                     }
                                 }
