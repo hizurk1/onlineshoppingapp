@@ -327,18 +327,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        FirebaseUser user = fAuth.getInstance().getCurrentUser();
-                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                                .setDisplayName(editTextLastName.getText().toString() +
-                                                        " " + editTextFirstName.getText().toString())
-                                                .build();
-                                        user.updateProfile(profileUpdates);
                                         try {
                                             UserInformation userInformation = new UserInformation(editTextFirstName.getText().toString(), editTextLastName.getText().toString(), editTextUsername.getText().toString().trim(), editTextEmail.getText().toString().trim(), editTextPhone.getText().toString().trim(), sex, new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() + "/" + textViewListMonth.getText().toString() + "/" + textViewListYear.getText().toString()), accountType);
                                             databaseReference.addValueEventListener(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    databaseReference.child(user.getUid()).setValue(userInformation);
+                                                    databaseReference.child(fAuth.getUid()).setValue(userInformation);
                                                     Toast.makeText(RegisterActivity.this,"Successful",Toast.LENGTH_SHORT);
                                                 }
 
@@ -352,9 +346,8 @@ public class RegisterActivity extends AppCompatActivity {
                                         catch (Exception ex) {
                                             Log.e("Error: ", ex.getMessage());
                                         }
-
                                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-
+                                        finish();
                                     }
                                 }
                             });
