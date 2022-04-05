@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfilePageFragment extends Fragment {
 
@@ -35,6 +38,8 @@ public class ProfilePageFragment extends Fragment {
 
     private TextView textViewFullname;
     private ImageView ivSettings;
+    private FirebaseAuth fAuth;
+    private FirebaseUser user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,8 +47,11 @@ public class ProfilePageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
+        fAuth = FirebaseAuth.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         textViewFullname = view.findViewById(R.id.tvFullName);
-        textViewFullname.setText("Nguyễn Văn A");
+        textViewFullname.setText(user.getDisplayName());
+
 
         ivSettings = view.findViewById(R.id.btnSettings);
         ivSettings.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +87,7 @@ public class ProfilePageFragment extends Fragment {
         gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
+                fAuth.signOut();
                 startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         });

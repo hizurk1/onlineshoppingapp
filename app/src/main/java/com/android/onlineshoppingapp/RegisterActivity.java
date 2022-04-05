@@ -1,5 +1,6 @@
 package com.android.onlineshoppingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -20,8 +21,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private RadioButton radioButtonPurchase, radioButtonSell, radioButtonMale, radioButtonFemale, radioButtonOther;
     private CheckBox checkBoxAgree;
     private String accountType, sex;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
         radioButtonSell = findViewById(R.id.radioBtnSell);
         checkBoxAgree = findViewById(R.id.checkBoxAgree);
         btnRegister = findViewById(R.id.btnRegister);
+        fAuth = FirebaseAuth.getInstance();
 
         // Click on back button
         imageViewBack.setOnClickListener(new View.OnClickListener() {
@@ -302,6 +311,21 @@ public class RegisterActivity extends AppCompatActivity {
                                             "/" + textViewListYear.getText().toString() +
                                             "\nLoại tài khoản: " + accountType +
                                             "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
+                            fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(),editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseUser user = fAuth.getInstance().getCurrentUser();
+                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                .setDisplayName(editTextLastName.getText().toString() +
+                                                        " " + editTextFirstName.getText().toString())
+                                                .build();
+                                        user.updateProfile(profileUpdates);
+                                        startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+
+                                    }
+                                }
+                            });
                         } else {
                             Toast.makeText(RegisterActivity.this,
                                     "Bạn phải đồng ý với các Điều khoản dịch vụ \n\t\t\t\t\t\t\t\tvà Chính sách bảo mật!",

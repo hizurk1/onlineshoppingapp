@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -17,7 +18,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
     private static final int RC_SIGN_IN = 9001;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         editTextUsername = findViewById(R.id.etUsername);
         editTextPassword = findViewById(R.id.etPassword);
+        fAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(view -> {
 
@@ -50,19 +56,28 @@ public class LoginActivity extends AppCompatActivity {
                         "Tên đăng nhập và mật khẩu\n\t\t không được để trống!",
                         Toast.LENGTH_SHORT).show();
             } else {
-
+                fAuth.signInWithEmailAndPassword(editTextUsername.getText().toString(), editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT);
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
                 // Notice: for testing purpose
-                if (editTextUsername.getText().toString().equals("admin")
-                        && editTextPassword.getText().toString().equals("admin")) {
-
-                    // Access to main activity
-                    finish();
-                    Intent directToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(directToMainActivity);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
-                            Toast.LENGTH_SHORT).show();
-                }
+//                if (editTextUsername.getText().toString().equals("admin")
+//                        && editTextPassword.getText().toString().equals("admin")) {
+//
+//                    // Access to main activity
+//                    finish();
+//                    Intent directToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(directToMainActivity);
+//                }
 
             }
         });
