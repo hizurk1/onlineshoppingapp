@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.etPassword);
         fAuth = FirebaseAuth.getInstance();
 
-
         btnLogin.setOnClickListener(view -> {
 
             if (checkNullInputData()) {
@@ -59,7 +58,8 @@ public class LoginActivity extends AppCompatActivity {
                         "Tên đăng nhập và mật khẩu\n\t\t không được để trống!",
                         Toast.LENGTH_SHORT).show();
             } else {
-                fAuth.signInWithEmailAndPassword(editTextUsername.getText().toString(), editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                fAuth.signInWithEmailAndPassword(editTextUsername.getText().toString().trim(),
+                        editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
@@ -73,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 // Notice: for testing purpose
-//                if (editTextUsername.getText().toString().equals("admin")
-//                        && editTextPassword.getText().toString().equals("admin")) {
+//                if (editTextUsername.getText().toString().trim().equals("admin")
+//                        && editTextPassword.getText().toString().trim().equals("admin")) {
 //
 //                    // Access to main activity
 //                    finish();
