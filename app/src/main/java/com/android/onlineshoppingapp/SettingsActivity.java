@@ -8,15 +8,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private ImageView ivBack;
     private Button btnLogout;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        fAuth = FirebaseAuth.getInstance();
 
         // click on back button
         ivBack = findViewById(R.id.ivBackToProfile);
@@ -35,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
                 //log out
 
                 // navigate to login activity
+                fAuth.signOut();
                 finishAffinity();
                 startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
             }
