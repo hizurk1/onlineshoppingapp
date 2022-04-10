@@ -1,5 +1,7 @@
 package com.android.onlineshoppingapp.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
+import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,6 +36,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfilePageFragment extends Fragment {
 
@@ -44,7 +49,8 @@ public class ProfilePageFragment extends Fragment {
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+    private FirebaseFirestore db;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,22 +59,30 @@ public class ProfilePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile_page, container, false);
 
         fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance("https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        databaseReference = firebaseDatabase.getReference("Users");
-        databaseReference.child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+        textViewFullname = view.findViewById(R.id.tvFullName);
+        textViewFullname.setText("");
+
+        db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
-                    Log.e("firebase", "Error getting data", task.getException());
-                }
-                else {
-                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
+                        UserInformation userInformation = documentSnapshot.toObject(UserInformation.class);
+                        textViewFullname.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
-        textViewFullname = view.findViewById(R.id.tvFullName);
-
 
 
         ivSettings = view.findViewById(R.id.btnSettings);

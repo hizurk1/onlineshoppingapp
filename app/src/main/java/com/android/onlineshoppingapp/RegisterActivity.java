@@ -1,5 +1,7 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +26,8 @@ import android.widget.Toast;
 
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -36,10 +40,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -56,8 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox checkBoxAgree;
     private String accountType, sex;
     private FirebaseAuth fAuth;
-    private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference databaseReference;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
         checkBoxAgree = findViewById(R.id.checkBoxAgree);
         btnRegister = findViewById(R.id.btnRegister);
         fAuth = FirebaseAuth.getInstance();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        databaseReference = firebaseDatabase.getReference("Users");
+        db = FirebaseFirestore.getInstance();
 
         // Click on back button
         imageViewBack.setOnClickListener(new View.OnClickListener() {
@@ -329,17 +333,15 @@ public class RegisterActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         try {
                                             UserInformation userInformation = new UserInformation(editTextFirstName.getText().toString(), editTextLastName.getText().toString(), editTextUsername.getText().toString().trim(), editTextEmail.getText().toString().trim(), editTextPhone.getText().toString().trim(), sex, new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() + "/" + textViewListMonth.getText().toString() + "/" + textViewListYear.getText().toString()), accountType);
-                                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                            db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid()).set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    databaseReference.child(fAuth.getUid()).setValue(userInformation);
-                                                    Toast.makeText(RegisterActivity.this,"Successful",Toast.LENGTH_SHORT);
+                                                public void onSuccess(Void unused) {
+                                                    Log.d(TAG, "DocumentSnapshot successfully written!");
                                                 }
-
+                                            }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    Toast.makeText(RegisterActivity.this,"Failed",Toast.LENGTH_SHORT);
-
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Error writing document", e);
                                                 }
                                             });
                                         }
