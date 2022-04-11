@@ -326,7 +326,7 @@ public class RegisterActivity extends AppCompatActivity {
 //                                            "/" + textViewListMonth.getText().toString() +
 //                                            "/" + textViewListYear.getText().toString() +
 //                                            "\nLoại tài khoản: " + accountType + "\n" +
-                                    "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                                    "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
 
                             fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(),
                                     editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

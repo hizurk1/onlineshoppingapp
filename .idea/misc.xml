@@ -19,7 +19,6 @@
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_main.xml" value="0.33177083333333335" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_register.xml" value="0.33" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_settings.xml" value="0.2563405797101449" />
-        <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_user_information.xml" value="0.28125" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/fragment_category_page.xml" value="0.296195652173913" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/fragment_change_password.xml" value="0.296195652173913" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/fragment_enter_code.xml" value="0.296195652173913" />
@@ -27,6 +26,7 @@
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/fragment_profile_page.xml" value="0.33" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.33177083333333335" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/menu/top_profile_menu.xml" value="0.33177083333333335" />
+        <entry key="..\:/SourceCode/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_register.xml" value="0.2975630611372381" />
       </map>
     </option>
   </component>

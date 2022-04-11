@@ -42,8 +42,8 @@
                 android:drawableLeft="@drawable/ic_person"
                 android:drawablePadding="10dp"
                 android:fontFamily="@font/neosansintel"
-                android:hint="@string/txt_email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/txt_username"
+                android:inputType="text"
                 android:padding="15dp"></EditText>
 
             <EditText
