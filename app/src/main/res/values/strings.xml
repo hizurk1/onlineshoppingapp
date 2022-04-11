@@ -3,7 +3,6 @@
 
     <!-- LOGIN -->
     <string name="txt_login">Đăng nhập</string>
-    <string name="txt_username">Tên đăng nhập</string>
     <string name="txt_lastname">Họ</string>
     <string name="txt_firstname">Tên</string>
     <string name="txt_password">Mật khẩu</string>

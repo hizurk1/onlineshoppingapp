@@ -33,7 +33,7 @@
                 app:layout_collapseMode="pin"
                 android:layout_toRightOf="@id/ivBackToProfile"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="Thiết lập tài khoản" />
+                app:title="Cài đặt" />
 
         </RelativeLayout>
 
@@ -124,13 +124,14 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layoutLanguage"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:background="@color/white"
             android:layout_marginTop="2dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Ngôn ngữ"
                 android:textColor="@color/black"
@@ -139,6 +140,7 @@
                 android:layout_marginLeft="20dp" />
 
             <TextView
+                android:id="@+id/txtLanguage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tiếng Việt"
@@ -151,6 +153,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layoutPolicy"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/white"
