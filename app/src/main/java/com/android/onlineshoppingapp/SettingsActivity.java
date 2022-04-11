@@ -37,9 +37,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //log out
-
-                // navigate to login activity
                 fAuth.signOut();
+                // navigate to login activity
                 finishAffinity();
                 startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
             }

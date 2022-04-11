@@ -65,7 +65,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="900dp"> <!--Change height of page here-->
+                    android:layout_height="wrap_content"> <!--Change height of page here-->
 
                     <RelativeLayout
                         android:id="@+id/layoutName"
@@ -91,7 +91,7 @@
                                 android:id="@+id/editTxtLastname"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:inputType="text"
+                                android:inputType="textCapWords"
                                 android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -118,43 +118,19 @@
                                 android:id="@+id/editTxtFirstname"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:inputType="text"
+                                android:inputType="textCapWords"
                                 android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
 
                         </com.google.android.material.textfield.TextInputLayout>
 
-
                     </RelativeLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtFieldUsername"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/layoutName"
-                        android:layout_marginHorizontal="40dp"
-                        android:layout_marginTop="10dp"
-                        android:hint="@string/txt_username"
-                        app:helperTextEnabled="true"
-                        app:helperTextTextColor="@color/red_error"
-                        app:startIconDrawable="@drawable/ic_person">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/editTxtUsername"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:inputType="text"
-                            android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
-
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/txtFieldEmail"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtFieldUsername"
+                        android:layout_below="@+id/layoutName"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/txt_email"
@@ -459,7 +435,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvOtherMethod"
                         android:layout_marginHorizontal="60dp"
-                        android:layout_marginTop="20dp">
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="30dp">
 
                         <ImageView
                             android:id="@+id/ivGoogle"

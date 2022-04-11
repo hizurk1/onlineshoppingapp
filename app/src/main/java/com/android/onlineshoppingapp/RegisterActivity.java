@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -52,9 +54,9 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView imageViewBack;
     private AutoCompleteTextView textViewListDay, textViewListMonth, textViewListYear;
     private ArrayList<Integer> arrayListDay, arrayListMonth, arrayListYear;
-    private TextInputEditText editTextFirstName, editTextLastName, editTextUsername;
+    private TextInputEditText editTextFirstName, editTextLastName;
     private TextInputEditText editTextPassword, editTextRePassword, editTextPhone, editTextEmail;
-    private TextInputLayout txtLayoutFirstName, txtLayoutLastName, txtLayoutUsername;
+    private TextInputLayout txtLayoutFirstName, txtLayoutLastName;
     private TextInputLayout txtLayoutPassword, txtLayoutRePassword, txtLayoutPhone, txtLayoutEmail;
     private Button btnRegister;
     private RadioGroup radioGroupAccountType, radioGroupSex;
@@ -74,8 +76,6 @@ public class RegisterActivity extends AppCompatActivity {
         txtLayoutFirstName = findViewById(R.id.txtFieldFirstname);
         editTextLastName = findViewById(R.id.editTxtLastname);
         txtLayoutLastName = findViewById(R.id.txtFieldLastname);
-        editTextUsername = findViewById(R.id.editTxtUsername);
-        txtLayoutUsername = findViewById(R.id.txtFieldUsername);
         editTextEmail = findViewById(R.id.editTxtEmail);
         txtLayoutEmail = findViewById(R.id.txtFieldEmail);
         editTextPassword = findViewById(R.id.editTxtPassword);
@@ -137,22 +137,6 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 } else {
                     txtLayoutLastName.setHelperTextEnabled(false);
-                }
-            }
-        });
-
-        // Check null input data: username
-        editTextUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (!onFocus) {
-                    if (editTextUsername.getText().toString().trim().equals("")) {
-                        txtLayoutUsername.setHelperText("Tên đăng nhập không được để trống!");
-                    } else if (!includeCharInAlphabet(editTextUsername.getText().toString().trim())) {
-                        txtLayoutUsername.setHelperText("Tên đăng nhập phải chứa ít nhất 1 ký tự chữ");
-                    }
-                } else {
-                    txtLayoutUsername.setHelperTextEnabled(false);
                 }
             }
         });
@@ -254,6 +238,12 @@ public class RegisterActivity extends AppCompatActivity {
                 arrayListDay
         );
         textViewListDay.setAdapter(listDayAdapter);
+        textViewListDay.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
 
         // List of Month
         arrayListMonth = new ArrayList<Integer>();
@@ -266,6 +256,12 @@ public class RegisterActivity extends AppCompatActivity {
                 arrayListMonth
         );
         textViewListMonth.setAdapter(listMonthAdapter);
+        textViewListMonth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
 
         // List of Year
         arrayListYear = new ArrayList<>();
@@ -279,6 +275,12 @@ public class RegisterActivity extends AppCompatActivity {
                 arrayListYear
         );
         textViewListYear.setAdapter(listYearAdapter);
+        textViewListYear.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
 
         // Choose type of account
         accountType = radioButtonPurchase.getText().toString();
@@ -304,35 +306,40 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // validate date of birth
                 if (validateDateOfBirth()) {
-                    if (editTextFirstName.getText().toString().trim().equals("") ||
-                            editTextLastName.getText().toString().trim().equals("") ||
-                            editTextUsername.getText().toString().trim().equals("") ||
-                            editTextEmail.getText().toString().trim().equals("") ||
-                            editTextPhone.getText().toString().trim().equals("") ||
+                    if (editTextFirstName.getText().toString().equals("") ||
+                            editTextLastName.getText().toString().equals("") ||
+                            editTextEmail.getText().toString().equals("") ||
+                            editTextPhone.getText().toString().equals("") ||
                             editTextPassword.getText().toString().equals("")) {
                         Toast.makeText(RegisterActivity.this, "Bạn chưa điền đầy đủ thông tin!",
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         if (checkBoxAgree.isChecked()) {
                             Toast.makeText(RegisterActivity.this,
-                                    "Họ và tên: " + editTextLastName.getText().toString().trim() +
-                                            " " + editTextFirstName.getText().toString().trim() +
-                                            "\nUsername: " + editTextUsername.getText().toString().trim() +
-                                            "\nEmail: " + editTextEmail.getText().toString().trim() +
-                                            "\nPassword: " + editTextPassword.getText().toString() +
-                                            "\nPhone: " + editTextPhone.getText().toString().trim() +
-                                            "\nGiới tính: " + sex +
-                                            "\nSN: " + textViewListDay.getText().toString() +
-                                            "/" + textViewListMonth.getText().toString() +
-                                            "/" + textViewListYear.getText().toString() +
-                                            "\nLoại tài khoản: " + accountType +
-                                            "\nĐăng ký thành công!", Toast.LENGTH_SHORT).show();
-                            fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(), editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                                    "Họ và tên: " + editTextLastName.getText().toString().trim() +
+//                                            " " + editTextFirstName.getText().toString().trim() +
+//                                            "\nEmail: " + editTextEmail.getText().toString().trim() +
+//                                            "\nPassword: " + editTextPassword.getText().toString() +
+//                                            "\nPhone: " + editTextPhone.getText().toString().trim() +
+//                                            "\nGiới tính: " + sex +
+//                                            "\nSN: " + textViewListDay.getText().toString() +
+//                                            "/" + textViewListMonth.getText().toString() +
+//                                            "/" + textViewListYear.getText().toString() +
+//                                            "\nLoại tài khoản: " + accountType + "\n" +
+                                    "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+
+                            fAuth.createUserWithEmailAndPassword(editTextEmail.getText().toString().trim(),
+                                    editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         try {
-                                            UserInformation userInformation = new UserInformation(editTextFirstName.getText().toString(), editTextLastName.getText().toString(), editTextUsername.getText().toString().trim(), editTextEmail.getText().toString().trim(), editTextPhone.getText().toString().trim(), sex, new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() + "/" + textViewListMonth.getText().toString() + "/" + textViewListYear.getText().toString()), accountType);
+                                            UserInformation userInformation = new UserInformation(editTextFirstName.getText().toString(),
+                                                    editTextLastName.getText().toString(), editTextEmail.getText().toString().trim(),
+                                                    editTextPhone.getText().toString().trim(), sex,
+                                                    new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() +
+                                                            "/" + textViewListMonth.getText().toString() +
+                                                            "/" + textViewListYear.getText().toString()), accountType);
                                             db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid()).set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
@@ -367,6 +374,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     // ----------------------- Function ------------------------
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     private boolean includeCharInAlphabet(String str) {
         char[] alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray();

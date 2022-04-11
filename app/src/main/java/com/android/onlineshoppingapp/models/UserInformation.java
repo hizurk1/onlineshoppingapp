@@ -8,17 +8,15 @@ import java.util.Date;
 public class UserInformation implements Parcelable {
     private String firstName;
     private String lastName;
-    private String userName;
     private String email;
     private String Phone;
     private String sex;
     private Date dateOfBirth;
     private String accountType;
 
-    public UserInformation(String firstName, String lastName, String userName, String email, String phone, String sex, Date dateOfBirth, String accountType) {
+    public UserInformation(String firstName, String lastName, String email, String phone, String sex, Date dateOfBirth, String accountType) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
         this.email = email;
         Phone = phone;
         this.sex = sex;
@@ -32,7 +30,6 @@ public class UserInformation implements Parcelable {
     protected UserInformation(Parcel in) {
         firstName = in.readString();
         lastName = in.readString();
-        userName = in.readString();
         email = in.readString();
         Phone = in.readString();
         sex = in.readString();
@@ -65,14 +62,6 @@ public class UserInformation implements Parcelable {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getEmail() {
@@ -124,7 +113,6 @@ public class UserInformation implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(firstName);
         parcel.writeString(lastName);
-        parcel.writeString(userName);
         parcel.writeString(email);
         parcel.writeString(Phone);
         parcel.writeString(sex);
