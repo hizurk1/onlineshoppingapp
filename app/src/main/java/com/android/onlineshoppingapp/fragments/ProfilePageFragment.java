@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -43,14 +44,14 @@ public class ProfilePageFragment extends Fragment {
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
-
-    private TextView textViewFullname;
-    private ImageView ivSettings;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseFirestore db;
 
+    private TextView textViewFullname, tvUserRanking;
+    private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
+    private CardView cardCoin, cardCoupon, cardSeen, cardLove, cardFollow, cardGift, cardPurchasedProduct, cardSupport;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,9 +64,45 @@ public class ProfilePageFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance("https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
+        // init
         textViewFullname = view.findViewById(R.id.tvFullName);
-        textViewFullname.setText("");
+        ivSettings = view.findViewById(R.id.ivSettings);
+        ivShoppingCart = view.findViewById(R.id.ivShoppingCart);
+        ivAvatar = view.findViewById(R.id.ivAvatar);
+        tvUserRanking = view.findViewById(R.id.tvUserRanking);
+        cardCoin = view.findViewById(R.id.cardCoin);
+        cardCoupon = view.findViewById(R.id.cardCoupon);
+        ivWallet = view.findViewById(R.id.ivWallet);
+        ivChecking = view.findViewById(R.id.ivChecking);
+        ivDelivery = view.findViewById(R.id.ivDelivery);
+        ivFeedback = view.findViewById(R.id.ivFeedback);
+        cardSeen = view.findViewById(R.id.cardSeen);
+        cardLove = view.findViewById(R.id.cardLove);
+        cardFollow = view.findViewById(R.id.cardFollow);
+        cardGift = view.findViewById(R.id.cardGift);
+        cardPurchasedProduct = view.findViewById(R.id.cardPurchasedProduct);
+        cardSupport = view.findViewById(R.id.cardSupport);
 
+        // click on settings button
+        ivSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // click on shopping cart
+        ivShoppingCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+        // change name
+        textViewFullname.setText("");
         db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -84,17 +121,103 @@ public class ProfilePageFragment extends Fragment {
             }
         });
 
-
-        ivSettings = view.findViewById(R.id.btnSettings);
-        ivSettings.setOnClickListener(new View.OnClickListener() {
+        // click on card coin
+        cardCoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
+
             }
         });
 
-        // return view
+        // click on card coupon
+        cardCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on wallet
+        ivWallet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on checking
+        ivChecking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on delivery
+        ivDelivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on feedback
+        ivFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card seen
+        cardSeen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card love
+        cardLove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card follow
+        cardFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card gift
+        cardGift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card purchased product
+        cardPurchasedProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        // click on card support
+        cardSupport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
         return view;
     }
 

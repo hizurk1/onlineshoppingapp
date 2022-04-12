@@ -9,7 +9,8 @@
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#fbfdff">
 
         <!-- Paste code below -->
 
@@ -24,95 +25,41 @@
                 android:background="@color/light_green">
 
                 <ImageView
-                    android:id="@+id/btnSettings"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_toLeftOf="@+id/btnShoppingCart"
-                    android:src="@drawable/settings" />
-
-                <ImageView
-                    android:id="@+id/btnShoppingCart"
+                    android:id="@+id/ivShoppingCart"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="20dp"
                     android:src="@drawable/shoppingcart" />
 
-                <TextView
-                    android:id="@+id/tvFullName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/btnSettings"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="20dp"
-                    android:text="User name"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
                 <ImageView
-                    android:id="@+id/ivRename"
+                    android:id="@+id/ivSettings"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_below="@+id/btnSettings"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="25dp"
-                    android:layout_toRightOf="@+id/tvFullName"
-                    android:src="@drawable/ic_rename" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="26dp"
-                    android:layout_below="@+id/tvFullName"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
-                    app:cardCornerRadius="20dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="2dp"
-                            android:src="@drawable/ic_star_circle" />
-
-                        <TextView
-                            android:id="@+id/tvRanking"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="15dp"
-                            android:text="Thành viên vàng" />
-
-                    </RelativeLayout>
-
-
-                </androidx.cardview.widget.CardView>
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/ivShoppingCart"
+                    android:src="@drawable/settings" />
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/layoutAvatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_below="@+id/btnSettings"
-                    android:layout_alignParentRight="true"
-                    android:layout_margin="20dp"
+                    android:layout_below="@+id/ivSettings"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="250dp">
 
                     <androidx.cardview.widget.CardView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
                         android:layout_gravity="center"
                         app:cardCornerRadius="250dp">
 
                         <ImageView
+                            android:id="@+id/ivAvatar"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scaleType="centerCrop"
@@ -122,96 +69,452 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <TextView
+                    android:id="@+id/tvFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layoutAvatar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="Full Name"
+                    android:textColor="@color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvUserRanking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvFullName"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Thành viên vàng"
+                    android:textColor="@color/white" />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
-                android:background="@drawable/ic_bgcircleprofile">
+                android:layout_height="120dp"
+                android:background="@drawable/bgprofiletop">
 
                 <View
-                    android:id="@+id/splitCardView"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_centerInParent="true" />
+                    android:id="@+id/split_card_profile"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_marginVertical="35dp"
+                    android:background="@color/white"
+                    android:translationZ="4dp" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewCoin"
-                    style="@style/Widget.Material3.CardView.Elevated"
-                    android:layout_width="170dp"
-                    android:layout_height="65dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_toLeftOf="@id/splitCardView"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp">
+                    android:id="@+id/cardCoin"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="-10dp"
+                    android:layout_toLeftOf="@id/split_card_profile"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_margin="10dp"
-                            android:src="@drawable/dollar" />
+                            android:layout_marginLeft="25dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="60dp"
-                            android:layout_marginTop="12dp"
-                            android:text="Shop Xu"
-                            android:textStyle="bold" />
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_outline_credit_card"
+                                app:tint="@color/light_green" />
 
-                        <TextView
-                            android:id="@+id/tvShopCoin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="60dp"
-                            android:layout_marginTop="32dp"
-                            android:text="200" />
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvCash"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="000,000"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="VND" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewCoupon"
-                    style="@style/Widget.Material3.CardView.Elevated"
-                    android:layout_width="170dp"
-                    android:layout_height="65dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@id/splitCardView"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp">
+                    android:id="@+id/cardCoupon"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/split_card_profile"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_margin="10dp"
-                            android:src="@drawable/coupon" />
+                            android:layout_marginLeft="25dp">
 
-                        <TextView
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_outline_discount"
+                                app:tint="@color/light_green" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvCoupon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="0"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Mã giảm giá" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="25dp"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="20dp"
+                                android:text="Thông tin đơn hàng"
+                                android:textColor="@color/black"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="15dp"
+                                android:layout_marginRight="20dp"
+                                android:src="@drawable/ic_outline_assignment"
+                                app:tint="@color/normal_grey" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="15dp"
+                            android:background="@color/light_grey" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivWallet"
+                                        android:layout_width="50dp"
+                                        android:layout_height="50dp"
+                                        android:layout_marginLeft="15dp"
+                                        android:clickable="true"
+                                        android:foreground="?android:attr/selectableItemBackground"
+                                        android:src="@drawable/ic_wallet" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:text="Chờ thanh toán"
+                                        android:textAlignment="center" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivChecking"
+                                        android:layout_width="50dp"
+                                        android:layout_height="50dp"
+                                        android:layout_marginLeft="15dp"
+                                        android:clickable="true"
+                                        android:foreground="?android:attr/selectableItemBackground"
+                                        android:src="@drawable/ic_checking" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:text="Tiếp nhận đơn hàng"
+                                        android:textAlignment="center" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivDelivery"
+                                        android:layout_width="50dp"
+                                        android:layout_height="50dp"
+                                        android:layout_marginLeft="15dp"
+                                        android:clickable="true"
+                                        android:foreground="?android:attr/selectableItemBackground"
+                                        android:src="@drawable/ic_devilerytruck" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:text="Đang vận chuyển"
+                                        android:textAlignment="center" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="80dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivFeedback"
+                                        android:layout_width="50dp"
+                                        android:layout_height="50dp"
+                                        android:layout_marginLeft="15dp"
+                                        android:clickable="true"
+                                        android:foreground="?android:attr/selectableItemBackground"
+                                        android:src="@drawable/ic_feedback" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:text="Chờ đánh giá"
+                                        android:textAlignment="center" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardSeen"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="60dp"
-                            android:layout_marginTop="12dp"
-                            android:text="Mã giảm giá"
-                            android:textStyle="bold" />
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/tvCoupon"
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_seen" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Đã xem"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardLove"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="60dp"
-                            android:layout_marginTop="32dp"
-                            android:text="2" />
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_heart" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Yêu thích"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFollow"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="20dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginHorizontal="15dp"
+                                android:src="@drawable/ic_store" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="12dp"
+                                android:layout_marginTop="10dp"
+                                android:text="Theo dõi"
+                                android:textAlignment="center" />
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
@@ -222,457 +525,145 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/light_grey"
-                android:orientation="vertical"
-                android:paddingBottom="10dp">
+                android:orientation="vertical">
 
-                <RelativeLayout
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardGift"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/white"
-                    android:paddingBottom="15dp">
-
-                    <TextView
-                        android:id="@+id/tvMyOrder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Đơn hàng của tôi"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvMyOrder"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp">
-
-                        <LinearLayout
-                            android:id="@+id/layoutWaitForPay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_wallet" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Chờ thanh\n\t\t toán" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutChecking"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_checking" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Đang xử lý" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutDelivery"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_devilerytruck" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Đang vận\n\tchuyển" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutWaitForFeedback"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_feedback" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Chờ đánh\n\t\t\tgiá" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutGiftBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="@color/white">
-
-                    <ImageView
-                        android:id="@+id/ivGiftBox"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_giftbox" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivGiftBox"
-                        android:text="Săn thưởng"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutFeedback"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="10dp"
-                    android:background="@color/white">
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
 
-                    <ImageView
-                        android:id="@+id/ivFeedback"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_feedback2" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivFeedback"
-                        android:text="Đánh giá sản phẩm"
-                        android:textSize="18sp" />
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_giftbox" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="70dp"
+                            android:text="Săn thưởng"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                </RelativeLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="15dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/light_green" />
 
-                <RelativeLayout
-                    android:id="@+id/layoutProductBought"
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardPurchasedProduct"
                     android:layout_width="match_parent"
-                    android:layout_height="46dp"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="10dp"
-                    android:background="@color/white">
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
 
-                    <ImageView
-                        android:id="@+id/ivProductBought"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_box" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivProductBought"
-                        android:text="Sản phẩm đã mua"
-                        android:textSize="18sp" />
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_box" />
 
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/white"
-                    android:paddingBottom="15dp"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:id="@+id/tvInterest"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:text="Quan tâm"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvInterest"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp">
-
-                        <LinearLayout
-                            android:id="@+id/layoutSeen"
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="70dp"
+                            android:text="Sản phẩm đã mua"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_seen" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="15dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/light_green" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:paddingLeft="10dp"
-                                android:text="Đã xem" />
+                    </RelativeLayout>
 
-                        </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-                        <LinearLayout
-                            android:id="@+id/layoutLove"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardSupport"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="25dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/ic_support" />
+
+                        <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="70dp"
+                            android:text="Hỗ trợ khách hàng"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_heart" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="15dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/light_green" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:paddingLeft="5dp"
-                                android:text="Yêu thích" />
+                    </RelativeLayout>
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutDelay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_delay" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:paddingLeft="5dp"
-                                android:text="Xem sau" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/layoutFollow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="65dp"
-                                android:layout_height="65dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_store" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginHorizontal="15dp"
-                                android:layout_marginTop="10dp"
-                                android:paddingLeft="5dp"
-                                android:text="Theo dõi" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutPaymentInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="@color/white">
-
-                    <ImageView
-                        android:id="@+id/ivPaymentInfo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_creditcard" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivPaymentInfo"
-                        android:text="Thông tin thanh toán"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="@color/white"
-                    android:layout_marginTop="10dp">
-
-                    <ImageView
-                        android:id="@+id/ivLocation"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_location" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivLocation"
-                        android:text="Sổ địa chỉ"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutGetHelp"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:background="@color/white"
-                    android:layout_marginTop="10dp">
-
-                    <ImageView
-                        android:id="@+id/ivGetHelp"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/ic_support" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="15dp"
-                        android:layout_toRightOf="@id/ivGetHelp"
-                        android:text="Hỗ trợ"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:rotation="180"
-                        android:src="@drawable/ic_back"
-                        app:tint="@color/light_green" />
-
-                </RelativeLayout>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-
-
-            <!-- Next -->
 
         </LinearLayout>
 
