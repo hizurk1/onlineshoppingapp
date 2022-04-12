@@ -92,7 +92,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:inputType="textCapWords"
-                                android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+                                android:maxLength="20" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,7 +119,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:inputType="textCapWords"
-                                android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+                                android:maxLength="20" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,7 +144,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textEmailAddress"
-                            android:maxLength="40"></com.google.android.material.textfield.TextInputEditText>
+                            android:maxLength="40" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -167,7 +167,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textPassword"
-                            android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+                            android:maxLength="20" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -191,7 +191,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="textPassword"
-                            android:maxLength="20"></com.google.android.material.textfield.TextInputEditText>
+                            android:maxLength="20" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -213,7 +213,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:inputType="phone"
-                            android:maxLength="12"></com.google.android.material.textfield.TextInputEditText>
+                            android:maxLength="12" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -231,7 +231,7 @@
                             android:paddingVertical="18dp"
                             android:paddingRight="20dp"
                             android:text="Giới tính:"
-                            android:textSize="16sp"></TextView>
+                            android:textSize="16sp" />
 
                         <RadioGroup
                             android:id="@+id/radioGroupSex"
@@ -247,20 +247,20 @@
                                 android:layout_height="wrap_content"
                                 android:checked="true"
                                 android:paddingRight="20dp"
-                                android:text="Nam"></RadioButton>
+                                android:text="Nam" />
 
                             <RadioButton
                                 android:id="@+id/radioBtnFemale"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingRight="20dp"
-                                android:text="Nữ"></RadioButton>
+                                android:text="Nữ" />
 
                             <RadioButton
                                 android:id="@+id/radioBtnOther"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Khác"></RadioButton>
+                                android:text="Khác" />
 
                         </RadioGroup>
 
@@ -284,7 +284,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:inputType="none"
-                            android:text="01"></AutoCompleteTextView>
+                            android:text="01" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -305,7 +305,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:inputType="none"
-                            android:text="01"></AutoCompleteTextView>
+                            android:text="01" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -326,7 +326,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:inputType="none"
-                            android:text="2000"></AutoCompleteTextView>
+                            android:text="2000" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -345,7 +345,7 @@
                             android:paddingTop="13dp"
                             android:paddingRight="3dp"
                             android:text="Loại tài khoản: "
-                            android:textSize="16sp"></TextView>
+                            android:textSize="16sp" />
 
                         <RadioGroup
                             android:id="@+id/rgAccType"
@@ -362,7 +362,7 @@
                                 android:layout_gravity="left"
                                 android:checked="true"
                                 android:paddingRight="12dp"
-                                android:text="@string/txt_purchase"></RadioButton>
+                                android:text="@string/txt_purchase" />
 
                             <RadioButton
                                 android:id="@+id/radioBtnSell"
@@ -370,7 +370,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
-                                android:text="@string/txt_sell"></RadioButton>
+                                android:text="@string/txt_sell" />
 
                         </RadioGroup>
 
@@ -385,7 +385,7 @@
                         android:layout_marginVertical="5dp"
                         android:checked="false"
                         android:paddingLeft="5dp"
-                        android:text="Tôi đồng ý với các Điều khoản dịch vụ và Chính sách bảo mật"></CheckBox>
+                        android:text="Tôi đồng ý với các Điều khoản dịch vụ và Chính sách bảo mật" />
 
                     <Button
                         android:id="@+id/btnRegister"
@@ -398,7 +398,7 @@
                         android:layout_marginTop="10dp"
                         android:enabled="true"
                         android:text="TẠO TÀI KHOẢN"
-                        android:textSize="16sp"></Button>
+                        android:textSize="16sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -408,7 +408,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_marginRight="8dp"
                         android:layout_toLeftOf="@+id/tvOtherMethod"
-                        android:background="#D0DCD7"></View>
+                        android:background="#D0DCD7" />
 
                     <View
                         android:layout_width="match_parent"
@@ -418,7 +418,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_marginRight="70dp"
                         android:layout_toRightOf="@+id/tvOtherMethod"
-                        android:background="#D0DCD7"></View>
+                        android:background="#D0DCD7" />
 
 
                     <TextView
@@ -428,7 +428,7 @@
                         android:layout_below="@+id/btnRegister"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="20sp"
-                        android:text="hoặc"></TextView>
+                        android:text="hoặc" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -445,7 +445,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_marginLeft="60dp"
                             android:elevation="5dp"
-                            android:src="@drawable/google"></ImageView>
+                            android:src="@drawable/google" />
 
                         <ImageView
                             android:id="@+id/ivFacebook"
@@ -453,7 +453,7 @@
                             android:layout_height="50dp"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="60dp"
-                            android:src="@drawable/facebook"></ImageView>
+                            android:src="@drawable/facebook" />
 
                     </RelativeLayout>
 

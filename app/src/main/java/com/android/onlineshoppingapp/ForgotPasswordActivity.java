@@ -46,8 +46,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // navigate to login activity
-                finish();
-                startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
+                onBackPressed();
             }
         });
 
@@ -98,6 +97,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     // ------------------ Function -----------------
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     private void sendCodeByEmail(String receiverEmail, String verificationCode) {
 

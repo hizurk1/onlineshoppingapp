@@ -25,22 +25,22 @@
                 android:background="@color/light_green">
 
                 <ImageView
-                    android:id="@+id/ivShoppingCart"
+                    android:id="@+id/ivSettings"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/shoppingcart" />
+                    android:src="@drawable/settings" />
 
                 <ImageView
-                    android:id="@+id/ivSettings"
+                    android:id="@+id/ivShoppingCart"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_toLeftOf="@id/ivShoppingCart"
-                    android:src="@drawable/settings" />
+                    android:layout_marginRight="25dp"
+                    android:layout_toLeftOf="@id/ivSettings"
+                    android:src="@drawable/shoppingcart" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/layoutAvatar"
