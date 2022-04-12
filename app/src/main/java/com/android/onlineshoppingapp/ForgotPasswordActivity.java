@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.fragments.EnterCodeFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Properties;
 import java.util.Random;
@@ -34,11 +35,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private TextInputLayout textInputLayoutEmail;
     private TextInputEditText textInputEditTextEmail;
     private Button btnSendCode;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+        fAuth = FirebaseAuth.getInstance();
 
         // click on close button
         imageViewCLose = findViewById(R.id.imageViewClose);
@@ -85,6 +88,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     // send code to user email
                     sendCodeByEmail(textInputEditTextEmail.getText().toString(), verificationCode);
                     System.out.println("VERIFICATION CODE: " + verificationCode);
+                    fAuth.sendPasswordResetEmail(textInputEditTextEmail.getText().toString());
 
                     // send to fragment
                     enterCodeFragment.setArguments(data);

@@ -9,9 +9,7 @@
         <entry key="..\:/DocumentsUIT/Android/Project/OnlineShoppingApp/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/DocumentsUIT/Android/Project/OnlineShoppingApp/app/src/main/res/layout/activity_register.xml" value="0.2722222222222222" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/circlebg.xml" value="0.24" />
-        <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_bgcircleprofile.xml" value="0.2625" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_email.xml" value="0.2955" />
-        <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_home.xml" value="0.2605" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_person.xml" value="0.2955" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_rename.xml" value="0.24" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/drawable/ic_settings.xml" value="0.24" />
@@ -28,7 +26,7 @@
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/layout/fragment_profile_page.xml" value="0.33" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.33177083333333335" />
         <entry key="..\:/DocumentsUIT/Android/Project/onlineshoppingapp/app/src/main/res/menu/top_profile_menu.xml" value="0.33177083333333335" />
-        <entry key="..\:/SourceCode/Android/Project/onlineshoppingapp/app/src/main/res/layout/activity_register.xml" value="0.2975630611372381" />
+        <entry key="..\:/SourceCode/onlineshoppingapp/app/src/main/res/layout/fragment_profile_page.xml" value="0.22826086956521738" />
       </map>
     </option>
   </component>

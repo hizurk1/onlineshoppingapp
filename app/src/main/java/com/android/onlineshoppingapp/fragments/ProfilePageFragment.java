@@ -46,7 +46,6 @@ public class ProfilePageFragment extends Fragment {
     private GoogleSignInClient gsc;
     private FirebaseAuth fAuth;
     private FirebaseUser user;
-    private FirebaseDatabase firebaseDatabase;
     private FirebaseFirestore db;
 
     private TextView textViewFullname, tvUserRanking;
@@ -62,7 +61,6 @@ public class ProfilePageFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance("https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
         // init
         textViewFullname = view.findViewById(R.id.tvFullName);

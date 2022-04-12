@@ -45,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         // Check login status if the user is logged in or not
         checkGoogleSignIn();
 
+
         // init
         btnLogin = findViewById(R.id.btnLogin);
         editTextEmail = findViewById(R.id.etEmailLogin);
@@ -54,6 +55,12 @@ public class LoginActivity extends AppCompatActivity {
         imageViewGoogle = findViewById(R.id.ivGoogle);
         imageViewFacebook = findViewById(R.id.ivFacebook);
         fAuth = FirebaseAuth.getInstance();
+
+        if (fAuth.getCurrentUser() != null) {
+            // navigate to main activity if user is logged in
+            finish();
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
 
         // Click on LOGIN button
         btnLogin.setOnClickListener(view -> {
