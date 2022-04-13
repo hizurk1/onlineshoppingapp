@@ -171,7 +171,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:id="@+id/bottomSheetChangePassBtn"
+                android:id="@+id/bottomSheetDeleteAccBtn"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginHorizontal="20dp"

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.LoginActivity;
+import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
 import com.android.onlineshoppingapp.models.UserInformation;
@@ -51,6 +52,7 @@ public class ProfilePageFragment extends Fragment {
     private TextView textViewFullname, tvUserRanking;
     private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
     private CardView cardCoin, cardCoupon, cardSeen, cardLove, cardFollow, cardGift, cardPurchasedProduct, cardSupport;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,24 +105,8 @@ public class ProfilePageFragment extends Fragment {
 
 
         // change name
-        textViewFullname.setText("");
-        db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
-                        UserInformation userInformation = documentSnapshot.toObject(UserInformation.class);
-                        textViewFullname.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+        textViewFullname.setText(MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName());
+
 
         // click on card coin
         cardCoin.setOnClickListener(new View.OnClickListener() {

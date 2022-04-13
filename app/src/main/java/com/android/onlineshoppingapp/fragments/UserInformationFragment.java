@@ -8,12 +8,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.SettingsActivity;
+import com.android.onlineshoppingapp.adapters.ViewPagerAdapterSettings;
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,9 +42,6 @@ public class UserInformationFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private TextView tvFullNameInfo, tvDateOfBirthInfo, tvPhoneNumberInfo, tvSexInfo, tvEmailInfo;
-    private FirebaseAuth fAuth;
-    private FirebaseUser user;
-    private FirebaseFirestore db;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -81,31 +84,22 @@ public class UserInformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_information, container, false);
 
-        fAuth = FirebaseAuth.getInstance();;
-        user = fAuth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
         tvFullNameInfo = (TextView) view.findViewById(R.id.tvFullNameInfo);
         tvEmailInfo = (TextView) view.findViewById(R.id.tvEmailInfo);
         tvSexInfo = (TextView) view.findViewById(R.id.tvSexInfo);
         tvDateOfBirthInfo = (TextView) view.findViewById(R.id.tvDateOfBirthInfo);
         tvPhoneNumberInfo = (TextView) view.findViewById(R.id.tvPhoneNumberInfo);
 
-        db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
-                        UserInformation userInformation = documentSnapshot.toObject(UserInformation.class);
-                        tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
-                        tvEmailInfo.setText(userInformation.getEmail());
-                        tvSexInfo.setText(userInformation.getSex());
-                        tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));
-                        tvPhoneNumberInfo.setText(userInformation.getPhone());
-                    }
-                }
-            }
-        });
+
+        tvFullNameInfo.setText(MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName());
+        tvEmailInfo.setText(MainActivity.userInformation.getEmail());
+        tvSexInfo.setText(MainActivity.userInformation.getSex());
+        tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(MainActivity.userInformation.getDateOfBirth()));
+        tvPhoneNumberInfo.setText(MainActivity.userInformation.getPhone());
+
+
+
         return view;
     }
+
 }

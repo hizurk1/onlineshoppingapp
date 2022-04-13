@@ -1,5 +1,7 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -10,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,12 +25,15 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.adapters.ViewPagerAdapterSettings;
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,12 +62,14 @@ public class SettingsActivity extends AppCompatActivity {
     private String[] titles = new String[]{"Cá nhân", "Địa chỉ", "Thanh toán"};
 
     private FirebaseAuth fAuth;
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
         viewPagerAdapterSettings = new ViewPagerAdapterSettings(this);
 
         //init
@@ -73,8 +81,6 @@ public class SettingsActivity extends AppCompatActivity {
         cardPolicy = findViewById(R.id.cardPolicy);
         cardVersion = findViewById(R.id.cardVersion);
         cardLogout = findViewById(R.id.cardLogout);
-
-
 
 
         // click on back button
@@ -244,15 +250,20 @@ public class SettingsActivity extends AppCompatActivity {
 
         // click on checkbox
         CheckBox cbConfirmDeleteAcc = sheetView.findViewById(R.id.cbConfirmDeleteAcc);
-        Button confirmBtn = sheetView.findViewById(R.id.bottomSheetChangePassBtn);
+        Button confirmBtn = sheetView.findViewById(R.id.bottomSheetDeleteAccBtn);
+
         cbConfirmDeleteAcc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     confirmBtn.setEnabled(true);
+                } else {
+                    confirmBtn.setEnabled(false);
                 }
             }
         });
+
+
 
         // click on confirm button
         confirmBtn.setOnClickListener(new View.OnClickListener() {
@@ -291,9 +302,14 @@ public class SettingsActivity extends AppCompatActivity {
                     if (etOldPassword.getText().toString().equals("")) {
                         layoutOldPassword.setHelperText("Mật khẩu không được để trống");
                     } else {
-                        if (!etOldPassword.getText().toString().equals("admin")) { // replace by current user password
-                            layoutOldPassword.setHelperText("Mật khẩu bạn nhập không đúng");
-                        }
+                        AuthCredential credential = EmailAuthProvider
+                                .getCredential(user.getEmail(), etOldPassword.getText().toString());
+                        user.reauthenticate(credential).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                layoutOldPassword.setHelperText("Mật khẩu bạn nhập không đúng");
+                            }
+                        });
                     }
                 } else {
                     layoutOldPassword.setHelperTextEnabled(false);
@@ -334,6 +350,24 @@ public class SettingsActivity extends AppCompatActivity {
                         layoutReNewPassword.setHelperText("Xác nhận mật khẩu không đúng!");
                     }
                 }
+            }
+        });
+
+        Button confirmBtn = sheetView.findViewById(R.id.bottomSheetChangePassBtn);
+        confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                user.updatePassword(etNewPassword.getText().toString())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "User password updated.");
+                                    Toast.makeText(SettingsActivity.this, "Mật khẩu đã được cập nhật", Toast.LENGTH_SHORT).show();
+                                    bottomSheetDialogChangePass.dismiss();
+                                }
+                            }
+                        });
             }
         });
     }
