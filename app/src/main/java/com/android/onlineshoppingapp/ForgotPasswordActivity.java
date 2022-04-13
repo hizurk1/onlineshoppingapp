@@ -86,7 +86,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     data.putString("verifyCode", verificationCode);
 
                     // send code to user email
-                    sendCodeByEmail(textInputEditTextEmail.getText().toString(), verificationCode);
+                    sendCodeByEmail(textInputEditTextEmail.getText().toString().trim(), verificationCode);
                     System.out.println("VERIFICATION CODE: " + verificationCode);
                     fAuth.sendPasswordResetEmail(textInputEditTextEmail.getText().toString());
 
