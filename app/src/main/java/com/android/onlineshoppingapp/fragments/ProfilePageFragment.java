@@ -81,6 +81,9 @@ public class ProfilePageFragment extends Fragment {
         cardPurchasedProduct = view.findViewById(R.id.cardPurchasedProduct);
         cardSupport = view.findViewById(R.id.cardSupport);
 
+
+
+
         // click on settings button
         ivSettings.setOnClickListener(new View.OnClickListener() {
             @Override

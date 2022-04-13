@@ -1,5 +1,6 @@
 package com.android.onlineshoppingapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -15,15 +16,22 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.ViewPagerAdapterSettings;
+import com.android.onlineshoppingapp.models.UserInformation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Properties;
 import java.util.Random;
@@ -65,6 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
         cardPolicy = findViewById(R.id.cardPolicy);
         cardVersion = findViewById(R.id.cardVersion);
         cardLogout = findViewById(R.id.cardLogout);
+
+
+
 
         // click on back button
         ivBack.setOnClickListener(new View.OnClickListener() {
