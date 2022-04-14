@@ -134,6 +134,9 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:endIconContentDescription="Xác minh"
+                        app:endIconDrawable="@drawable/ic_check_circle"
+                        app:endIconMode="custom"
                         app:helperTextEnabled="true"
                         app:helperTextTextColor="@color/red_error">
 
@@ -158,6 +161,17 @@
                     android:layout_marginRight="20dp"
                     android:text="GỬI MÃ" />
 
+                <TextView
+                    android:id="@+id/tvDeleteAccTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btnSendDeleteCode"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text=""
+                    android:textColor="@color/red_error"
+                    android:visibility="gone" />
+
             </RelativeLayout>
 
             <CheckBox
@@ -165,7 +179,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:paddingLeft="5dp"
                 android:text="Xác nhận xoá tài khoản hiện tại"
                 android:textSize="16sp" />

@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_layout_changepass"
-    android:background="@drawable/bottom_sheet_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
-    android:orientation="vertical">
+    android:background="@drawable/bottom_sheet_background"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -151,6 +151,7 @@
                 android:layout_height="65dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
+                android:enabled="false"
                 android:text="Thay đổi"
                 android:textSize="18sp" />
 

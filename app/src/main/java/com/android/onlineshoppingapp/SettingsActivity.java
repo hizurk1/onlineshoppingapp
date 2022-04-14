@@ -7,14 +7,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -200,9 +207,14 @@ public class SettingsActivity extends AppCompatActivity {
                     if (etPassword.getText().toString().equals("")) {
                         layoutPassword.setHelperText("Mật khẩu không được để trống");
                     } else {
-                        if (!etPassword.getText().toString().equals("admin")) { // replace by current user password
-                            layoutPassword.setHelperText("Mật khẩu bạn nhập không đúng");
-                        }
+                        AuthCredential credential = EmailAuthProvider
+                                .getCredential(user.getEmail(), etPassword.getText().toString());
+                        user.reauthenticate(credential).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                layoutPassword.setHelperText("Mật khẩu bạn nhập không đúng");
+                            }
+                        });
                     }
                 } else {
                     layoutPassword.setHelperTextEnabled(false);
@@ -212,39 +224,54 @@ public class SettingsActivity extends AppCompatActivity {
 
         // click on send code
         Button btnSendCode = sheetView.findViewById(R.id.btnSendDeleteCode);
+        TextView tvTimer = sheetView.findViewById(R.id.tvDeleteAccTimer);
+
         Random random = new Random();
         String verificationCode = String.valueOf(random.nextInt(999999 - 100000) + 100000);
         btnSendCode.setOnClickListener(new View.OnClickListener() {
+            private int time = 30;
+
             @Override
             public void onClick(View view) {
                 // send code to user email
                 sendCodeByEmail(etEmail.getText().toString().trim(), verificationCode);
                 System.out.println("VERIFICATION CODE: " + verificationCode);
+                closeKeyboard(sheetView);
 
                 // delay button send code
                 btnSendCode.setEnabled(false);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        btnSendCode.setEnabled(true);
+                tvTimer.setVisibility(View.VISIBLE);
+                new CountDownTimer(30000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+                        tvTimer.setText(String.format("Gửi lại sau: %s", String.valueOf(time)));
+                        time--;
                     }
-                }, 10000);
+
+                    public void onFinish() {
+                        btnSendCode.setEnabled(true);
+                        tvTimer.setVisibility(View.GONE);
+                    }
+
+                }.start();
             }
         });
 
         // check code
         TextInputEditText etVerify = sheetView.findViewById(R.id.bottomSheetDeleteAccVerify);
         TextInputLayout layoutVerify = sheetView.findViewById(R.id.layout_bottomSheetDeleteAccVerify);
-        etVerify.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+        layoutVerify.setEndIconOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (!onFocus) {
-                    if (!etVerify.getText().toString().equals(verificationCode)) {
-                        layoutVerify.setHelperText("Mã xác minh không đúng");
-                    }
+            public void onClick(View view) {
+                if (!etVerify.getText().toString().equals(verificationCode)) {
+                    layoutVerify.setHelperText("Mã xác minh không đúng");
                 } else {
-                    layoutVerify.setHelperTextEnabled(false);
+                    layoutVerify.setHelperText("Mã xác minh hợp lệ");
+                    layoutVerify.setHelperTextColor(ColorStateList.valueOf(R.color.light_green));
                 }
+                closeKeyboard(sheetView);
             }
         });
 
@@ -255,7 +282,7 @@ public class SettingsActivity extends AppCompatActivity {
         cbConfirmDeleteAcc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked && etVerify.getText().toString().equals(verificationCode)) {
                     confirmBtn.setEnabled(true);
                 } else {
                     confirmBtn.setEnabled(false);
@@ -264,12 +291,23 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
-
         // click on confirm button
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // delete account here
                 Toast.makeText(SettingsActivity.this, "Xoá tài khoản thành công", Toast.LENGTH_SHORT).show();
+
+                // navigate to login activity
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        bottomSheetDialogDeleteAcc.dismiss();
+                        fAuth.signOut();
+                        finishAffinity();
+                        startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                    }
+                }, 1000);
             }
         });
 
@@ -317,7 +355,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Check null input data: password
+        // Check input data: new password
         TextInputEditText etNewPassword = sheetView.findViewById(R.id.bottomSheetChangePassNewPass);
         TextInputLayout layoutNewPassword = sheetView.findViewById(R.id.layout_bottomSheetChangePassNewPass);
         etNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -337,23 +375,32 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        // Check null input data: Re-password
+        // Check input data: new re-password
+        Button confirmBtn = sheetView.findViewById(R.id.bottomSheetChangePassBtn);
         TextInputEditText etReNewPassword = sheetView.findViewById(R.id.bottomSheetChangePassReNewPass);
         TextInputLayout layoutReNewPassword = sheetView.findViewById(R.id.layout_bottomSheetChangePassReNewPass);
-        etReNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etReNewPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (!onFocus) {
-                    if (etReNewPassword.getText().toString().equals(etNewPassword.getText().toString())) {
-                        layoutReNewPassword.setHelperTextEnabled(false);
-                    } else {
-                        layoutReNewPassword.setHelperText("Xác nhận mật khẩu không đúng!");
-                    }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (etReNewPassword.getText().toString().equals(etNewPassword.getText().toString())) {
+                    layoutReNewPassword.setHelperTextEnabled(false);
+                    confirmBtn.setEnabled(true);
+                } else {
+                    layoutReNewPassword.setHelperText("Xác nhận mật khẩu không đúng!");
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
-        Button confirmBtn = sheetView.findViewById(R.id.bottomSheetChangePassBtn);
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -364,7 +411,16 @@ public class SettingsActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User password updated.");
                                     Toast.makeText(SettingsActivity.this, "Mật khẩu đã được cập nhật", Toast.LENGTH_SHORT).show();
-                                    bottomSheetDialogChangePass.dismiss();
+                                    // require user re login
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            bottomSheetDialogChangePass.dismiss();
+                                            fAuth.signOut();
+                                            finishAffinity();
+                                            startActivity(new Intent(SettingsActivity.this, LoginActivity.class));
+                                        }
+                                    }, 1000);
                                 }
                             }
                         });
@@ -424,6 +480,11 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void closeKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private boolean isCorrectEmailFormat(String str) {
