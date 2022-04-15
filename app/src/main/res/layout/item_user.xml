@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    app:cardCornerRadius="8dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:gravity="center|top">
+            <ImageView
+                android:id="@+id/cv_image"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:src="@drawable/bg_login"
+                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/cv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:text="Dễ thương"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+</androidx.cardview.widget.CardView>
