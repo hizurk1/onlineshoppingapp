@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -17,18 +18,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
     private Button btnLogin;
-    private EditText editTextUsername, editTextPassword;
+    private EditText editTextEmail, editTextPassword;
     private TextView textViewForgotPass, textViewRegister;
     private ImageView imageViewGoogle, imageViewFacebook;
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient gsc;
     private static final int RC_SIGN_IN = 9001;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +45,24 @@ public class LoginActivity extends AppCompatActivity {
         // Check login status if the user is logged in or not
         checkGoogleSignIn();
 
-        // Click on LOGIN button
-        btnLogin = findViewById(R.id.btnLogin);
-        editTextUsername = findViewById(R.id.etUsername);
-        editTextPassword = findViewById(R.id.etPassword);
 
+        // init
+        btnLogin = findViewById(R.id.btnLogin);
+        editTextEmail = findViewById(R.id.etEmailLogin);
+        editTextPassword = findViewById(R.id.etPassLogin);
+        textViewForgotPass = findViewById(R.id.tvForgotPassword);
+        textViewRegister = findViewById(R.id.txtRegister);
+        imageViewGoogle = findViewById(R.id.ivGoogle);
+        imageViewFacebook = findViewById(R.id.ivFacebook);
+        fAuth = FirebaseAuth.getInstance();
+
+        if (fAuth.getCurrentUser() != null) {
+            // navigate to main activity if user is logged in
+            finish();
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
+
+        // Click on LOGIN button
         btnLogin.setOnClickListener(view -> {
 
             if (checkNullInputData()) {
@@ -50,54 +70,47 @@ public class LoginActivity extends AppCompatActivity {
                         "Tên đăng nhập và mật khẩu\n\t\t không được để trống!",
                         Toast.LENGTH_SHORT).show();
             } else {
-
-                // Notice: for testing purpose
-                if (editTextUsername.getText().toString().equals("admin")
-                        && editTextPassword.getText().toString().equals("admin")) {
-
-                    // Access to main activity
-                    finish();
-                    Intent directToMainActivity = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(directToMainActivity);
-                } else {
-                    Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
-                            Toast.LENGTH_SHORT).show();
-                }
+                fAuth.signInWithEmailAndPassword(editTextEmail.getText().toString().trim(),
+                        editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT);
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Tên đăng nhập hoặc mật khẩu \n\t\t\t\t\t\t\t không đúng!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
             }
         });
 
         // Click on Forgot password
-        textViewForgotPass = findViewById(R.id.tvForgotPassword);
-
         textViewForgotPass.setOnClickListener(view -> {
             // navigate to Forgot password activity
-            finish();
             startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
         // Click on Register
-        textViewRegister = findViewById(R.id.txtRegister);
-
         textViewRegister.setOnClickListener(view -> {
             //navigate to register activity
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         // Click on Google
-        imageViewGoogle = findViewById(R.id.ivGoogle);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
 
-        imageViewGoogle.setOnClickListener(view -> {
-//                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
-            googleSignIn();
-        });
+//        imageViewGoogle.setOnClickListener(view -> {
+////                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
+//            googleSignIn();
+//        });
 
         // CLick on Facebook
-        imageViewFacebook = findViewById(R.id.ivFacebook);
-
         imageViewFacebook.setOnClickListener(view -> Toast.makeText(LoginActivity.this, "Facebook", Toast.LENGTH_SHORT).show());
 
     }
@@ -121,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkNullInputData() {
-        return editTextUsername.getText().toString().equals("") || editTextPassword.getText().toString().equals("");
+        return editTextEmail.getText().toString().equals("") || editTextPassword.getText().toString().equals("");
     }
 
     private void googleSignIn() {

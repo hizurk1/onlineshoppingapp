@@ -64,6 +64,7 @@ public class ChangePasswordFragment extends Fragment {
                     Toast.makeText(getActivity(), "Email: " + userEmail +
                                     "\nNew password: " + editTextEnterNewPass.getText(),
                             Toast.LENGTH_SHORT).show();
+
                 } else {
                     inputLayoutEnterNewRePass.setHelperText("Xác nhận mật khẩu không đúng!");
                 }

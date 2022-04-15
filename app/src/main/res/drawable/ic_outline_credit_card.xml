@@ -6,5 +6,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M18.41,5.8L17.2,4.59c-0.78,-0.78 -2.05,-0.78 -2.83,0l-2.68,2.68L3,15.96V20h4.04l8.74,-8.74 2.63,-2.63c0.79,-0.78 0.79,-2.05 0,-2.83zM6.21,18H5v-1.21l8.66,-8.66 1.21,1.21L6.21,18zM11,20l4,-4h6v4H11z" />
+        android:pathData="M20,4L4,4c-1.11,0 -1.99,0.89 -1.99,2L2,18c0,1.11 0.89,2 2,2h16c1.11,0 2,-0.89 2,-2L22,6c0,-1.11 -0.89,-2 -2,-2zM20,18L4,18v-6h16v6zM20,8L4,8L4,6h16v2z" />
 </vector>

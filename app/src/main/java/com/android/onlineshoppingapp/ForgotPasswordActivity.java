@@ -3,8 +3,10 @@ package com.android.onlineshoppingapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.fragments.EnterCodeFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Properties;
 import java.util.Random;
@@ -32,11 +35,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private TextInputLayout textInputLayoutEmail;
     private TextInputEditText textInputEditTextEmail;
     private Button btnSendCode;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
+        fAuth = FirebaseAuth.getInstance();
 
         // click on close button
         imageViewCLose = findViewById(R.id.imageViewClose);
@@ -44,8 +49,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // navigate to login activity
-                finish();
-                startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
+                onBackPressed();
             }
         });
 
@@ -82,8 +86,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     data.putString("verifyCode", verificationCode);
 
                     // send code to user email
-                    sendCodeByEmail(textInputEditTextEmail.getText().toString(), verificationCode);
+                    sendCodeByEmail(textInputEditTextEmail.getText().toString().trim(), verificationCode);
                     System.out.println("VERIFICATION CODE: " + verificationCode);
+                    fAuth.sendPasswordResetEmail(textInputEditTextEmail.getText().toString());
 
                     // send to fragment
                     enterCodeFragment.setArguments(data);
@@ -96,6 +101,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     // ------------------ Function -----------------
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     private void sendCodeByEmail(String receiverEmail, String verificationCode) {
 
