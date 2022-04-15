@@ -105,7 +105,7 @@ public class ProfilePageFragment extends Fragment {
         cardSupport = view.findViewById(R.id.cardSupport);
 
         // change name
-        textViewFullname.setText(MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName());
+        textViewFullname.setText(user.getDisplayName());
 
         // change avatar
         if (user.getPhotoUrl() != null) {
@@ -264,12 +264,9 @@ public class ProfilePageFragment extends Fragment {
     }
 
     private void signOut() {
-        gsc.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                fAuth.signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
-            }
+        gsc.signOut().addOnCompleteListener(task -> {
+            fAuth.signOut();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
         });
     }
 
@@ -295,54 +292,24 @@ public class ProfilePageFragment extends Fragment {
 
         StorageReference ref = storageReference.child("profileImages").child(user.getUid().toString());
         ref.putBytes(byteArrayOutputStream.toByteArray())
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        getDownloadUri(ref);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnSuccessListener(taskSnapshot -> getDownloadUri(ref))
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
 
     }
 
     private void getDownloadUri(StorageReference ref) {
         ref.getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        setUserPhotoUri(uri);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnSuccessListener(uri -> setUserPhotoUri(uri))
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
         ;
     }
 
     private void setUserPhotoUri(Uri uri) {
         UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder().setPhotoUri(uri).build();
         user.updateProfile(userProfileChangeRequest)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(getActivity(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnSuccessListener(unused -> Toast.makeText(getActivity(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
 }

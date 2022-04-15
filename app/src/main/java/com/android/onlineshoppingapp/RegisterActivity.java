@@ -340,6 +340,10 @@ public class RegisterActivity extends AppCompatActivity {
                                                     new SimpleDateFormat("dd/MM/yyyy").parse(textViewListDay.getText().toString() +
                                                             "/" + textViewListMonth.getText().toString() +
                                                             "/" + textViewListYear.getText().toString()), accountType);
+                                            UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(userInformation.getLastName() + " " + userInformation.getFirstName())
+                                                    .build();
+                                            task.getResult().getUser().updateProfile(userProfileChangeRequest);
                                             db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid()).set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
