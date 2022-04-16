@@ -1,7 +1,10 @@
 package com.android.onlineshoppingapp.adapters;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +18,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.fragments.HomePageFragment;
 import com.android.onlineshoppingapp.models.Product;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerViewAdapterProduct.ProductViewHolder> {
 
     private List<Product> mProducts;
+    private FirebaseFirestore db;
+    private Context context;
+
+    public RecyclerViewAdapterProduct(List<Product> mProducts, Context context) {
+        this.mProducts = mProducts;
+        this.context = context;
+    }
 
     public RecyclerViewAdapterProduct(List<Product> mProducts) {
         this.mProducts = mProducts;
     }
+
 
 
     @NonNull
@@ -68,6 +86,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
             tvSoldNum = itemView.findViewById(R.id.tvSoldNum);
             ratingbarProduct = itemView.findViewById(R.id.ratingbarProduct);
             tvSaleOff = itemView.findViewById(R.id.tvSaleOff);
+
         }
     }
 
@@ -93,6 +112,25 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         holder.ratingbarProduct.setRating(product.getRate());
         holder.tvProductName.setText(product.getProductName());
         holder.tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    Map<String, Object> map = documentSnapshot.getData();
+
+                    if (map != null) {
+                        List<String> string = (List<String>) map.get("url");
+                        Glide.with(context)
+                                .load(string.get(0)).into(holder.ivProductLogo);
+                    }
+                }
+            }
+        });
+
+
     }
 
 }

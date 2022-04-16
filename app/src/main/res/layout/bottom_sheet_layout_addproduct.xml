@@ -208,7 +208,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/bottomSheetAddProductBtn"
+                android:id="@+id/btnBottomSheetAddProduct"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginHorizontal="20dp"

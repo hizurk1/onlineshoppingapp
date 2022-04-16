@@ -1,7 +1,7 @@
 package com.android.onlineshoppingapp.models;
 
 public class Product {
-    private int productId;
+    private String productId;
     private String productName;
     private String seller;
     private String description;
@@ -10,7 +10,7 @@ public class Product {
     private int likeNumber;
     private int quantitySold;
 
-    public Product(int productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold) {
+    public Product(String productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold) {
         this.productId = productId;
         this.productName = productName;
         this.seller = seller;
@@ -21,12 +21,25 @@ public class Product {
         this.quantitySold = quantitySold;
     }
 
-    public Product(int productId, String productName, float rate, int productPrice, int quantitySold) {
+    public Product(String productId, String productName, float rate, int productPrice, int quantitySold) {
         this.productId = productId;
         this.productName = productName;
         this.rate = rate;
         this.productPrice = productPrice;
         this.quantitySold = quantitySold;
+    }
+
+    public Product() {
+
+    }
+    public Product(String productName, String seller, String description, int productPrice) {
+        this.productName = productName;
+        this.seller = seller;
+        this.description = description;
+        this.productPrice = productPrice;
+        this.rate = 0;
+        this.quantitySold = 0;
+        this.likeNumber = 0;
     }
 
     public String getSeller() {
@@ -69,11 +82,11 @@ public class Product {
         this.quantitySold = quantitySold;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

@@ -96,10 +96,10 @@ public class HomePageFragment extends Fragment {
 
     private List<Product> getlistData() {
         List<Product> list = new ArrayList<Product>();
-        Product item1 = new Product(1, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item2 = new Product(2, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item3 = new Product(3, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item4 = new Product(4, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item1 = new Product(String.valueOf(1), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item2 = new Product(String.valueOf(2), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item3 = new Product(String.valueOf(3), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item4 = new Product(String.valueOf(4), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
         list.add(item1);
         list.add(item2);
         list.add(item3);

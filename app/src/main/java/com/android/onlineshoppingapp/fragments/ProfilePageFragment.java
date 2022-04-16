@@ -237,9 +237,12 @@ public class ProfilePageFragment extends Fragment {
         });
 
         // show card my store
-        if (MainActivity.userInformation.getAccountType().equals("Bán hàng")) {
-            cardMyStore.setVisibility(View.VISIBLE);
-        }
+        if (MainActivity.userInformation != null)
+            if (MainActivity.userInformation.getAccountType().equals("Bán hàng")) {
+                cardMyStore.setVisibility(View.VISIBLE);
+
+            }
+
         cardMyStore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

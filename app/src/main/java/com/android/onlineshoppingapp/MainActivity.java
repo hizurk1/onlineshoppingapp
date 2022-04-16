@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseUser user;
     private FirebaseAuth fAuth;
-    public static UserInformation userInformation;
+    public static UserInformation userInformation = new UserInformation();
 
 
     @Override
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
 
-        if (user != null) {
+        if ((user != null)) {
             db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
