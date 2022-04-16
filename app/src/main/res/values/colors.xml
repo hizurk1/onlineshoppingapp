@@ -12,4 +12,7 @@
     <color name="red_error">#FE3737</color>
     <color name="light_grey">#EBEBEB</color>
     <color name="normal_grey">#D2D5DD</color>
+    <color name="dark_grey">#B5B5B5</color>
+    <color name="normal_yellow">#FFD600</color>
+    <color name="normal_orange">#FF6D00</color>
 </resources>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="160dp"
+    android:layout_height="wrap_content"
+    app:cardElevation="2dp"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/ivProductLogo"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/logoapp" />
+
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="null"
+            android:textSize="10sp"
+            android:textColor="@color/black"
+            android:layout_below="@id/ivProductLogo"
+            android:layout_marginTop="5dp" />
+
+        <RatingBar
+            android:id="@+id/ratingbarProduct"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvProductName"
+            android:layout_marginTop="5dp"
+            android:numStars="5"
+            android:rating="3.3"
+            android:stepSize="0.1" />
+
+        <TextView
+            android:id="@+id/tvSaleOff"
+            android:layout_width="wrap_content"
+            android:layout_height="12dp"
+            android:layout_below="@id/tvProductName"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/normal_orange"
+            android:text=" Giảm giá "
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="9sp" />
+
+        <TextView
+            android:id="@+id/tvProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ratingbarProduct"
+            android:layout_marginTop="5dp"
+            android:text="000,000,000đ"
+            android:textColor="@color/red_error"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSoldNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ratingbarProduct"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:text="Đã bán 000"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

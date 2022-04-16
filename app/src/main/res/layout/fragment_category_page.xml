@@ -7,25 +7,41 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout1"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabGravity="center"
-        app:tabIndicatorGravity="stretch"
-        app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicator="@drawable/tab_indicator"
-        app:tabIconTint="@color/color_selector"
-        app:tabSelectedTextColor="#22b473"
-        app:tabTextColor="@color/white"
-        app:tabIndicatorColor="@color/white"
-        style="@style/Widget.MaterialComponents.TabLayout.Colored"
-        app:tabMode="scrollable">
-    </com.google.android.material.tabs.TabLayout>
+        android:background="@color/light_green">
+
+        <SearchView
+            android:id="@+id/searchViewCate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/searchview_background" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutCate"
+            style="@style/Widget.MaterialComponents.TabLayout.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/searchViewCate"
+            app:tabGravity="center"
+            app:tabIconTint="@color/color_selector"
+            app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorColor="@color/white"
+            app:tabIndicatorGravity="stretch"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/light_green"
+            app:tabTextColor="@color/white" />
+
+    </RelativeLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+        android:id="@+id/viewPagerCate"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

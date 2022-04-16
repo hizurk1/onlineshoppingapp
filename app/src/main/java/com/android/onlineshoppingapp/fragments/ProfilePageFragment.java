@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.MainActivity;
+import com.android.onlineshoppingapp.MyStoreActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
 import com.android.onlineshoppingapp.models.UserInformation;
@@ -68,7 +69,7 @@ public class ProfilePageFragment extends Fragment {
 
     private TextView textViewFullname, tvUserRanking;
     private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
-    private CardView cardCoin, cardCoupon, cardSeen, cardLove, cardFollow, cardGift, cardPurchasedProduct, cardSupport;
+    private CardView cardCoin, cardCoupon, cardSeen, cardLove, cardFollow, cardGift, cardPurchasedProduct, cardSupport, cardMyStore;
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -103,6 +104,7 @@ public class ProfilePageFragment extends Fragment {
         cardGift = view.findViewById(R.id.cardGift);
         cardPurchasedProduct = view.findViewById(R.id.cardPurchasedProduct);
         cardSupport = view.findViewById(R.id.cardSupport);
+        cardMyStore = view.findViewById(R.id.cardMyStore);
 
         // change name
         textViewFullname.setText(user.getDisplayName());
@@ -231,6 +233,17 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        // show card my store
+        if (MainActivity.userInformation.getAccountType().equals("Bán hàng")) {
+            cardMyStore.setVisibility(View.VISIBLE);
+        }
+        cardMyStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), MyStoreActivity.class));
             }
         });
 

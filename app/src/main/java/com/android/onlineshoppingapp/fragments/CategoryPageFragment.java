@@ -1,5 +1,6 @@
 package com.android.onlineshoppingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,17 +9,22 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.SettingsActivity;
 import com.android.onlineshoppingapp.adapters.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class CategoryPageFragment extends Fragment {
     private TabLayout mTablayout;
     private ViewPager2 mViewpager;
     private ViewPagerAdapter mViewPageAdapter;
-    private int []TabIcons = {
+    private String[] tabTitles = {"Danh mục hot", "Thiết bị điện tử", "Đồ gia dụng", "Cho bé"};
+    private int[] TabIcons = {
             R.drawable.ic_categories,
             R.drawable.ic_teddy,
             R.drawable.ic_highheels,
@@ -48,29 +54,29 @@ public class CategoryPageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)  {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category_page, container, false);
 
-        mTablayout = (TabLayout) view.findViewById(R.id.tab_layout1);
-        mViewpager = view.findViewById(R.id.view_pager);
+        mTablayout = (TabLayout) view.findViewById(R.id.tabLayoutCate);
+        mViewpager = view.findViewById(R.id.viewPagerCate);
         setupViewPager(mViewpager);
 
         new TabLayoutMediator(mTablayout, mViewpager, (tab, position) -> {
-            switch (position){
+            switch (position) {
                 case 0:
-                    tab.setText("Danh mục hot");
+                    tab.setText(tabTitles[0]);
                     tab.setIcon(TabIcons[0]);
                     break;
                 case 1:
-                    tab.setText("Doktah kun");
+                    tab.setText(tabTitles[1]);
                     tab.setIcon(TabIcons[1]);
                     break;
                 case 2:
-                    tab.setText("Gacha không xấu");
+                    tab.setText(tabTitles[2]);
                     tab.setIcon(TabIcons[2]);
                     break;
                 case 3:
-                    tab.setText("Người nghiện xấu");
+                    tab.setText(tabTitles[3]);
                     tab.setIcon(TabIcons[3]);
                     break;
             }
