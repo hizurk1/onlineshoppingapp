@@ -1,25 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.HomePageFragment">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/light_green">
 
-        <!-- Paste code below -->
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewCate"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:text="@string/txt_homepage"
-            android:textSize="20sp"
-            android:layout_centerInParent="true"></TextView>
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/searchview_background" />
 
-        <!-- End -->
+        <ImageView
+            android:id="@+id/ivChangeUserPayment"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignRight= "@+id/searchViewCate"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/shoppingcart"
+            app:tint="@color/normal_grey"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
 
     </RelativeLayout>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="20dp">
+        <ImageView
+            android:id="@+id/hgbanner1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/banner1"/>
+<!--        <ViewFlipper-->
+<!--            android:id="@+id/v_flipper"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_centerVertical="true"/>-->
+    </LinearLayout>
+
+<!--Top san pham ban chay -->
+    <TextView
+        android:id="@+id/textTopitem"
+        android:layout_width="150dp"
+        android:layout_height="25dp"
+        android:text="Sản phẩm bán chạy"
+        android:textStyle="bold"
+        android:layout_marginLeft="25dp"
+        android:typeface="serif"
+        android:textColorHighlight="@color/red_error">
+
+
+    </TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="20dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/hgTopitem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="15dp" />
+<!--    Danh sach san pham danh cho nguoi dung-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="Dành cho bạn!"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/hgSeemore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"
+                android:text="Xem thêm"
+                android:textColor="@color/light_green"
+                android:textStyle="bold|italic" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/hgRighPrForYou"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

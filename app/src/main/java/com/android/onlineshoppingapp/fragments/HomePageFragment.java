@@ -3,12 +3,21 @@ package com.android.onlineshoppingapp.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ViewFlipper;
 
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
+import com.android.onlineshoppingapp.models.Product;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +25,11 @@ import com.android.onlineshoppingapp.R;
  * create an instance of this fragment.
  */
 public class HomePageFragment extends Fragment {
+
+
+    private ViewFlipper viewFlipper;
+    private RecyclerView recyclerTopitem;
+    private RecyclerView recyclerRightItem;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,7 +74,47 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+
+        int images[] = {R.drawable.banner1,R.drawable.banner2};
+        List<Product> list = getlistData();
+
+        View view   = inflater.inflate(R.layout.fragment_home_page,container,false);
+
+//        viewFlipper = view.findViewById(R.id.v_flipper);
+
+
+        recyclerTopitem = (RecyclerView) view.findViewById(R.id.hgTopitem);
+        recyclerTopitem.setAdapter(new RecyclerViewAdapterProduct(list));
+        LinearLayoutManager layoutmangerTopitem = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerTopitem.setLayoutManager(layoutmangerTopitem);
+
+        recyclerRightItem = (RecyclerView) view.findViewById(R.id.hgRighPrForYou);
+        LinearLayoutManager layoutmanagerRightitem = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
+        recyclerRightItem.setLayoutManager(layoutmanagerRightitem);
+        return view;
     }
+
+    private List<Product> getlistData() {
+        List<Product> list = new ArrayList<Product>();
+        Product item1 = new Product(1, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item2 = new Product(2, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item3 = new Product(3, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        Product item4 = new Product(4, "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
+        list.add(item1);
+        list.add(item2);
+        list.add(item3);
+        list.add(item4);
+        return list;
+    }
+
+//    public void flipperImages(int image){
+//        ImageView imageView = new ImageView(getActivity());
+//        imageView.setBackgroundResource(image);
+//
+//        viewFlipper.addView(imageView);
+//        viewFlipper.setFlipInterval(400);
+//        viewFlipper.setAutoStart(true);
+//
+//    }
+
 }

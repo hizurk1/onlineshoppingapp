@@ -171,6 +171,7 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private void showRecentlyProduct() {
 
+
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvRecentlyProducts);
 

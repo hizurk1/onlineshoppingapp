@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.fragments.HomePageFragment;
 import com.android.onlineshoppingapp.models.Product;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
     public RecyclerViewAdapterProduct(List<Product> mProducts) {
         this.mProducts = mProducts;
     }
+
 
     @NonNull
     @Override
