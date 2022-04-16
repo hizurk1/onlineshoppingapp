@@ -9,11 +9,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.Product;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +32,9 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private TextView tvShopName;
     private CardView cardAddProduct, cardManageProduct;
-    private ImageView ivVerifyBtnStore;
+    private ImageView ivVerifyBtnStore, ivProductImageAdd, ivBackToProfile;
+    private CardView cardLogout, cardChangePass, cardDeleteAccount, cardPolicy, cardVersion;
+    private Button btnAddImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,17 @@ public class MyStoreActivity extends AppCompatActivity {
         cardAddProduct = findViewById(R.id.cardAddProduct);
         cardManageProduct = findViewById(R.id.cardManageProduct);
         ivVerifyBtnStore = findViewById(R.id.ivVerifyBtnStore);
+        btnAddImage = findViewById(R.id.btnAddImage);
+        ivProductImageAdd = findViewById(R.id.ivProductImageAdd);
+        ivBackToProfile = findViewById(R.id.ivBackToProfile);
+
+        // click on back
+        ivBackToProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         // change shop name
         String fullname = MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName();
@@ -55,7 +73,7 @@ public class MyStoreActivity extends AppCompatActivity {
         cardAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addProduct();
+                addProductBottomSheetView();
             }
         });
 
@@ -63,7 +81,73 @@ public class MyStoreActivity extends AppCompatActivity {
 
     // --------------- Function -----------------
 
-    private void addProduct() {
+    private void addProductBottomSheetView() {
+
+        View sheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_layout_addproduct, null);
+        BottomSheetDialog bottomSheetDialogAddProduct = new BottomSheetDialog(MyStoreActivity.this);
+        bottomSheetDialogAddProduct.setContentView(sheetView);
+        bottomSheetDialogAddProduct.setCancelable(false);
+        bottomSheetDialogAddProduct.show();
+
+        // click on close bottom sheet
+        sheetView.findViewById(R.id.bottomSheetAddProductClose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // close bottom sheet dialog
+                bottomSheetDialogAddProduct.dismiss();
+            }
+        });
+
+        // check product name
+        TextInputEditText etProductName = sheetView.findViewById(R.id.bottomSheetAddProductName);
+        TextInputLayout layoutProductName = sheetView.findViewById(R.id.layout_bottomSheetAddProductName);
+        etProductName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (etProductName.getText().toString().equals("")) {
+                        layoutProductName.setHelperText("Tên sản phẩm không được để trống");
+                    }
+                } else {
+                    layoutProductName.setHelperTextEnabled(false);
+                }
+            }
+        });
+
+        // check product description
+        TextInputEditText etProductDescription = sheetView.findViewById(R.id.bottomSheetAddProductDescription);
+        TextInputLayout layoutProductDescription = sheetView.findViewById(R.id.layout_bottomSheetAddProductDescription);
+        etProductDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (etProductDescription.getText().toString().equals("")) {
+                        layoutProductDescription.setHelperText("Mô tả sản phẩm không được để trống");
+                    }
+                } else {
+                    layoutProductDescription.setHelperTextEnabled(false);
+                }
+            }
+        });
+
+        // check product price
+        TextInputEditText etProductPrice = sheetView.findViewById(R.id.bottomSheetAddProductPrice);
+        TextInputLayout layoutProductPrice = sheetView.findViewById(R.id.layout_bottomSheetAddProductPrice);
+        etProductPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (etProductPrice.getText().toString().equals("")) {
+                        layoutProductPrice.setHelperText("Giá sản phẩm không được để trống");
+                    }
+                } else {
+                    layoutProductPrice.setHelperTextEnabled(false);
+                }
+            }
+        });
+
+        // click on add button
+
 
     }
 
@@ -130,4 +214,8 @@ public class MyStoreActivity extends AppCompatActivity {
         rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

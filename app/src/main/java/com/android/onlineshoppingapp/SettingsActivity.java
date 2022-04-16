@@ -188,7 +188,7 @@ public class SettingsActivity extends AppCompatActivity {
                         layoutEmail.setHelperText("Email không được để trống!");
                     } else if (!isCorrectEmailFormat(etEmail.getText().toString().trim())) {
                         layoutEmail.setHelperText("Email bạn vừa nhập không đúng định dạng");
-                    } else if (!etEmail.getText().toString().trim().equals(fAuth.getCurrentUser().getEmail())) { // replace by user email
+                    } else if (!etEmail.getText().toString().trim().equals(fAuth.getCurrentUser().getEmail())) {
                         layoutEmail.setHelperText("Email chưa đăng ký");
                     }
                 } else {
