@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
 
 /**
@@ -21,6 +23,8 @@ public class UserAddressFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private TextView tvFullNameAddress1, tvFullNameAddress2, tvPhoneNumberAddress1, tvPhoneNumberAddress2, tvAddress1, tvAddress2;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,6 +65,23 @@ public class UserAddressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_address, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_address, container, false);
+
+        tvFullNameAddress1 = view.findViewById(R.id.tvFullNameAddress1);
+        tvFullNameAddress2 = view.findViewById(R.id.tvFullNameAddress2);
+        tvPhoneNumberAddress1 = view.findViewById(R.id.tvPhoneNumberAddress1);
+        tvPhoneNumberAddress2 = view.findViewById(R.id.tvPhoneNumberAddress2);
+        tvAddress1 = view.findViewById(R.id.tvAddress1);
+        tvAddress2 = view.findViewById(R.id.tvAddress2);
+
+        tvFullNameAddress1.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
+        tvPhoneNumberAddress1.setText(MainActivity.userInformation.getPhone().toString());
+        tvAddress1.setText("Chưa thiết đặt");
+
+        tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
+        tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
+        tvAddress2.setText("Chưa thiết đặt");
+
+        return view;
     }
 }

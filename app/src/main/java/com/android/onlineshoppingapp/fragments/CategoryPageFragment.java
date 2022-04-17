@@ -23,12 +23,12 @@ public class CategoryPageFragment extends Fragment {
     private TabLayout mTablayout;
     private ViewPager2 mViewpager;
     private ViewPagerAdapter mViewPageAdapter;
-    private String[] tabTitles = {"Danh mục hot", "Thiết bị điện tử", "Đồ gia dụng", "Cho bé"};
+    private String[] tabTitles = {"Danh mục hot", "Thiết bị điện tử", "Thực phẩm", "Cho bé"};
     private int[] TabIcons = {
             R.drawable.ic_categories,
-            R.drawable.ic_teddy,
-            R.drawable.ic_highheels,
-            R.drawable.ic_tshirt
+            R.drawable.ic_phone_android,
+            R.drawable.ic_restaurant,
+            R.drawable.ic_teddy
     };
 
     //Hàm thêm các fragment vào trong list bên ViewPagerAdapter

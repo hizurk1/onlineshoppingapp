@@ -64,7 +64,7 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private TextView tvShopName;
     private CardView cardAddProduct, cardManageProduct;
-    private ImageView ivVerifyBtnStore, ivProductImageAdd, ivBackToProfile;
+    private ImageView ivVerifyBtnStore, ivBackToProfile;
     private CardView cardLogout, cardChangePass, cardDeleteAccount, cardPolicy, cardVersion;
     private Button btnAddImage, btnAddProduct;
 
@@ -87,7 +87,6 @@ public class MyStoreActivity extends AppCompatActivity {
         cardAddProduct = findViewById(R.id.cardAddProduct);
         cardManageProduct = findViewById(R.id.cardManageProduct);
         ivVerifyBtnStore = findViewById(R.id.ivVerifyBtnStore);
-        ivProductImageAdd = findViewById(R.id.ivProductImageAdd);
         ivBackToProfile = findViewById(R.id.ivBackToProfile);
 
 
@@ -118,6 +117,14 @@ public class MyStoreActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addProductBottomSheetView();
+            }
+        });
+
+        // test
+        cardManageProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 
@@ -257,7 +264,6 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private void showRecentlyProduct() {
 
-
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvRecentlyProducts);
 
@@ -290,22 +296,28 @@ public class MyStoreActivity extends AppCompatActivity {
         popularProductList = new ArrayList<>();
         rvPopularProducts = findViewById(R.id.rvPopularProducts);
 
-        // add product data: demo
-        for (int i = 1; i <= 10; i++) {
-            Random rand = new Random();
-            float rate = 1 + rand.nextFloat() * (5 - 1);
-            int price = rand.nextInt(900000 - 1) + 1;
-            price = price / 100 * 100;
-            int soldNum = rand.nextInt(2000 - 1) + 1;
+        db.collection("Products")
+                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Product product = document.toObject(Product.class);
+                                product.setProductId(document.getId());
+                                popularProductList.add(product);
+                            }
 
-            Product product = new Product(String.valueOf(i), "Popular product " + i, rate, price, soldNum);
-            popularProductList.add(product);
-        }
-
-        // setup recyclerview: popular products
-        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList);
-        rvPopularProducts.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                            // setup recyclerview: recently products
+                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, MyStoreActivity.this);
+                            rvPopularProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                            rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                        } else {
+                            Log.e(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
     @Override

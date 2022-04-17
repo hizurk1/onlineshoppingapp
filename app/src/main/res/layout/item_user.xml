@@ -16,6 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
                 android:src="@drawable/bg_login"
+                android:layout_margin="20dp"
                 android:scaleType="centerCrop"/>
             <TextView
                 android:id="@+id/cv_text"

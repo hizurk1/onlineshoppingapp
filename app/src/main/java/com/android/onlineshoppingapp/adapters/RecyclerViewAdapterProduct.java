@@ -4,6 +4,8 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.onlineshoppingapp.ProductDetailActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.fragments.HomePageFragment;
 import com.android.onlineshoppingapp.models.Product;
@@ -24,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,19 +36,18 @@ import java.util.Random;
 
 public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerViewAdapterProduct.ProductViewHolder> {
 
-    private List<Product> mProducts;
+    private List<Product> listProducts;
     private FirebaseFirestore db;
     private Context context;
 
-    public RecyclerViewAdapterProduct(List<Product> mProducts, Context context) {
-        this.mProducts = mProducts;
+    public RecyclerViewAdapterProduct(List<Product> listProducts, Context context) {
+        this.listProducts = listProducts;
         this.context = context;
     }
 
-    public RecyclerViewAdapterProduct(List<Product> mProducts) {
-        this.mProducts = mProducts;
+    public RecyclerViewAdapterProduct(List<Product> listProducts) {
+        this.listProducts = listProducts;
     }
-
 
 
     @NonNull
@@ -55,7 +59,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = mProducts.get(position);
+        Product product = listProducts.get(position);
         if (product == null) {
             return;
         }
@@ -64,8 +68,8 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
-        if (mProducts != null) {
-            return mProducts.size();
+        if (listProducts != null) {
+            return listProducts.size();
         }
         return 0;
     }
@@ -75,6 +79,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         private ImageView ivProductLogo;
         private TextView tvProductName, tvProductPrice, tvSoldNum, tvSaleOff;
         private RatingBar ratingbarProduct;
+        private CardView cardProductItem;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +91,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
             tvSoldNum = itemView.findViewById(R.id.tvSoldNum);
             ratingbarProduct = itemView.findViewById(R.id.ratingbarProduct);
             tvSaleOff = itemView.findViewById(R.id.tvSaleOff);
+            cardProductItem = itemView.findViewById(R.id.cardProductItem);
 
         }
     }
@@ -113,6 +119,17 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         holder.tvProductName.setText(product.getProductName());
         holder.tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
 
+        holder.cardProductItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ProductDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("product", product);
+                intent.putExtras(bundle);
+                context.startActivities(new Intent[]{intent});
+            }
+        });
+
         db = FirebaseFirestore.getInstance();
         db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -129,7 +146,6 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
                 }
             }
         });
-
 
     }
 
