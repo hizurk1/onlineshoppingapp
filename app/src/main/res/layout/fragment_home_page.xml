@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
+    <ScrollView
+        android:id="@+id/hgScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,16 +51,16 @@
         android:layout_height="150dp"
         android:layout_marginHorizontal="20dp">
 
-        <ImageView
-            android:id="@+id/hgbanner1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/banner1" />
-        <!--        <ViewFlipper-->
-        <!--            android:id="@+id/v_flipper"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_centerVertical="true"/>-->
+<!--        <ImageView-->
+<!--            android:id="@+id/hgbanner1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:src="@drawable/banner1" />-->
+                <ViewFlipper
+                    android:id="@+id/v_flipper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"/>
     </LinearLayout>
 
     <!--Top san pham ban chay -->
@@ -71,21 +79,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
-                android:text="Dành cho bạn"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvSeemoreHome1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:text="Xem thêm"
-                android:textColor="@color/light_green"
-                android:textStyle="bold|italic" />
+                android:text="Sản phẩm bán chạy"
+                android:textColor="@color/red_error"
+                android:textSize="15sp" />
 
         </RelativeLayout>
 
@@ -143,7 +139,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp">
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hgRighPrForYou"
@@ -152,5 +149,6 @@
                 android:layout_marginTop="10dp" />
         </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</FrameLayout>
