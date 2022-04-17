@@ -1,17 +1,17 @@
 package com.android.onlineshoppingapp.models;
 
 public class ProductImage {
-    private int imageId;
+    private String imageId;
 
-    public ProductImage(int imageId) {
+    public ProductImage(String imageId) {
         this.imageId = imageId;
     }
 
-    public int getImageId() {
+    public String getImageId() {
         return imageId;
     }
 
-    public void setImageId(int imageId) {
+    public void setImageId(String imageId) {
         this.imageId = imageId;
     }
 }

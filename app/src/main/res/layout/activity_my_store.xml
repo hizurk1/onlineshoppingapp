@@ -377,7 +377,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="30dp"
-                        android:text="Gần đây"
+                        android:text="Tất cả sản phẩm"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />

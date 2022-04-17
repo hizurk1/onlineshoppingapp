@@ -56,6 +56,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 public class ProfilePageFragment extends Fragment {
 
@@ -66,6 +67,7 @@ public class ProfilePageFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    private String accountType = MainActivity.userInformation.getAccountType();
 
     private TextView textViewFullname, tvUserRanking;
     private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
@@ -237,11 +239,15 @@ public class ProfilePageFragment extends Fragment {
         });
 
         // show card my store
-        if (MainActivity.userInformation != null)
-            if (MainActivity.userInformation.getAccountType().equals("Bán hàng")) {
-                cardMyStore.setVisibility(View.VISIBLE);
-
-            }
+        if (accountType.equals("Bán hàng")) {
+            cardMyStore.setVisibility(View.VISIBLE);
+            cardPurchasedProduct.setVisibility(View.GONE);
+            cardGift.setVisibility(View.GONE);
+        } else {
+            cardMyStore.setVisibility(View.GONE);
+            cardPurchasedProduct.setVisibility(View.VISIBLE);
+            cardGift.setVisibility(View.VISIBLE);
+        }
 
         cardMyStore.setOnClickListener(new View.OnClickListener() {
             @Override

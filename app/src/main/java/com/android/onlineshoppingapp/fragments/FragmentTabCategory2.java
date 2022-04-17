@@ -43,9 +43,9 @@ public class FragmentTabCategory2 extends Fragment {
     //Hàm lấy dữ liệu đưa vào list để truyền vào hàm setData ở trên
     private List<Items> getListItems(){
         List<Items> list = new ArrayList<Items>();
-        list.add(new Items(R.drawable.img_sample, "Doktah"));
-        list.add(new Items(R.drawable.img_sample, "Doktah full sanity "));
-        list.add(new Items(R.drawable.img_sample, "Doktah 0 sanity"));
+        list.add(new Items(R.drawable.img_sample, "Sản phẩm 1"));
+        list.add(new Items(R.drawable.img_sample, "Sản phẩm 2"));
+        list.add(new Items(R.drawable.img_sample, "Sản phẩm 3"));
 
         return list;
     }

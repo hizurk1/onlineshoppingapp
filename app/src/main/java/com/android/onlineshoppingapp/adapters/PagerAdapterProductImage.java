@@ -18,9 +18,9 @@ import java.util.List;
 public class PagerAdapterProductImage extends PagerAdapter {
 
     private Context context;
-    private List<ProductImage> productImageList;
+    private List<String> productImageList;
 
-    public PagerAdapterProductImage(Context context, List<ProductImage> productImageList) {
+    public PagerAdapterProductImage(Context context, List<String> productImageList) {
         this.context = context;
         this.productImageList = productImageList;
     }
@@ -33,10 +33,10 @@ public class PagerAdapterProductImage extends PagerAdapter {
                 .inflate(R.layout.slide_image_product_detail, container, false);
         ImageView ivPhoto = view.findViewById(R.id.ivImgSlideProduct);
 
-        ProductImage productImage = productImageList.get(position);
+        String productImage = productImageList.get(position);
         if (productImage != null) {
             Glide.with(context)
-                    .load(productImage.getImageId())
+                    .load(productImage)
                     .into(ivPhoto);
         }
         // add view to View Group

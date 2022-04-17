@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         if (documentSnapshot.exists()) {
                             Log.d(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
                             userInformation = documentSnapshot.toObject(UserInformation.class);
+                            Log.e(TAG, userInformation.getAccountType());
                         } else {
                             Log.d(TAG, "No such document");
                         }

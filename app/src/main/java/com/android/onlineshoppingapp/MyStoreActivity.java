@@ -298,6 +298,8 @@ public class MyStoreActivity extends AppCompatActivity {
 
         db.collection("Products")
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .orderBy("quantitySold", Query.Direction.DESCENDING)
+                .orderBy("productPrice", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

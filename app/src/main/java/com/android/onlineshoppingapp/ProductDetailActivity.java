@@ -57,11 +57,24 @@ public class ProductDetailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerProductDetail);
         circleIndicator = findViewById(R.id.circleIndicatorProductDetail);
 
-        pagerAdapterProductImage = new PagerAdapterProductImage(this, getListPhoto());
-        viewPager.setAdapter(pagerAdapterProductImage);
+        db = FirebaseFirestore.getInstance();
+        db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                Map<String, Object> map = documentSnapshot.getData();
 
-        circleIndicator.setViewPager(viewPager);
-        pagerAdapterProductImage.registerDataSetObserver(circleIndicator.getDataSetObserver());
+                if (map != null) {
+                    List<String> string = (List<String>) map.get("url");
+                    pagerAdapterProductImage = new PagerAdapterProductImage(ProductDetailActivity.this, string);
+                    viewPager.setAdapter(pagerAdapterProductImage);
+                    circleIndicator.setViewPager(viewPager);
+                    pagerAdapterProductImage.registerDataSetObserver(circleIndicator.getDataSetObserver());
+                }
+            }
+        });
+
+
 
     }
     // -------------- Function ------------------
@@ -138,10 +151,11 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
-    private List<ProductImage> getListPhoto() {
+    private List<ProductImage> getListPhoto(Product product) {
 
         List<ProductImage> imageList = new ArrayList<>();
-        imageList.add(new ProductImage(R.drawable.logoapp));
+
+        imageList.add(new ProductImage(String.valueOf(R.drawable.logoapp)));
 
         return imageList;
     }
