@@ -81,10 +81,6 @@ public class HomePageFragment extends Fragment {
 
         View view   = inflater.inflate(R.layout.fragment_home_page,container,false);
 
-        //View flipper
-        viewFlipper = view.findViewById(R.id.v_flipper);
-
-
 
         //Top item
         recyclerTopitem = (RecyclerView) view.findViewById(R.id.hgTopitem);
@@ -123,13 +119,13 @@ public class HomePageFragment extends Fragment {
         return list;
     }
 
-    public void flipperImages(int image){
-        ImageView imageView = new ImageView(getActivity());
-        imageView.setBackgroundResource(image);
-
-        viewFlipper.addView(imageView);
-        viewFlipper.setFlipInterval(400);
-        viewFlipper.setAutoStart(true);
-    }
+//    public void flipperImages(int image){
+//        ImageView imageView = new ImageView(getActivity());
+//        imageView.setBackgroundResource(image);
+//
+//        viewFlipper.addView(imageView);
+//        viewFlipper.setFlipInterval(400);
+//        viewFlipper.setAutoStart(true);
+//    }
 
 }
