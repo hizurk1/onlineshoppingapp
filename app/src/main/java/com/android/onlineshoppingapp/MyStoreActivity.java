@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.Product;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -64,11 +66,12 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private TextView tvShopName;
     private CardView cardAddProduct, cardManageProduct;
-    private ImageView ivVerifyBtnStore, ivBackToProfile;
+    private ImageView ivVerifyBtnStore, ivBackToProfile, ivAvatarStore;
     private CardView cardLogout, cardChangePass, cardDeleteAccount, cardPolicy, cardVersion;
     private Button btnAddImage, btnAddProduct;
 
     private FirebaseAuth fAuth;
+    private FirebaseUser user;
     private FirebaseFirestore db;
 
     public static List<String> imageUriList = new ArrayList<String>();
@@ -88,11 +91,19 @@ public class MyStoreActivity extends AppCompatActivity {
         cardManageProduct = findViewById(R.id.cardManageProduct);
         ivVerifyBtnStore = findViewById(R.id.ivVerifyBtnStore);
         ivBackToProfile = findViewById(R.id.ivBackToProfile);
+        ivAvatarStore = findViewById(R.id.ivAvatarStore);
+
+
 
 
         fAuth = FirebaseAuth.getInstance();
+        user = fAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(user.getPhotoUrl())
+                    .into(ivAvatarStore);
+        }
         // click on back
         ivBackToProfile.setOnClickListener(new View.OnClickListener() {
             @Override
