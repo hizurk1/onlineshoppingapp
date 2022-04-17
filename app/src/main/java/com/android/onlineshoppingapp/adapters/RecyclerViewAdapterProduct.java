@@ -116,7 +116,15 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         // set values
         holder.tvSoldNum.setText("Đã bán " + soldNumStr);
         holder.ratingbarProduct.setRating(product.getRate());
-        holder.tvProductName.setText(product.getProductName());
+
+        int longOfName = product.getProductName().toCharArray().length;
+        String productName = "";
+        if (longOfName > 50) {
+            productName = product.getProductName().substring(0, 50) + "...";
+        } else {
+            productName = product.getProductName();
+        }
+        holder.tvProductName.setText(productName);
         holder.tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
 
         holder.cardProductItem.setOnClickListener(new View.OnClickListener() {
