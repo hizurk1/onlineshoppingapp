@@ -31,6 +31,7 @@ import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.MyStoreActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
+import com.android.onlineshoppingapp.ShoppingCartActivity;
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -145,7 +146,7 @@ public class ProfilePageFragment extends Fragment {
         ivShoppingCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(getActivity(), ShoppingCartActivity.class));
             }
         });
 
