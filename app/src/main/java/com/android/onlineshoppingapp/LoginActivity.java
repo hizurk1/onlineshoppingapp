@@ -85,50 +85,50 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
 
-        // check email
-        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (!onFocus) {
-                    // get user
-                    userList = new ArrayList<UserInformation>();
-                    db = FirebaseFirestore.getInstance();
-
-                    db.collection("Users").orderBy("email", Query.Direction.ASCENDING)
-                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                    if (error != null) {
-                                        Log.e("Firestore error ", error.getMessage());
-                                    }
-
-                                    for (DocumentChange doc : value.getDocumentChanges()) {
-                                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                                            userList.add(doc.getDocument().toObject(UserInformation.class));
-                                        }
-                                    }
-
-                                    userList.forEach(user -> {
-                                        userEmailList.add(user.getEmail().toString());
-                                    });
-
-                                    boolean check = false;
-                                    for (int i = 0; i < userEmailList.size(); i++) {
-                                        if (editTextEmail.getText().toString().trim().equals(userEmailList.get(i))) {
-                                            check = true;
-                                        }
-                                    }
-                                    if (!check) {
-                                        layoutEmail.setHelperText("Email chưa được đăng ký");
-                                    }
-                                }
-                            });
-                } else {
-                    layoutEmail.setHelperTextEnabled(false);
-                }
-            }
-        });
+//        // check email
+//        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean onFocus) {
+//                if (!onFocus) {
+//                    // get user
+//                    userList = new ArrayList<UserInformation>();
+//                    db = FirebaseFirestore.getInstance();
+//
+//                    db.collection("Users").orderBy("email", Query.Direction.ASCENDING)
+//                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                                @Override
+//                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+//
+//                                    if (error != null) {
+//                                        Log.e("Firestore error ", error.getMessage());
+//                                    }
+//
+//                                    for (DocumentChange doc : value.getDocumentChanges()) {
+//                                        if (doc.getType() == DocumentChange.Type.ADDED) {
+//                                            userList.add(doc.getDocument().toObject(UserInformation.class));
+//                                        }
+//                                    }
+//
+//                                    userList.forEach(user -> {
+//                                        userEmailList.add(user.getEmail().toString());
+//                                    });
+//
+//                                    boolean check = false;
+//                                    for (int i = 0; i < userEmailList.size(); i++) {
+//                                        if (editTextEmail.getText().toString().trim().equals(userEmailList.get(i))) {
+//                                            check = true;
+//                                        }
+//                                    }
+//                                    if (!check) {
+//                                        layoutEmail.setHelperText("Email chưa được đăng ký");
+//                                    }
+//                                }
+//                            });
+//                } else {
+//                    layoutEmail.setHelperTextEnabled(false);
+//                }
+//            }
+//        });
 
         // check password: null
         editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
