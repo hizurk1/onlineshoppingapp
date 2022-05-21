@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -56,13 +57,13 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
     private ArrayList<UserInformation> userList = new ArrayList<UserInformation>();
-    ;
     public ArrayList<String> userEmailList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // init
         btnLogin = findViewById(R.id.btnLogin);
