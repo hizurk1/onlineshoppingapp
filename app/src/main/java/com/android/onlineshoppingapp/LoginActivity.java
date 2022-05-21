@@ -1,6 +1,9 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,17 +26,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,7 +51,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -52,12 +64,22 @@ public class LoginActivity extends AppCompatActivity {
     private ImageView imageViewGoogle, imageViewFacebook;
 
     private GoogleSignInOptions gso;
-    private GoogleSignInClient gsc;
+    private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
     private ArrayList<UserInformation> userList = new ArrayList<UserInformation>();
     public ArrayList<String> userEmailList = new ArrayList<String>();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = fAuth.getCurrentUser();
+        if (currentUser != null) {
+            finishAffinity();
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,16 +97,9 @@ public class LoginActivity extends AppCompatActivity {
         textViewRegister = findViewById(R.id.txtRegister);
         imageViewGoogle = findViewById(R.id.ivGoogle);
         imageViewFacebook = findViewById(R.id.ivFacebook);
+
         fAuth = FirebaseAuth.getInstance();
-
-        // Check login status if the user is logged in or not
-        checkGoogleSignIn();
-
-        if (fAuth.getCurrentUser() != null) {
-            // navigate to main activity if user is logged in
-            finish();
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        }
+        requestGoogleSignIn();
 
 //        // check email
 //        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -182,18 +197,14 @@ public class LoginActivity extends AppCompatActivity {
         // Click on Register
         textViewRegister.setOnClickListener(view -> {
             //navigate to register activity
+            finish();
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         // Click on Google
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail().build();
-        gsc = GoogleSignIn.getClient(this, gso);
-
-//        imageViewGoogle.setOnClickListener(view -> {
-////                Toast.makeText(LoginActivity.this, "Google", Toast.LENGTH_SHORT).show();
-//            googleSignIn();
-//        });
+        imageViewGoogle.setOnClickListener(view -> {
+            googleSignIn();
+        });
 
         // CLick on Facebook
         imageViewFacebook.setOnClickListener(view -> Toast.makeText(LoginActivity.this, "Facebook", Toast.LENGTH_SHORT).show());
@@ -202,28 +213,8 @@ public class LoginActivity extends AppCompatActivity {
 
     // -------------- Function -----------------
 
-    private void checkGoogleSignIn() {
-
-        // Get data from Google sign in account
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail().build();
-        gsc = GoogleSignIn.getClient(this, gso);
-
-        GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(this);
-        if (signInAccount != null) {
-            // navigate to main activity if user is logged in
-            finish();
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        }
-    }
-
     private boolean checkNullInputData() {
         return editTextEmail.getText().toString().equals("") || editTextPassword.getText().toString().equals("");
-    }
-
-    private void googleSignIn() {
-        Intent signInIntent = gsc.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -233,14 +224,93 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                task.getResult(ApiException.class);
-                // navigate to main activity
-                finish();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d("GoogleSignIn", "firebaseAuthWithGoogle: " + account.getEmail());
+                firebaseAuthWithGoogle(account.getIdToken());
+                SharedPreferences.Editor editor = getApplicationContext()
+                        .getSharedPreferences("google_sign_in_info", MODE_PRIVATE)
+                        .edit();
+                editor.putString("google_name", account.getDisplayName());
+                editor.putString("google_email", account.getEmail());
+                editor.apply();
+
             } catch (ApiException e) {
-                Toast.makeText(this, "Đã xảy ra lỗi. Vui lòng thử lại!", Toast.LENGTH_LONG).show();
-                Log.e("Error: ", e.getMessage());
+                Log.w("GoogleSignIn", "Failed: " + e.getMessage());
             }
+
         }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        fAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                    Log.d("GoogleSignIn", "firebaseAuthWithGoogle: success");
+
+                    // create a user profile on database
+                    SharedPreferences preferences = getSharedPreferences("google_sign_in_info", MODE_PRIVATE);
+                    String displayName = preferences.getString("google_name", "");
+                    String googleEmail = preferences.getString("google_email", "");
+
+                    String lastName = "";
+                    String firstName = "";
+                    if (displayName.split("\\w+").length > 1) {
+
+                        lastName = displayName.substring(displayName.lastIndexOf(" ") + 1);
+                        firstName = displayName.substring(0, displayName.lastIndexOf(" "));
+                    } else {
+                        firstName = displayName;
+                    }
+
+                    // create user profile on fire store
+                    Log.d("google_info", displayName + " | " + firstName + " | " + lastName + " | " + googleEmail);
+                    try {
+                        UserInformation userInformation = new UserInformation(firstName,
+                                lastName, googleEmail,
+                                "0", "Nam",
+                                new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000"),
+                                "Mua hàng");
+
+                        db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid())
+                                .set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error writing document", e);
+                                    }
+                                });
+                    } catch (Exception ex) {
+                        Log.e("Error: ", ex.getMessage());
+                    }
+
+                    // navigate to main activity
+                    finishAffinity();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                } else {
+                    Log.d("GoogleSignIn", "firebaseAuthWithGoogle: failed");
+                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void googleSignIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    private void requestGoogleSignIn() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 }

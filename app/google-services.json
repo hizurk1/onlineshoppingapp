@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "182604531551",
+    "firebase_url": "https://online-shopping-app-2aa6f-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "online-shopping-app-2aa6f",
     "storage_bucket": "online-shopping-app-2aa6f.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "182604531551-0k8ue0k2954npagsil856vunic154j6v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.android.onlineshoppingapp",
+            "certificate_hash": "a5af04f2efa2783a8a049a051a7661cd0b8e1d1b"
+          }
+        },
         {
           "client_id": "182604531551-g4j38nftjhvgcls0tke85lmugp1smtov.apps.googleusercontent.com",
           "client_type": 1,
