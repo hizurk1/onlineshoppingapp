@@ -29,8 +29,8 @@ public class ChangePasswordFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_change_password, container, false);
 
         // change password
-        inputLayoutEnterNewPass = view.findViewById(R.id.txtFieldNewPass);
-        editTextEnterNewPass = view.findViewById(R.id.editTxtNewPass);
+        inputLayoutEnterNewPass = view.findViewById(R.id.txtFieldNewPassFP);
+        editTextEnterNewPass = view.findViewById(R.id.editTxtNewPassFP);
 
         editTextEnterNewPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -47,14 +47,14 @@ public class ChangePasswordFragment extends Fragment {
             }
         });
 
-        inputLayoutEnterNewRePass = view.findViewById(R.id.txtFieldNewRePass);
-        editTextEnterNewRePass = view.findViewById(R.id.editTxtNewRePass);
+        inputLayoutEnterNewRePass = view.findViewById(R.id.txtFieldNewRePassFP);
+        editTextEnterNewRePass = view.findViewById(R.id.editTxtNewRePassFP);
 
         // get user email
         data = getArguments();
         userEmail = data.getString("userEmail");
 
-        btnOk = view.findViewById(R.id.btnOk);
+        btnOk = view.findViewById(R.id.btnOkFP);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

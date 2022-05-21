@@ -7,75 +7,68 @@
     tools:context=".fragments.EnterCodeFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/imageEmail"
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
-            android:src="@drawable/emailsend"></ImageView>
+            android:src="@drawable/emailsend" />
 
         <TextView
-            android:id="@+id/tvCheckEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kiểm tra hộp thư của bạn"
+            android:text="Kiểm tra tin nhắn của bạn"
             android:textSize="25sp"
+            android:layout_gravity="center_horizontal"
             android:textStyle="bold"
             android:fontFamily="@font/neosansintel"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/imageEmail"
-            android:layout_marginTop="20dp"></TextView>
+            android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/tvEnterCode"
+            android:id="@+id/tvEnterCodeFP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="17sp"
+            android:text="Sent"
             android:fontFamily="@font/neosansintel"
-            android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="40dp"
-            android:layout_below="@id/tvCheckEmail"
-            android:layout_marginTop="10dp"></TextView>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtFieldEnterCode"
+            android:id="@+id/txtFieldEnterCodeFP"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="20dp"
             android:hint="Nhập mã xác minh"
-            android:layout_below="@+id/tvEnterCode"
             app:helperTextEnabled="true"
             app:helperTextTextColor="@color/red_error">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTxtEnterCode"
+                android:id="@+id/editTxtEnterCodeFP"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="number"
-                android:maxLength="6"></com.google.android.material.textfield.TextInputEditText>
+                android:maxLength="6" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btnOkCode"
+            android:id="@+id/btnOkCodeFP"
             android:layout_width="match_parent"
             android:layout_height="65dp"
-            android:layout_below="@id/txtFieldEnterCode"
             android:layout_marginTop="10dp"
             android:layout_marginHorizontal="40dp"
             android:text="OK"
             android:textSize="18sp"
-            android:fontFamily="@font/neosansintel"></Button>
+            android:fontFamily="@font/neosansintel" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </FrameLayout>

@@ -46,7 +46,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
 
         // click on close button
-        imageViewCLose = findViewById(R.id.imageViewClose);
+        imageViewCLose = findViewById(R.id.imageViewCloseFP);
         imageViewCLose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,8 +56,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
         // send code
-        textInputLayoutEmail = findViewById(R.id.txtFieldEmailFP);
-        textInputEditTextEmail = findViewById(R.id.editTxtEmailFP);
+        textInputLayoutEmail = findViewById(R.id.txtFieldPhoneFP);
+        textInputEditTextEmail = findViewById(R.id.editTxtPhoneFP);
 
         textInputEditTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -69,7 +69,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
         // click on send button
-        btnSendCode = findViewById(R.id.btnSendCode);
+        btnSendCode = findViewById(R.id.btnSendCodeFP);
         btnSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

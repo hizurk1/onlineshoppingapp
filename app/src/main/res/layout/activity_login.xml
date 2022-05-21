@@ -95,8 +95,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="40dp"
                     android:text="Quên mật khẩu?"
-                    android:textColor="@color/light_green"
-                    android:textStyle="italic" />
+                    android:textColor="@color/light_green" />
 
             </RelativeLayout>
 
