@@ -1,11 +1,14 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +17,17 @@ import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.ShoppingCartAdapter;
 import com.android.onlineshoppingapp.models.Product;
+import com.android.onlineshoppingapp.models.cartProduct;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +35,13 @@ import java.util.List;
 public class ShoppingCartActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private List<Product> productList;
+    private List<cartProduct> productList;
     private ShoppingCartAdapter adapter;
     private ImageView ivBack;
     private EditText etCoupon;
     private Button btnBuyNow;
+    private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,22 +55,37 @@ public class ShoppingCartActivity extends AppCompatActivity {
         etCoupon = findViewById(R.id.etCouponCart);
         btnBuyNow = findViewById(R.id.btnBuyCart);
         productList = new ArrayList<>();
+        db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
 
         // add data
-        Product product1 = new Product("Sữa không đường", "Vinamilk", "Sữa tươi vinamilk", 7000);
-        Product product2 = new Product("Sữa có đường", "Vinamilk", "Sữa tươi vinamilk", 8000);
-        Product product3 = new Product("Sữa không có đường", "Vinamilk", "Sữa tươi vinamilk", 7000);
-        Product product4 = new Product("Sữa có đường cũng như không", "Vinamilk", "Sữa tươi vinamilk", 9000);
-        productList.add(product1);
-        productList.add(product2);
-        productList.add(product3);
-        productList.add(product4);
+        final CollectionReference collectionRef = db.collection("Carts").document(firebaseAuth.getCurrentUser().getUid()).collection("Products");
+        collectionRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
 
-        // set layout and adapter
-        adapter = new ShoppingCartAdapter(productList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+                productList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : value) {
+                    if (doc.get("productName") != null) {
+                        cartProduct cartProduct = doc.toObject(cartProduct.class);
+                        cartProduct.setProductId(doc.getId());
+                        productList.add(cartProduct);
+                    }
+                }
+                Log.d(TAG, "Current products in CART: " + productList);
+                // set layout and adapter
+                adapter = new ShoppingCartAdapter(productList, ShoppingCartActivity.this);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(ShoppingCartActivity.this, LinearLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+
 
         // click on back
         ivBack.setOnClickListener(new View.OnClickListener() {

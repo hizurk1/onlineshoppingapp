@@ -1,5 +1,7 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -8,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,13 +23,17 @@ import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.ProductImage;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -42,12 +49,14 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Button btnAddToCartPD;
     private Product product = new Product();
     private FirebaseFirestore db;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        fAuth = FirebaseAuth.getInstance();
 
         Bundle bundle = getIntent().getExtras();
 
@@ -76,7 +85,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
     }
@@ -119,7 +127,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         cardViewShoppingCartPD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ProductDetailActivity.this, ShoppingCartActivity.class));
+                startActivity(new Intent(ProductDetailActivity.this,
+                        ShoppingCartActivity.class));
             }
         });
 
@@ -127,7 +136,46 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnAddToCartPD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                db.collection("Carts").document(fAuth.getCurrentUser().getUid())
+                        .collection("Products")
+                        .document(product.getProductId())
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Toast.makeText(ProductDetailActivity.this,
+                                        "Sản phẩm đã được thêm vào giỏ hàng từ trước", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Map<String, Object> cartProduct = new HashMap<>();
+                                cartProduct.put("productName", product.getProductName());
+                                cartProduct.put("seller", product.getSeller());
+                                cartProduct.put("description", product.getDescription());
+                                cartProduct.put("productPrice", product.getProductPrice());
+                                cartProduct.put("rate", product.getRate());
+                                cartProduct.put("likeNumber", product.getLikeNumber());
+                                cartProduct.put("quantitySold", product.getQuantitySold());
+                                cartProduct.put("quantity", 1);
+                                db.collection("Carts")
+                                        .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                                        .collection("Products")
+                                        .document(product.getProductId())
+                                        .set(cartProduct)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Toast.makeText(ProductDetailActivity.this,
+                                                        "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
             }
         });
 

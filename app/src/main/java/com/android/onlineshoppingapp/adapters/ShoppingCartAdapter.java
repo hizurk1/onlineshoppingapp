@@ -1,8 +1,12 @@
 package com.android.onlineshoppingapp.adapters;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,15 +23,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Product;
+import com.android.onlineshoppingapp.models.cartProduct;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
 
 public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder> {
 
-    private List<Product> productList;
+    private List<cartProduct> productList;
+    private Context context;
 
-    public ShoppingCartAdapter(List<Product> productList) {
+    public ShoppingCartAdapter(List<cartProduct> productList, Context context) {
         this.productList = productList;
+        this.context = context;
     }
 
     @NonNull
@@ -139,15 +153,29 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         }
         holder.tvTitle.setText(productTitle);
 
-        // set seller
-        if (productSeller.length() > 15) {
-            productSeller = productSeller.substring(0, 15) + "...";
-        }
-        holder.tvSeller.setText(productSeller);
+        //set seller
+        setSellerName(productSeller, holder);
 
         // set price
         holder.tvPrice.setText(productPrice);
 
+        //set image
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    Map<String, Object> map = documentSnapshot.getData();
+
+                    if (map != null) {
+                        List<String> string = (List<String>) map.get("url");
+                        Glide.with(context)
+                                .load(string.get(0)).into(holder.ivProductImg);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -181,5 +209,32 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 //            Log.d("Number", (etNumProduct.getText().toString().equals(null)) ? "null" : etNumProduct.getText().toString());
             numProduct = Integer.parseInt(etNumProduct.getText().toString());
         }
+    }
+
+    private void setSellerName(String sellerId, @NonNull ShoppingCartViewHolder holder) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("Users").document(sellerId);
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        String productSeller = document.getString("firstName");
+
+                        // set seller
+                        if (productSeller.length() > 15) {
+                            productSeller = productSeller.substring(0, 15) + "...";
+                        }
+                        holder.tvSeller.setText(productSeller);
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }

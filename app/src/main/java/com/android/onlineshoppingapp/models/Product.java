@@ -3,14 +3,14 @@ package com.android.onlineshoppingapp.models;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-    private String productId;
-    private String productName;
-    private String seller;
-    private String description;
-    private int productPrice;
-    private float rate;
-    private int likeNumber;
-    private int quantitySold;
+    protected String productId;
+    protected String productName;
+    protected String seller;
+    protected String description;
+    protected int productPrice;
+    protected float rate;
+    protected int likeNumber;
+    protected int quantitySold;
 
     public Product(String productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold) {
         this.productId = productId;
