@@ -9,13 +9,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -36,20 +34,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,8 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
-    private ArrayList<UserInformation> userList = new ArrayList<UserInformation>();
-    public ArrayList<String> userEmailList = new ArrayList<String>();
+    private ArrayList<UserInformation> userList = new ArrayList<>();
+    public ArrayList<String> userEmailList = new ArrayList<>();
 
     @Override
     protected void onStart() {
@@ -99,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         imageViewFacebook = findViewById(R.id.ivFacebook);
 
         fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         requestGoogleSignIn();
 
 //        // check email
@@ -147,16 +133,13 @@ public class LoginActivity extends AppCompatActivity {
 //        });
 
         // check password: null
-        editTextPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (!onFocus) {
-                    if (editTextPassword.getText().toString().equals("")) {
-                        layoutPassword.setHelperText("Mật khẩu không được để trống");
-                    }
-                } else {
-                    layoutPassword.setHelperTextEnabled(false);
+        editTextPassword.setOnFocusChangeListener((view, onFocus) -> {
+            if (!onFocus) {
+                if (editTextPassword.getText().toString().equals("")) {
+                    layoutPassword.setHelperText("Mật khẩu không được để trống");
                 }
+            } else {
+                layoutPassword.setHelperTextEnabled(false);
             }
         });
 
@@ -275,17 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                                 "Mua hàng");
 
                         db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid())
-                                .set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error writing document", e);
-                                    }
-                                });
+                                .set(userInformation).addOnSuccessListener((OnSuccessListener<Void>) unused -> Log.d(TAG, "DocumentSnapshot successfully written!")).addOnFailureListener((OnFailureListener) e -> Log.w(TAG, "Error writing document", e));
                     } catch (Exception ex) {
                         Log.e("Error: ", ex.getMessage());
                     }
@@ -312,5 +285,6 @@ public class LoginActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.revokeAccess();
     }
 }
