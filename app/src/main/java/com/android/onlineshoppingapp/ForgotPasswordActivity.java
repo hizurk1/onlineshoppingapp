@@ -56,8 +56,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
 
         // send code
-        textInputLayoutEmail = findViewById(R.id.txtFieldPhoneFP);
-        textInputEditTextEmail = findViewById(R.id.editTxtPhoneFP);
+        textInputLayoutEmail = findViewById(R.id.txtFieldEmailFP);
+        textInputEditTextEmail = findViewById(R.id.editTxtEmailFP);
 
         textInputEditTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

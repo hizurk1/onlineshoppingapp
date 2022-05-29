@@ -22,7 +22,7 @@ public class EnterCodeFragment extends Fragment {
     private TextView textViewEnterCode;
     private TextInputLayout inputLayoutEnterCode;
     private TextInputEditText editTextEnterCode;
-    private String userPhone, verifyCode;
+    private String userEmail, verifyCode;
     private Bundle data;
 
     @Override
@@ -33,12 +33,13 @@ public class EnterCodeFragment extends Fragment {
 
         // get data from activity
         data = getArguments();
-        userPhone = data.getString("userEmail");
+        userEmail = data.getString("userEmail");
         verifyCode = data.getString("verifyCode");
 
         // set text for textview below imageview
         textViewEnterCode = view.findViewById(R.id.tvEnterCodeFP);
-        textViewEnterCode.setText("Chúng tôi vừa gửi mã xác minh đến email:\n" + userPhone);
+        textViewEnterCode.setText("Chúng tôi vừa gửi mã xác minh đến email:\n" + userEmail);
+        textViewEnterCode.setTextSize(17);
 
         // click on OK button
         btnOkCode = view.findViewById(R.id.btnOkCodeFP);
