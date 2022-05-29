@@ -16,12 +16,13 @@
         android:layout_height="wrap_content"
         android:padding="5dp">
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/ivProductLogo"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/logoapp" />
+            android:src="@drawable/logoapp"
+            app:riv_corner_radius="5dp" />
 
         <TextView
             android:id="@+id/tvProductName"

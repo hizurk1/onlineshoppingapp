@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView ivProductLogo;
+        private RoundedImageView ivProductLogo;
         private TextView tvProductName, tvProductPrice, tvSoldNum, tvSaleOff;
         private RatingBar ratingbarProduct;
         private CardView cardProductItem;
