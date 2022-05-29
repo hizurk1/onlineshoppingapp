@@ -46,26 +46,25 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/light_green"
-            android:gravity="center"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
                 app:cardCornerRadius="25dp"
                 app:cardElevation="5dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"> <!--Change height of page here-->
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"> <!--Change height of page here-->
 
                     <RelativeLayout
                         android:id="@+id/layoutName"
@@ -79,9 +78,9 @@
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginRight="5dp"
-                            android:layout_toLeftOf="@+id/splitTxtFieldName"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginEnd="5dp"
+                            android:layout_toStartOf="@+id/splitTxtFieldName"
                             android:hint="@string/txt_lastname"
                             app:helperTextEnabled="true"
                             app:helperTextTextColor="@color/red_error"
@@ -100,16 +99,16 @@
                             android:id="@+id/splitTxtFieldName"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:layout_centerInParent="true"></View>
+                            android:layout_centerInParent="true" />
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/txtFieldFirstname"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_toRightOf="@+id/splitTxtFieldName"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@+id/splitTxtFieldName"
                             android:hint="@string/txt_firstname"
                             app:helperTextEnabled="true"
                             app:helperTextTextColor="@color/red_error">
@@ -130,7 +129,6 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/layoutName"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/txt_email"
@@ -153,7 +151,6 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtFieldEmail"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/txt_password"
@@ -176,7 +173,6 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtFieldPassword"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/txt_repassword"
@@ -200,7 +196,6 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtFieldRePassword"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/txt_phone"
@@ -221,7 +216,6 @@
                         android:id="@+id/layoutChooseSex"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:layout_below="@+id/txtFieldPhone"
                         android:layout_marginHorizontal="40dp"
                         android:layout_marginTop="5dp">
 
@@ -237,7 +231,6 @@
                             android:id="@+id/radioGroupSex"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/txtFieldPhone"
                             android:layout_gravity="center"
                             android:orientation="horizontal">
 
@@ -266,76 +259,79 @@
 
                     </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtFieldDay"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="90dp"
-                        android:layout_height="60dp"
-                        android:layout_below="@+id/layoutChooseSex"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="5dp"
-                        android:hint="Ngày"
-                        app:helperTextEnabled="true"
-                        app:helperTextTextColor="@color/red_error">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/tvListDay"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:inputType="none"
-                            android:text="01" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtFieldDay"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="90dp"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="40dp"
+                            android:layout_marginTop="5dp"
+                            android:hint="Ngày"
+                            app:helperTextEnabled="true"
+                            app:helperTextTextColor="@color/red_error">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/tvListDay"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:inputType="none"
+                                android:text="01" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtFieldMonth"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="90dp"
-                        android:layout_height="60dp"
-                        android:layout_below="@+id/layoutChooseSex"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_toRightOf="@+id/txtFieldDay"
-                        android:hint="Tháng">
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <AutoCompleteTextView
-                            android:id="@+id/tvListMonth"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:inputType="none"
-                            android:text="01" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtFieldMonth"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="90dp"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_toRightOf="@+id/txtFieldDay"
+                            android:hint="Tháng">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/tvListMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:inputType="none"
+                                android:text="01" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtFieldYear"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="110dp"
-                        android:layout_height="60dp"
-                        android:layout_below="@+id/layoutChooseSex"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_toRightOf="@+id/txtFieldMonth"
-                        android:hint="Năm">
+                        </com.google.android.material.textfield.TextInputLayout>
 
-                        <AutoCompleteTextView
-                            android:id="@+id/tvListYear"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:inputType="none"
-                            android:text="2000" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/txtFieldYear"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="110dp"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_toRightOf="@+id/txtFieldMonth"
+                            android:hint="Năm">
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                            <AutoCompleteTextView
+                                android:id="@+id/tvListYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:inputType="none"
+                                android:text="2000" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/layoutAccType"
                         android:layout_width="310dp"
                         android:layout_height="50dp"
-                        android:layout_below="@+id/txtFieldDay"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginStart="40dp"
                         android:layout_marginTop="10dp">
 
                         <TextView
@@ -376,94 +372,91 @@
 
                     </LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/checkBoxAgree"
-                        android:layout_width="310dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/layoutAccType"
-                        android:layout_centerHorizontal="true"
+                        android:layout_marginHorizontal="20dp"
                         android:layout_marginVertical="5dp"
-                        android:checked="false"
-                        android:paddingLeft="5dp"
-                        android:text="Tôi đồng ý với các Điều khoản dịch vụ và Chính sách bảo mật" />
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/checkBoxAgree"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="5dp"
+                            android:layout_gravity="center_vertical"
+                            android:checked="false" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:text="Tôi đồng ý với các " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:text="Điều khoản dịch vụ"
+                                    android:textColor="@color/black"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="16sp"
+                                    android:text="và " />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Chính sách bảo mật"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                     <Button
                         android:id="@+id/btnRegister"
-                        style="@style/Widget.Material3.Button"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/checkBoxAgree"
-                        android:layout_centerHorizontal="true"
+                        android:layout_height="55dp"
                         android:layout_marginHorizontal="40dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="50dp"
+                        android:background="@drawable/background_button_addtocart"
                         android:enabled="true"
                         android:text="TẠO TÀI KHOẢN"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/btnRegister"
-                        android:layout_marginLeft="70dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_toLeftOf="@+id/tvOtherMethod"
-                        android:background="#D0DCD7" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/btnRegister"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginRight="70dp"
-                        android:layout_toRightOf="@+id/tvOtherMethod"
-                        android:background="#D0DCD7" />
-
-
-                    <TextView
-                        android:id="@+id/tvOtherMethod"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/btnRegister"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="20sp"
-                        android:text="hoặc" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tvOtherMethod"
-                        android:layout_marginHorizontal="60dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="30dp">
-
-                        <ImageView
-                            android:id="@+id/ivGoogle"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="60dp"
-                            android:elevation="5dp"
-                            android:src="@drawable/google" />
-
-                        <ImageView
-                            android:id="@+id/ivFacebook"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="60dp"
-                            android:src="@drawable/facebook" />
-
-                    </RelativeLayout>
-
-                </RelativeLayout>
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

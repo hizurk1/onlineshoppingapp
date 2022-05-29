@@ -14,8 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
 
 import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -34,7 +36,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText editTextEmail, editTextPassword;
     private TextInputLayout layoutEmail, layoutPassword;
     private TextView textViewForgotPass, textViewRegister;
-    private ImageView imageViewGoogle, imageViewFacebook;
+    private CardView googleSignIn;
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
@@ -80,8 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         layoutPassword = findViewById(R.id.tfPassLogin);
         textViewForgotPass = findViewById(R.id.tvForgotPassword);
         textViewRegister = findViewById(R.id.txtRegister);
-        imageViewGoogle = findViewById(R.id.ivGoogle);
-        imageViewFacebook = findViewById(R.id.ivFacebook);
+        googleSignIn = findViewById(R.id.cardGoogleLogin);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -184,13 +190,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
-        // Click on Google
-        imageViewGoogle.setOnClickListener(view -> {
+        // click on google login
+        googleSignIn.setOnClickListener(view -> {
             googleSignIn();
         });
-
-        // CLick on Facebook
-        imageViewFacebook.setOnClickListener(view -> Toast.makeText(LoginActivity.this, "Facebook", Toast.LENGTH_SHORT).show());
 
     }
 
