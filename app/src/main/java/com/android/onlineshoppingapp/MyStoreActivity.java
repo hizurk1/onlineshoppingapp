@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -211,6 +212,23 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         });
 
+        // check quantity
+        TextInputEditText etProductQuantity = sheetView.findViewById(R.id.bottomSheetAddProductQuantity);
+        TextInputLayout layoutProductQuantity = sheetView.findViewById(R.id.layout_bottomSheetAddProductQuantity);
+        etProductQuantity.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    if (etProductQuantity.getText().toString().equals("")) {
+                        layoutProductQuantity.setHelperText("Số lượng không được để trống");
+                    }
+                } else {
+                    layoutProductQuantity.setHelperTextEnabled(false);
+                }
+            }
+        });
+
+        // add image
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

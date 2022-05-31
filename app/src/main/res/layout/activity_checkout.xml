@@ -57,6 +57,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvChangeAddressCheckout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -70,7 +71,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
@@ -124,6 +125,7 @@
                 android:layout_marginTop="15dp">
 
                 <RadioGroup
+                    android:id="@+id/rgOptionsCheckout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -161,6 +163,7 @@
                         android:text="Giao hàng trước thứ, ngày, tháng năm" />
 
                     <TextView
+                        android:id="@+id/tvFastDeliveryTxtCheckout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -215,7 +218,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Thanh toán khi nhận"
+                        android:text="Thanh toán khi nhận hàng"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -331,13 +334,13 @@
             </RelativeLayout>
 
             <Button
-                android:id="@+id/btnBuyCart"
+                android:id="@+id/btnCheckout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="15dp"
-                android:text="Mua Ngay"
+                android:text="THANH TOÁN"
                 android:textSize="18sp" />
 
         </LinearLayout>
