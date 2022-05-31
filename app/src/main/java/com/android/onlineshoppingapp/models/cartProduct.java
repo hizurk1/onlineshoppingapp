@@ -3,6 +3,18 @@ package com.android.onlineshoppingapp.models;
 public class cartProduct extends Product{
     private int quantity;
 
+    public cartProduct(Product product, int quantity, String productId) {
+        this.productId = productId;
+        this.productName = product.productName;
+        this.seller = product.seller;
+        this.description = product.description;
+        this.productPrice = product.productPrice;
+        this.rate = product.rate;
+        this.likeNumber = product.likeNumber;
+        this.quantitySold = product.quantitySold;
+        this.quantity = quantity;
+    }
+
     public cartProduct(String productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold, int quantity) {
         this.productId = productId;
         this.productName = productName;

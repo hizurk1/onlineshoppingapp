@@ -2,6 +2,7 @@ package com.android.onlineshoppingapp;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,9 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.adapters.ShoppingCartAdapter;
 import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.cartProduct;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.CollectionReference;
@@ -31,6 +35,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ShoppingCartActivity extends AppCompatActivity {
 
@@ -71,11 +76,19 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
                 productList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : value) {
-                    if (doc.get("productName") != null) {
-                        cartProduct cartProduct = doc.toObject(cartProduct.class);
-                        cartProduct.setProductId(doc.getId());
-                        productList.add(cartProduct);
-                    }
+                    DocumentReference documentReference = (DocumentReference) doc.get("productRef");
+                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            cartProduct cartProduct = documentSnapshot.toObject(cartProduct.class);
+                            Objects.requireNonNull(cartProduct).setQuantity(Integer.parseInt(String.valueOf(doc.get("quantity"))));
+                            cartProduct.setProductId(documentSnapshot.getId());
+                            productList.add(cartProduct);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+//                    cartProduct.setProductId(doc.getId());
+//                    productList.add(cartProduct);
                 }
                 Log.d(TAG, "Current products in CART: " + productList);
                 // set layout and adapter

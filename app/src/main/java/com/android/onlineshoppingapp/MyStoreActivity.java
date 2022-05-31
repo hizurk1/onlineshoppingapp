@@ -96,8 +96,6 @@ public class MyStoreActivity extends AppCompatActivity {
         ivAvatarStore = findViewById(R.id.ivAvatarStore);
 
 
-
-
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -230,7 +228,9 @@ public class MyStoreActivity extends AppCompatActivity {
             public void onClick(View view) {
                 newProductId = db.collection("Products").document().getId();
                 uploadImage();
-                addProduct(etProductName.getText().toString(), etProductDescription.getText().toString(), Integer.parseInt(etProductPrice.getText().toString()));
+                addProduct(etProductName.getText().toString(),
+                        etProductDescription.getText().toString(),
+                        Integer.parseInt(etProductPrice.getText().toString()));
                 bottomSheetDialogAddProduct.dismiss();
             }
         });
@@ -390,7 +390,9 @@ public class MyStoreActivity extends AppCompatActivity {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MyStoreActivity.this, "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyStoreActivity.this,
+                                        "Có lỗi xảy ra " + e.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
                                 Log.e(TAG, e.getMessage());
                             }
                         });
@@ -409,10 +411,11 @@ public class MyStoreActivity extends AppCompatActivity {
                 .addOnSuccessListener(uri -> {
                     imageUriList.add(String.valueOf(uri));
                     Map<String, Object> image = new HashMap<>();
-                    image.put("url",imageUriList);
+                    image.put("url", imageUriList);
                     db.collection("productImages").document(newProductId).set(image);
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(this,
+                        "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
 
     }
 
