@@ -235,9 +235,10 @@ public class MyStoreActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                startActivityForResult(intent, 1);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(intent, 1);
+                startActivityForResult(Intent.createChooser(intent, "Chọn một (nhiều) hình ảnh"), 1);
             }
-
         });
 
         // click on add button
@@ -379,6 +380,9 @@ public class MyStoreActivity extends AppCompatActivity {
 //                    textView.setText("You Have Selected "+ ImageList.size() +" Pictures" );
 //                    choose.setVisibility(View.GONE);
 
+                } else {
+                    Uri imageuri = data.getData();
+                    imageList.add(imageuri);
                 }
 
             }
