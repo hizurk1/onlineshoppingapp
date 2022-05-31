@@ -201,27 +201,39 @@
             </LinearLayout>
 
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ảnh mô tả" />
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btnAddImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="Thêm ảnh" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ảnh mô tả" />
 
+                    <Button
+                        android:id="@+id/btnAddImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginBottom="20dp"
+                        android:text="Thêm ảnh" />
+
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" />
             </LinearLayout>
 
             <Button

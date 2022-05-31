@@ -346,19 +346,21 @@ public class RegisterActivity extends AppCompatActivity {
                                                     .setDisplayName(userInformation.getLastName() + " " + userInformation.getFirstName())
                                                     .build();
                                             task.getResult().getUser().updateProfile(userProfileChangeRequest);
-                                            db.collection("Users").document(Objects.requireNonNull(task.getResult().getUser()).getUid()).set(userInformation).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Log.d(TAG, "DocumentSnapshot successfully written!");
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.w(TAG, "Error writing document", e);
-                                                }
-                                            });
-                                        }
-                                        catch (Exception ex) {
+                                            db.collection("Users")
+                                                    .document(Objects.requireNonNull(task.getResult().getUser()).getUid())
+                                                    .set(userInformation)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            Log.d(TAG, "DocumentSnapshot successfully written!");
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w(TAG, "Error writing document", e);
+                                                        }
+                                                    });
+                                        } catch (Exception ex) {
                                             Log.e("Error: ", ex.getMessage());
                                         }
                                         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

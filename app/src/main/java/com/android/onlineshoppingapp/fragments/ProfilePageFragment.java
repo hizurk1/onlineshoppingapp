@@ -3,6 +3,7 @@ package com.android.onlineshoppingapp.fragments;
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -90,6 +91,7 @@ public class ProfilePageFragment extends Fragment {
         storageReference = storage.getReference();
 
         // init
+//        userInf.getString("accountType",accountType);
         textViewFullname = view.findViewById(R.id.tvFullName);
         ivSettings = view.findViewById(R.id.ivSettings);
         ivShoppingCart = view.findViewById(R.id.ivShoppingCart);
@@ -240,15 +242,22 @@ public class ProfilePageFragment extends Fragment {
         });
 
         // show card my store
-        if (accountType.equals("Bán hàng")) {
-            cardMyStore.setVisibility(View.VISIBLE);
-            cardPurchasedProduct.setVisibility(View.GONE);
-            cardGift.setVisibility(View.GONE);
-        } else {
-            cardMyStore.setVisibility(View.GONE);
-            cardPurchasedProduct.setVisibility(View.VISIBLE);
-            cardGift.setVisibility(View.VISIBLE);
-        }
+        db.collection("Users").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                    cardMyStore.setVisibility(View.VISIBLE);
+                    cardPurchasedProduct.setVisibility(View.GONE);
+                    cardGift.setVisibility(View.GONE);
+                } else {
+                    cardMyStore.setVisibility(View.GONE);
+                    cardPurchasedProduct.setVisibility(View.VISIBLE);
+                    cardGift.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
         cardMyStore.setOnClickListener(new View.OnClickListener() {
             @Override

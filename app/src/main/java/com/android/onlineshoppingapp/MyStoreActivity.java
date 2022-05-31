@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,11 +21,14 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
+import com.android.onlineshoppingapp.adapters.SimpleGalleryRecyclerAdapter;
 import com.android.onlineshoppingapp.models.Product;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -65,6 +69,7 @@ public class MyStoreActivity extends AppCompatActivity {
     private RecyclerView rvPopularProducts, rvRecentlyProducts;
     private RecyclerViewAdapterProduct recyclerViewAdapterProduct;
     private List<Product> popularProductList, recentlyProductList;
+    private SimpleGalleryRecyclerAdapter simpleGalleryRecyclerAdapter;
 
     private TextView tvShopName;
     private CardView cardAddProduct, cardManageProduct;
@@ -229,6 +234,11 @@ public class MyStoreActivity extends AppCompatActivity {
         });
 
         // add image
+        RecyclerView rvImages = sheetView.findViewById(R.id.rvImages);
+        // setup recyclerview:
+        simpleGalleryRecyclerAdapter = new SimpleGalleryRecyclerAdapter(imageList, MyStoreActivity.this);
+        rvImages.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        rvImages.setAdapter(simpleGalleryRecyclerAdapter);
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -363,7 +373,7 @@ public class MyStoreActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        imageList.clear();
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 if (data.getClipData() != null) {
@@ -384,7 +394,7 @@ public class MyStoreActivity extends AppCompatActivity {
                     Uri imageuri = data.getData();
                     imageList.add(imageuri);
                 }
-
+                simpleGalleryRecyclerAdapter.notifyDataSetChanged();
             }
 
         }

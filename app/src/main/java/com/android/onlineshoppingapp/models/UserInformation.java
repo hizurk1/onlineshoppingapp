@@ -18,7 +18,7 @@ public class UserInformation implements Parcelable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        Phone = phone;
+        this.Phone = phone;
         this.sex = sex;
         this.dateOfBirth = dateOfBirth;
         this.accountType = accountType;
