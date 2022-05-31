@@ -248,14 +248,14 @@ public class MyStoreActivity extends AppCompatActivity {
                 uploadImage();
                 addProduct(etProductName.getText().toString(),
                         etProductDescription.getText().toString(),
-                        Integer.parseInt(etProductPrice.getText().toString()));
+                        Integer.parseInt(etProductPrice.getText().toString()),Integer.parseInt(etProductQuantity.getText().toString()));
                 bottomSheetDialogAddProduct.dismiss();
             }
         });
 
     }
 
-    private void addProduct(String etProductName, String etProductDescription, int etProductPrice) {
+    private void addProduct(String etProductName, String etProductDescription, int etProductPrice, int etProductQuantity) {
         Map<String, Object> product = new HashMap<>();
         product.put("productName", etProductName);
         product.put("seller", fAuth.getCurrentUser().getUid());
@@ -264,6 +264,7 @@ public class MyStoreActivity extends AppCompatActivity {
         product.put("rate", 0);
         product.put("likeNumber", 0);
         product.put("quantitySold", 0);
+        product.put("quantity",etProductQuantity);
         db.collection("Products").document(newProductId).set(product).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

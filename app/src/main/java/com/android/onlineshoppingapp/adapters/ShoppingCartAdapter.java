@@ -58,6 +58,16 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         if (product == null) {
             return;
         }
+        adjustBtn(holder.ivMinus, true);
+        adjustBtn(holder.ivAdd, true);
+        if (Integer.parseInt(String.valueOf(holder.etNumProduct.getText())) == 1) {
+            adjustBtn(holder.ivMinus, false);
+            adjustBtn(holder.ivAdd, true);
+        }
+        if (Integer.parseInt(holder.etNumProduct.getText().toString()) >= product.getQuantity()) {
+            adjustBtn(holder.ivMinus, true);
+            adjustBtn(holder.ivAdd, false);
+        }
 
         holder.etNumProduct.addTextChangedListener(new TextWatcher() {
 
@@ -67,33 +77,25 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                adjustBtn(holder.ivMinus, true);
+                adjustBtn(holder.ivAdd, true);
                 if (Integer.parseInt(charSequence.toString()) == 1) {
                     adjustBtn(holder.ivMinus, false);
                     adjustBtn(holder.ivAdd, true);
-                } else if (Integer.parseInt(charSequence.toString()) >= 999) {
-                    adjustBtn(holder.ivMinus, false);
-                    adjustBtn(holder.ivAdd, true);
-                } else {
+                }
+                if (Integer.parseInt(charSequence.toString()) >= product.getQuantity()) {
                     adjustBtn(holder.ivMinus, true);
-                    adjustBtn(holder.ivAdd, true);
+                    adjustBtn(holder.ivAdd, false);
                 }
             }
 
-            public void adjustBtn(ImageView imageView, boolean condition) {
-                imageView.setClickable(condition);
-                if (condition) {
-                    imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#22B473")));
-                } else {
-                    imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#D2D5DD")));
-                }
-            }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
             }
         });
+
 
         // click on minus
         holder.ivMinus.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +114,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             @Override
             public void onClick(View view) {
                 holder.numProduct += 1;
-                holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                if (holder.numProduct <= product.getQuantity())
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
             }
         });
 
@@ -176,6 +179,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 }
             }
         });
+    }
+
+    public void adjustBtn(ImageView imageView, boolean condition) {
+        imageView.setClickable(condition);
+        if (condition) {
+            imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#22B473")));
+        } else {
+            imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor("#D2D5DD")));
+        }
     }
 
     @Override

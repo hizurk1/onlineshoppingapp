@@ -11,6 +11,7 @@ public class Product implements Serializable {
     protected float rate;
     protected int likeNumber;
     protected int quantitySold;
+    protected int quantity;
 
     public Product(String productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold) {
         this.productId = productId;
@@ -106,5 +107,13 @@ public class Product implements Serializable {
 
     public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

@@ -81,16 +81,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             cartProduct cartProduct = documentSnapshot.toObject(cartProduct.class);
-                            Objects.requireNonNull(cartProduct).setQuantity(Integer.parseInt(String.valueOf(doc.get("quantity"))));
+                            Objects.requireNonNull(cartProduct).setOrderQuantity(Integer.parseInt(String.valueOf(doc.get("orderQuantity"))));
                             cartProduct.setProductId(documentSnapshot.getId());
                             productList.add(cartProduct);
                             adapter.notifyDataSetChanged();
                         }
                     });
-//                    cartProduct.setProductId(doc.getId());
-//                    productList.add(cartProduct);
                 }
-                Log.d(TAG, "Current products in CART: " + productList);
+//                Log.d(TAG, "Current products in CART: " + productList);
                 // set layout and adapter
                 adapter = new ShoppingCartAdapter(productList, ShoppingCartActivity.this);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(ShoppingCartActivity.this, LinearLayoutManager.VERTICAL, false);

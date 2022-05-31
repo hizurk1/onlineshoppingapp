@@ -136,61 +136,39 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnAddToCartPD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                db.collection("Carts").document(fAuth.getCurrentUser().getUid())
-//                        .collection("Products")
-//                        .document(product.getProductId())
-//                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            DocumentSnapshot document = task.getResult();
-//                            if (document.exists()) {
-//                                Toast.makeText(ProductDetailActivity.this,
-//                                        "Sản phẩm đã được thêm vào giỏ hàng từ trước", Toast.LENGTH_SHORT).show();
-//                            } else {
-//                                Map<String, Object> cartProduct = new HashMap<>();
-//                                cartProduct.put("productName", product.getProductName());
-//                                cartProduct.put("seller", product.getSeller());
-//                                cartProduct.put("description", product.getDescription());
-//                                cartProduct.put("productPrice", product.getProductPrice());
-//                                cartProduct.put("rate", product.getRate());
-//                                cartProduct.put("likeNumber", product.getLikeNumber());
-//                                cartProduct.put("quantitySold", product.getQuantitySold());
-//                                cartProduct.put("quantity", 1);
-//                                db.collection("Carts")
-//                                        .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
-//                                        .collection("Products")
-//                                        .document(product.getProductId())
-//                                        .set(cartProduct)
-//                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void unused) {
-//                                                Toast.makeText(ProductDetailActivity.this,
-//                                                        "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        });
-//                            }
-//                        } else {
-//                            Log.d(TAG, "get failed with ", task.getException());
-//                        }
-//                    }
-//                });
-                Map<String, Object> cartProduct = new HashMap<>();
-                cartProduct.put("quantity", 1);
-                cartProduct.put("productRef", db.document("Products/" + product.getProductId() + "/"));
-                db.collection("Carts")
-                        .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                db.collection("Carts").document(fAuth.getCurrentUser().getUid())
                         .collection("Products")
                         .document(product.getProductId())
-                        .set(cartProduct)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(ProductDetailActivity.this,
-                                        "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Toast.makeText(ProductDetailActivity.this,
+                                                "Sản phẩm đã được thêm vào giỏ hàng từ trước", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Map<String, Object> cartProduct = new HashMap<>();
+                                        cartProduct.put("orderQuantity", 1);
+                                        cartProduct.put("productRef", db.document("Products/" + product.getProductId() + "/"));
+                                        db.collection("Carts")
+                                                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                                                .collection("Products")
+                                                .document(product.getProductId())
+                                                .set(cartProduct)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(ProductDetailActivity.this,
+                                                                "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
                             }
                         });
-
             }
         });
 
