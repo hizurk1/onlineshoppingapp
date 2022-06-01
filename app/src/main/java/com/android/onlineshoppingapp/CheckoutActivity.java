@@ -223,7 +223,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         // get list of address info
         List<String> list = new ArrayList<>();
-        for (UserAddress item : userAddressList) list.add(item.getAddress());
+        for (UserAddress item : userAddressList) list.add("Địa chỉ: " + item.getAddress() + "\n" + "Tên: "+item.getName() + "\n" +"SĐT: "+ item.getPhone());
         CharSequence[] charSequence = list.toArray(new CharSequence[userAddressList.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
