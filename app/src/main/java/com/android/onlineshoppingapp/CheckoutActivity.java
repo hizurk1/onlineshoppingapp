@@ -51,6 +51,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private final int fee = 15000;
     public int total = 0;
     private Cart cart;
+    private int indexAddress = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +86,11 @@ public class CheckoutActivity extends AppCompatActivity {
         tvChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (userAddress.getListOfAddress().isEmpty()) {
-//                    Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    showDialogChangeAddress();
-//                }
+                if (userAddressList.isEmpty()) {
+                    Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
+                } else {
+                    showDialogChangeAddress();
+                }
             }
         });
 
@@ -162,10 +163,9 @@ public class CheckoutActivity extends AppCompatActivity {
                 .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-//                        Toast.makeText(CheckoutActivity.this, "Đang xử lý...", Toast.LENGTH_SHORT).show();
                         Map<String, Object> order = new HashMap<>();
                         order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                        order.put("address",userAddressList.get(0));
+                        order.put("address", userAddressList.get(indexAddress));
                         order.put("totalPrice", cart.getTotalPrice());
                         CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
                         String orderId = orderRef.document().getId();
@@ -219,40 +219,32 @@ public class CheckoutActivity extends AppCompatActivity {
                 }).show();
     }
 
-//    private void showDialogChangeAddress() {
-//
-//        // get list of address info
-//        String name = userAddress.getFirstName() + " " + userAddress.getLastName();
-//        String phone = userAddress.getPhone();
-//        CharSequence[] charSequence = userAddress.getListOfAddress().toArray(new CharSequence[userAddress.getListOfAddress().size()]);
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Chọn địa chỉ thanh toán")
-//                .setCancelable(false)
-//                .setSingleChoiceItems(charSequence, 0, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        switch (i) {
-//                            case 0:
-//                                tvName.setText(name);
-//                                tvPhone.setText(phone);
-//                                tvAddress.setText(userAddress.getListOfAddress().get(0));
-//                                break;
-//                            case 1:
-//                                tvName.setText(name);
-//                                tvPhone.setText(phone);
-//                                tvAddress.setText(userAddress.getListOfAddress().get(1));
-//                                break;
-//                        }
-//                    }
-//                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.dismiss();
-//                    }
-//                }).show();
-//
-//    }
+    private void showDialogChangeAddress() {
+
+        // get list of address info
+        List<String> list = new ArrayList<>();
+        for (UserAddress item : userAddressList) list.add(item.getAddress());
+        CharSequence[] charSequence = list.toArray(new CharSequence[userAddressList.size()]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Chọn địa chỉ thanh toán")
+                .setCancelable(false)
+                .setSingleChoiceItems(charSequence, indexAddress, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        tvName.setText(userAddressList.get(i).getName());
+                        tvPhone.setText(userAddressList.get(i).getPhone());
+                        tvAddress.setText(userAddressList.get(i).getAddress());
+                        indexAddress = i;
+                    }
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+
+    }
 
     public String getDateDelivery(int delay) {
 
