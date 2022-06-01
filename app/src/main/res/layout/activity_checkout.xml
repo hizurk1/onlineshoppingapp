@@ -62,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
                     android:text="Thay đổi"
                     android:textColor="@color/light_green"
                     android:textStyle="bold" />
@@ -224,7 +225,6 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvCODMethodCheckout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Giao hàng đến địa chỉ mặc định" />
@@ -287,7 +287,7 @@
                     android:layout_centerVertical="true"
                     android:text="Phí giao hàng"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tvShippingFeeCheckout"
@@ -295,9 +295,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="0đ"
+                    android:text="+0đ"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 

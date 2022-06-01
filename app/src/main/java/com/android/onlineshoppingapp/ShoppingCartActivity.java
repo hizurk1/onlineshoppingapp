@@ -5,15 +5,25 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.ShoppingCartAdapter;
@@ -42,11 +52,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<cartProduct> productList;
     private ShoppingCartAdapter adapter;
-    private ImageView ivBack;
+    private ImageView ivBack, ivCheckCouponCart;
     private EditText etCoupon;
+    private CheckBox cbSelectAll;
+    private TextView tvTotalCart;
     private Button btnBuyNow;
     private FirebaseFirestore db;
     private FirebaseAuth firebaseAuth;
+    public int totalPrice = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +70,17 @@ public class ShoppingCartActivity extends AppCompatActivity {
         // init
         recyclerView = findViewById(R.id.rvProductCart);
         ivBack = findViewById(R.id.ivBackCart);
+        ivCheckCouponCart = findViewById(R.id.ivCheckCouponCart);
+        cbSelectAll = findViewById(R.id.cbSelectAllCart);
         etCoupon = findViewById(R.id.etCouponCart);
         btnBuyNow = findViewById(R.id.btnBuyCart);
+        tvTotalCart = findViewById(R.id.tvTotalCart);
         productList = new ArrayList<>();
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        // get data from adapter
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("TotalAmountOfProduct"));
 
         // add data
         final CollectionReference collectionRef = db.collection("Carts").document(firebaseAuth.getCurrentUser().getUid()).collection("Products");
@@ -106,24 +125,60 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         });
 
+        // click on check coupon
+        ivCheckCouponCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkCoupon(etCoupon.getText().toString()) != 0) {
+                    totalPrice = totalPrice * (100 - checkCoupon(etCoupon.getText().toString())) / 100;
+                    tvTotalCart.setText(String.format("%,dđ", totalPrice));
+
+                    ivCheckCouponCart.setClickable(false);
+                    etCoupon.clearFocus();
+                    etCoupon.setText("");
+                    ivCheckCouponCart.setImageTintList(ColorStateList.valueOf(Color.parseColor("#D2D5DD")));
+                    Toast.makeText(ShoppingCartActivity.this, "Đã áp dụng mã giảm giá", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ShoppingCartActivity.this, "Mã giảm giá không hợp lệ", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // click on buy now
         btnBuyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkCoupon(etCoupon.getText().toString())) {
-                    Toast.makeText(ShoppingCartActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+                if (!etCoupon.getText().toString().isEmpty()) {
+                    totalPrice = totalPrice * (100 - checkCoupon(etCoupon.getText().toString())) / 100;
                 }
-                Toast.makeText(ShoppingCartActivity.this, "Thanks", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ShoppingCartActivity.this, CheckoutActivity.class);
+                intent.putExtra("totalPrice", totalPrice);
+                startActivity(intent);
             }
         });
 
     }
 
-    private boolean checkCoupon(String coupon) {
-        if (coupon.equals("FREE")) {
-            return true;
+    public BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            totalPrice = intent.getIntExtra("totalAmount", 0);
+            // set total
+            tvTotalCart.setText(String.format("%,dđ", totalPrice));
         }
-        return false;
+    };
+
+    private int checkCoupon(String coupon) {
+        if (coupon.equals("SALEOFF10")) {
+            return 10;
+        }
+        if (coupon.equals("SALEOFF20")) {
+            return 20;
+        }
+        if (coupon.equals("SALEOFF50")) {
+            return 50;
+        }
+        return 0;
     }
 
     @Override
