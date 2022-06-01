@@ -156,9 +156,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 }
 
                 Cart cart = new Cart(productList.stream().filter(cartProduct::isChecked).collect(Collectors.toList()), totalPrice);
-                Intent intent = new Intent(ShoppingCartActivity.this, CheckoutActivity.class);
-                intent.putExtra("cart", cart);
-                startActivity(intent);
+                if (cart.getCartProductList().isEmpty())
+                    Toast.makeText(ShoppingCartActivity.this, "Bạn chưa lựa chọn sản phẩm", Toast.LENGTH_SHORT).show();
+                else {
+                    Intent intent = new Intent(ShoppingCartActivity.this, CheckoutActivity.class);
+                    intent.putExtra("cart", cart);
+                    startActivity(intent);
+                }
             }
         });
 
