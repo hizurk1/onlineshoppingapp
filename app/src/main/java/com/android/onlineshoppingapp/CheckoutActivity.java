@@ -134,8 +134,8 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
         //set address
-        DocumentReference userAddressesRef = FirebaseFirestore.getInstance().collection("UserAddresses").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        userAddressesRef.collection("Addresses").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userRef.collection("Addresses").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 userAddressList = queryDocumentSnapshots.toObjects(UserAddress.class);
