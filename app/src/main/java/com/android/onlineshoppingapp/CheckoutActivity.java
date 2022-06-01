@@ -194,6 +194,20 @@ public class CheckoutActivity extends AppCompatActivity {
                                                     cartRef.collection("Products")
                                                             .document(item.getProductId())
                                                             .delete();
+                                                    //Reduce quantity and increase quantitySold product
+                                                    DocumentReference productRef = FirebaseFirestore.getInstance()
+                                                            .collection("Products")
+                                                            .document(item.getProductId());
+                                                    Map<String, Object> product = new HashMap<>();
+                                                    product.put("productName", item.getProductName());
+                                                    product.put("seller", item.getSeller());
+                                                    product.put("description", item.getDescription());
+                                                    product.put("productPrice", item.getProductPrice());
+                                                    product.put("rate", item.getRate());
+                                                    product.put("likeNumber", item.getLikeNumber());
+                                                    product.put("quantitySold", item.getQuantitySold() + item.getOrderQuantity());
+                                                    product.put("quantity",item.getQuantity() - item.getOrderQuantity());
+                                                    productRef.set(product);
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
