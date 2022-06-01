@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -66,15 +68,15 @@ import java.util.concurrent.TimeUnit;
 
 public class MyStoreActivity extends AppCompatActivity {
 
-    private RecyclerView rvPopularProducts, rvRecentlyProducts;
+    private RecyclerView rvPopularProducts, rvRecentlyProducts, rvAllProducts;
     private RecyclerViewAdapterProduct recyclerViewAdapterProduct;
-    private List<Product> popularProductList, recentlyProductList;
+    private List<Product> popularProductList, recentlyProductList, allProductList;
     private SimpleGalleryRecyclerAdapter simpleGalleryRecyclerAdapter;
 
-    private TextView tvShopName;
+    private TextView tvShopName, tvSeemorePopular, tvSeemoreRecently, tvSeemoreAll;
     private CardView cardAddProduct, cardManageProduct;
     private ImageView ivVerifyBtnStore, ivBackToProfile, ivAvatarStore;
-    private CardView cardLogout, cardChangePass, cardDeleteAccount, cardPolicy, cardVersion;
+
     private Button btnAddImage, btnAddProduct;
 
     private FirebaseAuth fAuth;
@@ -100,7 +102,9 @@ public class MyStoreActivity extends AppCompatActivity {
         ivVerifyBtnStore = findViewById(R.id.ivVerifyBtnStore);
         ivBackToProfile = findViewById(R.id.ivBackToProfile);
         ivAvatarStore = findViewById(R.id.ivAvatarStore);
-
+        tvSeemorePopular = findViewById(R.id.tvSeeMorePopularStore);
+        tvSeemoreRecently = findViewById(R.id.tvSeeMoreRecentlyStore);
+        tvSeemoreAll = findViewById(R.id.tvSeeMoreAllStore);
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
@@ -128,6 +132,7 @@ public class MyStoreActivity extends AppCompatActivity {
         // show product
         showPopularProduct();
         showRecentlyProduct();
+        showAllProduct();
 
         // click on card add product
         cardAddProduct.setOnClickListener(new View.OnClickListener() {
@@ -145,9 +150,49 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         });
 
+        // click on see more
+        tvSeemorePopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("popular");
+            }
+        });
+
+        tvSeemoreRecently.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("recently");
+            }
+        });
+
+        tvSeemoreAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("all");
+            }
+        });
+
     }
 
     // --------------- Function -----------------
+
+    private void navigateToListOfProduct(String key) {
+        Intent intent = new Intent(this, ListOfProductActivity.class);
+        switch (key) {
+            case "popular":
+                intent.putExtra("see_more_product", "popular");
+                startActivity(intent);
+                break;
+            case "recently":
+                intent.putExtra("see_more_product", "recently");
+                startActivity(intent);
+                break;
+            case "all":
+                intent.putExtra("see_more_product", "all");
+                startActivity(intent);
+                break;
+        }
+    }
 
     private void addProductBottomSheetView() {
 
@@ -305,13 +350,45 @@ public class MyStoreActivity extends AppCompatActivity {
         });
     }
 
-    private void showRecentlyProduct() {
+    private void showAllProduct() {
 
-        recentlyProductList = new ArrayList<>();
-        rvRecentlyProducts = findViewById(R.id.rvRecentlyProducts);
+        allProductList = new ArrayList<>();
+        rvAllProducts = findViewById(R.id.rvAllProductsStore);
 
         db.collection("Products")
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Product product = document.toObject(Product.class);
+                                product.setProductId(document.getId());
+                                allProductList.add(product);
+                            }
+
+                            // setup recyclerview: recently products
+                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, MyStoreActivity.this);
+                            rvAllProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                            rvAllProducts.setAdapter(recyclerViewAdapterProduct);
+                        } else {
+                            Log.e(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    private void showRecentlyProduct() {
+
+        recentlyProductList = new ArrayList<>();
+        rvRecentlyProducts = findViewById(R.id.rvRecentlyProductsStore);
+
+        db.collection("Products")
+                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .orderBy("quantitySold", Query.Direction.ASCENDING)
+                .limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -337,12 +414,13 @@ public class MyStoreActivity extends AppCompatActivity {
     private void showPopularProduct() {
 
         popularProductList = new ArrayList<>();
-        rvPopularProducts = findViewById(R.id.rvPopularProducts);
+        rvPopularProducts = findViewById(R.id.rvPopularProductsStore);
 
         db.collection("Products")
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
                 .orderBy("quantitySold", Query.Direction.DESCENDING)
                 .orderBy("productPrice", Query.Direction.ASCENDING)
+                .limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
