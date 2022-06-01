@@ -79,11 +79,11 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 adjustBtn(holder.ivMinus, true);
                 adjustBtn(holder.ivAdd, true);
 
@@ -98,6 +98,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 }
 
                 setTextOfPrice(holder.tvPrice, product, holder.numProduct);
+
             }
 
 
@@ -112,14 +113,21 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.ivMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.numProduct -= 1;
-                if (holder.numProduct < 1) {
-                    holder.numProduct = 1;
+                if (holder.numProduct - 1 >= 1) {
+                    holder.numProduct -= 1;
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                    product.setOrderQuantity(holder.numProduct);
+                    if (!holder.cbProduct.isChecked())
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        if (totalAmount - product.getProductPrice() >= 0)
+                            totalAmount -= product.getProductPrice();
+                        else
+                            totalAmount = 0;
+                        Log.w("totalProduct", holder.tvPrice.getText().toString());
+                        sendDataToTotal(totalAmount);
+                    }
                 }
-                holder.etNumProduct.setText(String.valueOf(holder.numProduct));
-
-                if (!holder.cbProduct.isChecked())
-                    holder.cbProduct.setChecked(true);
             }
         });
 
@@ -127,12 +135,18 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.ivAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.numProduct += 1;
-                if (holder.numProduct <= product.getQuantity())
+                if (holder.numProduct + 1 <= product.getQuantity()) {
+                    holder.numProduct += 1;
+                    product.setOrderQuantity(holder.numProduct);
                     holder.etNumProduct.setText(String.valueOf(holder.numProduct));
-
-                if (!holder.cbProduct.isChecked())
-                    holder.cbProduct.setChecked(true);
+                    if (!(holder.cbProduct.isChecked()))
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        totalAmount += product.getProductPrice();
+                        Log.w("totalProduct", holder.tvPrice.getText().toString());
+                        sendDataToTotal(totalAmount);
+                    }
+                }
             }
         });
 
@@ -145,6 +159,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                     holder.numProduct = 1;
                 }
                 holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                if (!holder.cbProduct.isChecked())
+                    holder.cbProduct.setChecked(true);
                 return true;
             }
         });
@@ -156,9 +172,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 holder.numProduct += 10;
                 if (holder.numProduct >= product.getQuantity()) {
                     holder.numProduct = product.getQuantity();
-                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
-                } else
-                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                }
+                holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                if (!holder.cbProduct.isChecked())
+                    holder.cbProduct.setChecked(true);
                 return true;
             }
         });
@@ -184,6 +201,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         //set quantity
         holder.etNumProduct.setText(String.valueOf(product.getOrderQuantity()));
+        holder.numProduct = product.getOrderQuantity();
+
 
         //set image
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -210,14 +229,15 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 if (isCheck) {
                     totalAmount += Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
                 } else {
-                    totalAmount -= Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
+                    if (totalAmount - Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", "")) > 0)
+                        totalAmount -= Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
+                    else totalAmount = 0;
                 }
                 Log.w("totalProduct", holder.tvPrice.getText().toString());
                 sendDataToTotal(totalAmount);
                 product.setChecked(isCheck);
             }
         });
-
     }
 
     public void sendDataToTotal(int total) {
@@ -273,7 +293,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             etNumProduct = itemView.findViewById(R.id.etNumProductICart);
 
 //            Log.d("Number", (etNumProduct.getText().toString().equals(null)) ? "null" : etNumProduct.getText().toString());
-            numProduct = Integer.parseInt(etNumProduct.getText().toString());
         }
     }
 
