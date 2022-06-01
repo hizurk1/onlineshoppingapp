@@ -2,6 +2,7 @@ package com.android.onlineshoppingapp.models;
 
 public class cartProduct extends Product{
     private int orderQuantity;
+    private boolean isChecked;
 
     public cartProduct(Product product, int orderQuantity, String productId) {
         this.productId = productId;
@@ -64,5 +65,17 @@ public class cartProduct extends Product{
 
     public void setOrderQuantity(int orderQuantity) {
         this.orderQuantity = orderQuantity;
+    }
+
+    public int getOrderQuantity() {
+        return orderQuantity;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

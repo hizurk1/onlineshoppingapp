@@ -1,30 +1,44 @@
 package com.android.onlineshoppingapp;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.models.Cart;
 import com.android.onlineshoppingapp.models.UserAddress;
+import com.android.onlineshoppingapp.models.cartProduct;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Map;
+import java.util.Objects;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -32,9 +46,11 @@ public class CheckoutActivity extends AppCompatActivity {
     private RadioGroup rgOptions;
     private ImageView ivBackCheckout;
     private Button btnCheckout;
-    private final UserAddress userAddress = new UserAddress();
+    //    private final UserAddress userAddress = new UserAddress();
+    private List<UserAddress> userAddressList = new ArrayList<UserAddress>();
     private final int fee = 15000;
     public int total = 0;
+    private Cart cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +71,7 @@ public class CheckoutActivity extends AppCompatActivity {
         tvTotal = findViewById(R.id.tvTotalCheckout);
         rgOptions = findViewById(R.id.rgOptionsCheckout);
         btnCheckout = findViewById(R.id.btnCheckout);
+        cart = (Cart) getIntent().getSerializableExtra("cart");
 
         // click on back
         ivBackCheckout.setOnClickListener(view -> {
@@ -68,11 +85,11 @@ public class CheckoutActivity extends AppCompatActivity {
         tvChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (userAddress.getListOfAddress().isEmpty()) {
-                    Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
-                } else {
-                    showDialogChangeAddress();
-                }
+//                if (userAddress.getListOfAddress().isEmpty()) {
+//                    Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    showDialogChangeAddress();
+//                }
             }
         });
 
@@ -81,7 +98,7 @@ public class CheckoutActivity extends AppCompatActivity {
         tvFastOptionCheckout.setText(getDateDelivery(3));
 
         // set price order
-        int priceOrder = getIntent().getIntExtra("totalPrice", 0);
+        int priceOrder = cart.getTotalPrice();
         tvOrderPrice.setText(String.format("%,dđ", priceOrder));
 
         // set shipping
@@ -115,6 +132,26 @@ public class CheckoutActivity extends AppCompatActivity {
             }
         });
 
+        //set address
+        DocumentReference userAddressesRef = FirebaseFirestore.getInstance().collection("UserAddresses").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userAddressesRef.collection("Addresses").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                userAddressList = queryDocumentSnapshots.toObjects(UserAddress.class);
+                setAddress(userAddressList.get(0));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, e.getMessage());
+            }
+        });
+    }
+
+    private void setAddress(UserAddress userAddress) {
+        tvName.setText(userAddress.getName());
+        tvAddress.setText(userAddress.getAddress());
+        tvPhone.setText(userAddress.getPhone());
     }
 
     private void showDialogConfirmCheckout() {
@@ -125,12 +162,54 @@ public class CheckoutActivity extends AppCompatActivity {
                 .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(CheckoutActivity.this, "Đang xử lý...", Toast.LENGTH_SHORT).show();
-                        new Handler().postDelayed(() -> {
-                            Toast.makeText(CheckoutActivity.this, "Thanh toán thành công", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(CheckoutActivity.this, MainActivity.class));
-                            finishAffinity();
-                        }, 2000);
+//                        Toast.makeText(CheckoutActivity.this, "Đang xử lý...", Toast.LENGTH_SHORT).show();
+                        Map<String, Object> order = new HashMap<>();
+                        order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                        order.put("address",userAddressList.get(0));
+                        order.put("totalPrice", cart.getTotalPrice());
+                        CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
+                        String orderId = orderRef.document().getId();
+                        orderRef.document(orderId).set(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                List<String> productCartList = new ArrayList<>();
+                                for (cartProduct item : cart.getCartProductList()) {
+                                    productCartList.add(item.getProductId());
+                                    Map<String, Object> productOrder = new HashMap<>();
+                                    productOrder.put("productRef",
+                                            FirebaseFirestore.getInstance()
+                                                    .document("Products/" + item.getProductId() + "/"));
+                                    productOrder.put("orderQuantity", item.getOrderQuantity());
+                                    orderRef.document(orderId).collection("Products")
+                                            .document(item.getProductId()).set(productOrder)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Toast.makeText(CheckoutActivity.this,
+                                                            "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+                                                    //Delete cart
+                                                    DocumentReference cartRef = FirebaseFirestore.getInstance()
+                                                            .collection("Carts")
+                                                            .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                    cartRef.collection("Products")
+                                                            .document(item.getProductId())
+                                                            .delete();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(CheckoutActivity.this,
+                                                            "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                                    Log.e(TAG, e.getMessage());
+                                                }
+                                            });
+                                }
+
+
+                            }
+                        });
+                        startActivity(new Intent(CheckoutActivity.this, MainActivity.class));
+                        finishAffinity();
                     }
                 }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
                     @Override
@@ -140,40 +219,40 @@ public class CheckoutActivity extends AppCompatActivity {
                 }).show();
     }
 
-    private void showDialogChangeAddress() {
-
-        // get list of address info
-        String name = userAddress.getFirstName() + " " + userAddress.getLastName();
-        String phone = userAddress.getPhone();
-        CharSequence[] charSequence = userAddress.getListOfAddress().toArray(new CharSequence[userAddress.getListOfAddress().size()]);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Chọn địa chỉ thanh toán")
-                .setCancelable(false)
-                .setSingleChoiceItems(charSequence, 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i) {
-                            case 0:
-                                tvName.setText(name);
-                                tvPhone.setText(phone);
-                                tvAddress.setText(userAddress.getListOfAddress().get(0));
-                                break;
-                            case 1:
-                                tvName.setText(name);
-                                tvPhone.setText(phone);
-                                tvAddress.setText(userAddress.getListOfAddress().get(1));
-                                break;
-                        }
-                    }
-                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).show();
-
-    }
+//    private void showDialogChangeAddress() {
+//
+//        // get list of address info
+//        String name = userAddress.getFirstName() + " " + userAddress.getLastName();
+//        String phone = userAddress.getPhone();
+//        CharSequence[] charSequence = userAddress.getListOfAddress().toArray(new CharSequence[userAddress.getListOfAddress().size()]);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Chọn địa chỉ thanh toán")
+//                .setCancelable(false)
+//                .setSingleChoiceItems(charSequence, 0, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        switch (i) {
+//                            case 0:
+//                                tvName.setText(name);
+//                                tvPhone.setText(phone);
+//                                tvAddress.setText(userAddress.getListOfAddress().get(0));
+//                                break;
+//                            case 1:
+//                                tvName.setText(name);
+//                                tvPhone.setText(phone);
+//                                tvAddress.setText(userAddress.getListOfAddress().get(1));
+//                                break;
+//                        }
+//                    }
+//                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        dialogInterface.dismiss();
+//                    }
+//                }).show();
+//
+//    }
 
     public String getDateDelivery(int delay) {
 

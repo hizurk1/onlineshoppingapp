@@ -2,25 +2,43 @@ package com.android.onlineshoppingapp.models;
 
 import java.util.List;
 
-public class UserAddress extends UserInformation {
+public class UserAddress  {
 
-    private List<String> listOfAddress;
 
+    private String name;
+    private String phone;
+    private String address;
+
+    public UserAddress(String name, String phone, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+    }
     public UserAddress() {
-        super();
-        listOfAddress = null;
+
     }
 
-    public UserAddress(List<String> listOfAddress) {
-        super();
-        this.listOfAddress = listOfAddress;
+    public String getName() {
+        return name;
     }
 
-    public List<String> getListOfAddress() {
-        return listOfAddress;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setListOfAddress(List<String> listOfAddress) {
-        this.listOfAddress = listOfAddress;
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

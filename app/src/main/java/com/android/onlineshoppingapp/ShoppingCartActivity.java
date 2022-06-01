@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.ShoppingCartAdapter;
+import com.android.onlineshoppingapp.models.Cart;
 import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.cartProduct;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,6 +47,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ShoppingCartActivity extends AppCompatActivity {
 
@@ -102,6 +104,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             cartProduct cartProduct = documentSnapshot.toObject(cartProduct.class);
                             Objects.requireNonNull(cartProduct).setOrderQuantity(Integer.parseInt(String.valueOf(doc.get("orderQuantity"))));
                             cartProduct.setProductId(documentSnapshot.getId());
+                            cartProduct.setChecked(false);
                             productList.add(cartProduct);
                             adapter.notifyDataSetChanged();
                         }
@@ -151,8 +154,10 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 if (!etCoupon.getText().toString().isEmpty()) {
                     totalPrice = totalPrice * (100 - checkCoupon(etCoupon.getText().toString())) / 100;
                 }
+
+                Cart cart = new Cart(productList.stream().filter(cartProduct::isChecked).collect(Collectors.toList()), totalPrice);
                 Intent intent = new Intent(ShoppingCartActivity.this, CheckoutActivity.class);
-                intent.putExtra("totalPrice", totalPrice);
+                intent.putExtra("cart", cart);
                 startActivity(intent);
             }
         });

@@ -60,7 +60,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull ShoppingCartViewHolder holder, int position) {
-        Product product = productList.get(position);
+        cartProduct product = productList.get(position);
         if (product == null) {
             return;
         }
@@ -182,6 +182,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         // set price
         holder.tvPrice.setText(productPrice);
 
+        //set quantity
+        holder.etNumProduct.setText(String.valueOf(product.getOrderQuantity()));
+
         //set image
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -206,13 +209,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
                 if (isCheck) {
                     totalAmount += Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
-                    Log.w("totalProduct", holder.tvPrice.getText().toString());
-                    sendDataToTotal(totalAmount);
                 } else {
                     totalAmount -= Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
-                    Log.w("totalProduct", holder.tvPrice.getText().toString());
-                    sendDataToTotal(totalAmount);
                 }
+                Log.w("totalProduct", holder.tvPrice.getText().toString());
+                sendDataToTotal(totalAmount);
+                product.setChecked(isCheck);
             }
         });
 
