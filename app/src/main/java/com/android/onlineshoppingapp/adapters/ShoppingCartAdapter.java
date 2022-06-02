@@ -124,7 +124,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                             totalAmount -= product.getProductPrice();
                         else
                             totalAmount = 0;
-                        Log.w("totalProduct", holder.tvPrice.getText().toString());
                         sendDataToTotal(totalAmount);
                     }
                 }
@@ -143,7 +142,6 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                         holder.cbProduct.setChecked(true);
                     else {
                         totalAmount += product.getProductPrice();
-                        Log.w("totalProduct", holder.tvPrice.getText().toString());
                         sendDataToTotal(totalAmount);
                     }
                 }
@@ -154,13 +152,36 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.ivMinus.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.numProduct -= 10;
-                if (holder.numProduct < 1) {
+                Log.w("numProduct", String.valueOf(holder.numProduct));
+                if (holder.numProduct - 10 >= 1) {
+                    holder.numProduct -= 10;
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                    product.setOrderQuantity(holder.numProduct);
+                    if (!holder.cbProduct.isChecked())
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        if (totalAmount - product.getProductPrice() * 10 >= 0)
+                            totalAmount -= product.getProductPrice() * 10;
+                        else
+                            totalAmount = 0;
+                        sendDataToTotal(totalAmount);
+                    }
+                } else {
+                    int temp = holder.numProduct;
                     holder.numProduct = 1;
+
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                    product.setOrderQuantity(holder.numProduct);
+                    if (!holder.cbProduct.isChecked())
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        if (totalAmount - product.getProductPrice() * (temp - holder.numProduct) >= 0)
+                            totalAmount -= product.getProductPrice() * (temp - holder.numProduct);
+                        else
+                            totalAmount = 0;
+                        sendDataToTotal(totalAmount);
+                    }
                 }
-                holder.etNumProduct.setText(String.valueOf(holder.numProduct));
-                if (!holder.cbProduct.isChecked())
-                    holder.cbProduct.setChecked(true);
                 return true;
             }
         });
@@ -169,13 +190,29 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.ivAdd.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                holder.numProduct += 10;
-                if (holder.numProduct >= product.getQuantity()) {
+                if (holder.numProduct + 10 <= product.getQuantity()) {
+                    holder.numProduct += 10;
+                    product.setOrderQuantity(holder.numProduct);
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                    if (!(holder.cbProduct.isChecked()))
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        totalAmount += product.getProductPrice() * 10;
+                        sendDataToTotal(totalAmount);
+                    }
+                } else {
+                    int temp = holder.numProduct;
                     holder.numProduct = product.getQuantity();
+
+                    product.setOrderQuantity(holder.numProduct);
+                    holder.etNumProduct.setText(String.valueOf(holder.numProduct));
+                    if (!(holder.cbProduct.isChecked()))
+                        holder.cbProduct.setChecked(true);
+                    else {
+                        totalAmount += product.getProductPrice() * (holder.numProduct - temp);
+                        sendDataToTotal(totalAmount);
+                    }
                 }
-                holder.etNumProduct.setText(String.valueOf(holder.numProduct));
-                if (!holder.cbProduct.isChecked())
-                    holder.cbProduct.setChecked(true);
                 return true;
             }
         });
