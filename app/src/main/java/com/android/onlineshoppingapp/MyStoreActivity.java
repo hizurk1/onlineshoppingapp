@@ -46,7 +46,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -358,24 +360,23 @@ public class MyStoreActivity extends AppCompatActivity {
         db.collection("Products")
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
                 .limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                allProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, MyStoreActivity.this);
-                            rvAllProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                            rvAllProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
                         }
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            allProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, MyStoreActivity.this);
+                        rvAllProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvAllProducts.setAdapter(recyclerViewAdapterProduct);
                     }
                 });
     }
@@ -389,25 +390,25 @@ public class MyStoreActivity extends AppCompatActivity {
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
                 .orderBy("quantitySold", Query.Direction.ASCENDING)
                 .limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                recentlyProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, MyStoreActivity.this);
-                            rvRecentlyProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                            rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
                         }
-                    }
+
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            recentlyProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, MyStoreActivity.this);
+                        rvRecentlyProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
+                                            }
                 });
     }
 
@@ -421,24 +422,23 @@ public class MyStoreActivity extends AppCompatActivity {
                 .orderBy("quantitySold", Query.Direction.DESCENDING)
                 .orderBy("productPrice", Query.Direction.ASCENDING)
                 .limit(10)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                popularProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, MyStoreActivity.this);
-                            rvPopularProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                            rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
                         }
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            popularProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, MyStoreActivity.this);
+                        rvPopularProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
                     }
                 });
     }
