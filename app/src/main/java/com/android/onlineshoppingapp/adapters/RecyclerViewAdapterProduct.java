@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +28,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.Serializable;
@@ -140,22 +144,26 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         });
 
         db = FirebaseFirestore.getInstance();
-        db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    Map<String, Object> map = documentSnapshot.getData();
+        db.collection("productImages")
+                .document(product.getProductId())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error!=null) {
+                            Log.e(TAG, String.valueOf(error));
+                            return;
+                        }
 
-                    if (map != null) {
-                        List<String> string = (List<String>) map.get("url");
-                        Glide.with(context)
-                                .load(string.get(0)).into(holder.ivProductLogo);
+                        DocumentSnapshot documentSnapshot = value;
+                        Map<String, Object> map = documentSnapshot.getData();
+                        Log.e(TAG,product.getProductName());
+                        if (map != null) {
+                            List<String> string = (List<String>) map.get("url");
+                            Glide.with(context)
+                                    .load(string.get(0)).into(holder.ivProductLogo);
+                        }
                     }
-                }
-            }
-        });
+                });
 
     }
-
 }

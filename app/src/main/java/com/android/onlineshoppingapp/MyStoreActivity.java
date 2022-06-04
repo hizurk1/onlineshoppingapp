@@ -59,9 +59,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -306,7 +308,7 @@ public class MyStoreActivity extends AppCompatActivity {
                 uploadImage();
                 addProduct(etProductName.getText().toString(),
                         etProductDescription.getText().toString(),
-                        Integer.parseInt(etProductPrice.getText().toString()),Integer.parseInt(etProductQuantity.getText().toString()));
+                        Integer.parseInt(etProductPrice.getText().toString()), Integer.parseInt(etProductQuantity.getText().toString()));
                 bottomSheetDialogAddProduct.dismiss();
             }
         });
@@ -319,10 +321,11 @@ public class MyStoreActivity extends AppCompatActivity {
         product.put("seller", fAuth.getCurrentUser().getUid());
         product.put("description", etProductDescription);
         product.put("productPrice", etProductPrice);
+        product.put("createTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
         product.put("rate", 0);
         product.put("likeNumber", 0);
         product.put("quantitySold", 0);
-        product.put("quantity",etProductQuantity);
+        product.put("quantity", etProductQuantity);
         db.collection("Products").document(newProductId).set(product).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -367,6 +370,8 @@ public class MyStoreActivity extends AppCompatActivity {
                             Log.w(TAG, "Listen failed.", error);
                             return;
                         }
+
+                        allProductList.clear();
                         for (QueryDocumentSnapshot document : value) {
                             Product product = document.toObject(Product.class);
                             product.setProductId(document.getId());
@@ -386,9 +391,10 @@ public class MyStoreActivity extends AppCompatActivity {
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvRecentlyProductsStore);
 
+
         db.collection("Products")
                 .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
-                .orderBy("quantitySold", Query.Direction.ASCENDING)
+                .orderBy("createTime", Query.Direction.DESCENDING)
                 .limit(10)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -398,17 +404,18 @@ public class MyStoreActivity extends AppCompatActivity {
                             return;
                         }
 
+                        recentlyProductList.clear();
                         for (QueryDocumentSnapshot document : value) {
                             Product product = document.toObject(Product.class);
                             product.setProductId(document.getId());
                             recentlyProductList.add(product);
                         }
-
                         // setup recyclerview: recently products
                         recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, MyStoreActivity.this);
                         rvRecentlyProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
                         rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
-                                            }
+
+                    }
                 });
     }
 
@@ -429,6 +436,7 @@ public class MyStoreActivity extends AppCompatActivity {
                             Log.w(TAG, "Listen failed.", error);
                             return;
                         }
+                        popularProductList.clear();
                         for (QueryDocumentSnapshot document : value) {
                             Product product = document.toObject(Product.class);
                             product.setProductId(document.getId());
