@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.UserAddress;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.divider.MaterialDivider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -26,7 +28,8 @@ import java.util.List;
 
 public class UserAddressFragment extends Fragment {
 
-    private TextView tvFullNameAddress1, tvFullNameAddress2, tvPhoneNumberAddress1, tvPhoneNumberAddress2, tvAddress1, tvAddress2;
+    private TextView tvFullNameAddress1, tvFullNameAddress2, tvPhoneNumberAddress1;
+    private TextView tvPhoneNumberAddress2, tvAddress1, tvAddress2, tvDefaultFAddress;
 
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
@@ -43,6 +46,7 @@ public class UserAddressFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user_address, container, false);
 
         // init
+        tvDefaultFAddress = view.findViewById(R.id.tvDefaultFAddress);
         tvFullNameAddress1 = view.findViewById(R.id.tvFullNameAddress1);
         tvFullNameAddress2 = view.findViewById(R.id.tvFullNameAddress2);
         tvPhoneNumberAddress1 = view.findViewById(R.id.tvPhoneNumberAddress1);
@@ -66,15 +70,37 @@ public class UserAddressFragment extends Fragment {
                                 userAddresses.add(userAddress);
                             });
 
-                            // set Address 1
-                            tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
-                            tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
-                            tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+                            if (userAddresses.isEmpty()) {
+                                // set Address 1
+                                tvFullNameAddress1.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
+                                tvPhoneNumberAddress1.setText(MainActivity.userInformation.getPhone().toString());
+                                tvAddress1.setText("Chưa thiết đặt");
 
-                            // set Address 2
-                            tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
-                            tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
-                            tvAddress2.setText(userAddresses.get(1).getAddress().toString());
+                                // set Address 2
+                                tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
+                                tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
+                                tvAddress2.setText("Chưa thiết đặt");
+                            } else if (userAddresses.size() > 1) {
+                                // set Address 1
+                                tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                                tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                                tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+
+                                // set Address 2
+                                tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
+                                tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
+                                tvAddress2.setText(userAddresses.get(1).getAddress().toString());
+                            } else {
+                                // set Address 1
+                                tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                                tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                                tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+
+                                // set Address 2
+                                tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
+                                tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
+                                tvAddress2.setText("Chưa thiết đặt");
+                            }
 
                         } else {
                             Log.e("getAddress", task.getException().getMessage());

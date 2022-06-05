@@ -93,26 +93,26 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:text="null"
-                                    android:textStyle="bold"
-                                    android:textSize="15sp" />
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
                                     android:layout_marginHorizontal="5dp"
+                                    android:layout_marginTop="5dp"
                                     android:text="|"
-                                    android:textStyle="bold"
-                                    android:textSize="15sp" />
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
 
                                 <TextView
                                     android:id="@+id/tvPhoneNumberAddress1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
-                                    android:textStyle="bold"
                                     android:text="null"
-                                    android:textSize="15sp" />
+                                    android:textSize="15sp"
+                                    android:textStyle="bold" />
 
                             </LinearLayout>
 
@@ -127,18 +127,19 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/tvDefaultFAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Mặc định"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
+                            android:text="Mặc định"
                             android:textColor="@color/light_green" />
 
                     </RelativeLayout>
 
-                    <View
+                    <com.google.android.material.divider.MaterialDivider
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginVertical="10dp"
                         android:background="@color/light_grey" />
 
