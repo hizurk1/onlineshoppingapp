@@ -32,9 +32,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/layoutToolbarCart"
-        android:layout_marginBottom="210dp">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cardControlShoppingCart"
+        android:layout_below="@+id/layoutToolbarCart">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,6 +51,7 @@
     </ScrollView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardControlShoppingCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="10dp"

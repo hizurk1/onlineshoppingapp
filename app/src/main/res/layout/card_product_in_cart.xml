@@ -6,12 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/cbProductICart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical" />
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,24 +19,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/ivDeleteProductICart"
+            <CheckBox
+                android:id="@+id/cbProductICart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_close_square"
-                app:tint="@color/normal_grey" />
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/cbProductICart"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginEnd="20dp"
                     android:layout_marginVertical="30dp"
                     android:elevation="10dp"
                     app:cardCornerRadius="10dp">
@@ -60,6 +53,15 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivDeleteProductICart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/ic_close_square"
+                        app:tint="@color/normal_grey" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -30,6 +30,7 @@ import com.android.onlineshoppingapp.models.cartProduct;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,6 +46,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     public int totalAmount = 0;
     public Intent intent = new Intent("TotalAmountOfProduct");
     public ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+    private FirebaseFirestore db;
+    private FirebaseAuth firebaseAuth;
 
     public ShoppingCartAdapter(List<cartProduct> productList, Context context) {
         this.productList = productList;
@@ -268,11 +271,12 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.cbProduct.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                int priceOfProduct = Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
                 if (isCheck) {
-                    totalAmount += Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
+                    totalAmount += priceOfProduct;
                 } else {
-                    if (totalAmount - Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", "")) > 0)
-                        totalAmount -= Integer.parseInt(holder.tvPrice.getText().toString().replaceAll("[^0-9]", ""));
+                    if (totalAmount - priceOfProduct > 0)
+                        totalAmount -= priceOfProduct;
                     else totalAmount = 0;
                 }
                 Log.w("totalProduct", holder.tvPrice.getText().toString());
@@ -280,6 +284,34 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 product.setChecked(isCheck);
             }
         });
+
+        // click on delete
+        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                removeProductFromCart(product);
+            }
+        });
+
+    }
+
+    private void removeProductFromCart(Product product) {
+        db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        db.collection("Carts").document(firebaseAuth.getCurrentUser().getUid())
+                .collection("Products").document(product.getProductId())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            notifyDataSetChanged();
+                        } else {
+                            Log.e("removeProduct", task.getException().toString());
+                        }
+                    }
+                });
     }
 
     public void sendDataToTotal(int total) {
