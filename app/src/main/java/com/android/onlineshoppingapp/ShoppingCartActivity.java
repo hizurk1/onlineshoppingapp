@@ -81,6 +81,18 @@ public class ShoppingCartActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
 
+        // click on select all
+        cbSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    setCbSelectAll(true);
+                } else {
+                    setCbSelectAll(false);
+                }
+            }
+        });
+
         // get data from adapter
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, new IntentFilter("TotalAmountOfProduct"));
 
@@ -177,7 +189,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
     };
 
-    private int checkCoupon(String coupon) {
+    public void setCbSelectAll(boolean condition) {
+        for (int i = 0; i < adapter.checkBoxes.size(); i++) {
+            CheckBox currentCheckBox = adapter.checkBoxes.get(i);
+            currentCheckBox.setChecked(condition);
+        }
+    }
+
+    public int checkCoupon(String coupon) {
         if (coupon.equals("SALEOFF10")) {
             return 10;
         }

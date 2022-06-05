@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +42,9 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
     private List<cartProduct> productList;
     private Context context;
-    private CheckBox cbProduct;
     public int totalAmount = 0;
     public Intent intent = new Intent("TotalAmountOfProduct");
+    public ArrayList<CheckBox> checkBoxes = new ArrayList<>();
 
     public ShoppingCartAdapter(List<cartProduct> productList, Context context) {
         this.productList = productList;
@@ -60,10 +61,14 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(@NonNull ShoppingCartViewHolder holder, int position) {
+
         cartProduct product = productList.get(position);
         if (product == null) {
             return;
         }
+
+        checkBoxes.add(holder.cbProduct);
+
         adjustBtn(holder.ivMinus, true);
         adjustBtn(holder.ivAdd, true);
         if (Integer.parseInt(String.valueOf(holder.etNumProduct.getText())) == 1) {
@@ -312,7 +317,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         private TextView tvTitle, tvSeller, tvPrice;
         private ImageView ivProductImg, ivAdd, ivMinus, ivDelete;
-        private CheckBox cbProduct = ShoppingCartAdapter.this.cbProduct;
+        private CheckBox cbProduct;
         private EditText etNumProduct;
         private int numProduct = 1;
 
