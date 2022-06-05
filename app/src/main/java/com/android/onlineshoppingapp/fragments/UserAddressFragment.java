@@ -2,63 +2,38 @@ package com.android.onlineshoppingapp.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.models.UserAddress;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserAddressFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserAddressFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private TextView tvFullNameAddress1, tvFullNameAddress2, tvPhoneNumberAddress1, tvPhoneNumberAddress2, tvAddress1, tvAddress2;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore db;
+    private List<UserAddress> userAddresses;
 
     public UserAddressFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment UserAddressFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserAddressFragment newInstance(String param1, String param2) {
-        UserAddressFragment fragment = new UserAddressFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -67,6 +42,7 @@ public class UserAddressFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_address, container, false);
 
+        // init
         tvFullNameAddress1 = view.findViewById(R.id.tvFullNameAddress1);
         tvFullNameAddress2 = view.findViewById(R.id.tvFullNameAddress2);
         tvPhoneNumberAddress1 = view.findViewById(R.id.tvPhoneNumberAddress1);
@@ -74,13 +50,37 @@ public class UserAddressFragment extends Fragment {
         tvAddress1 = view.findViewById(R.id.tvAddress1);
         tvAddress2 = view.findViewById(R.id.tvAddress2);
 
-        tvFullNameAddress1.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
-        tvPhoneNumberAddress1.setText(MainActivity.userInformation.getPhone().toString());
-        tvAddress1.setText("Chưa thiết đặt");
+        fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        userAddresses = new ArrayList<>();
 
-        tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
-        tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
-        tvAddress2.setText("Chưa thiết đặt");
+        db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
+                .collection("Addresses")
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            task.getResult().getDocuments().forEach(documentSnapshot -> {
+                                UserAddress userAddress = new UserAddress();
+                                userAddress = documentSnapshot.toObject(UserAddress.class);
+                                userAddresses.add(userAddress);
+                            });
+
+                            // set Address 1
+                            tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                            tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                            tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+
+                            // set Address 2
+                            tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
+                            tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
+                            tvAddress2.setText(userAddresses.get(1).getAddress().toString());
+
+                        } else {
+                            Log.e("getAddress", task.getException().getMessage());
+                        }
+                    }
+                });
 
         return view;
     }
