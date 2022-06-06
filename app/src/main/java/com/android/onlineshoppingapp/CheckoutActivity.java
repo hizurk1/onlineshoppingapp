@@ -151,7 +151,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void setAddress(UserAddress userAddress) {
         tvName.setText(userAddress.getName());
-        tvAddress.setText(userAddress.getAddress());
+        tvAddress.setText(userAddress.getFullAddress());
         tvPhone.setText(userAddress.getPhone());
     }
 
@@ -237,7 +237,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
         // get list of address info
         List<String> list = new ArrayList<>();
-        for (UserAddress item : userAddressList) list.add("Địa chỉ: " + item.getAddress() + "\n" + "Tên: "+item.getName() + "\n" +"SĐT: "+ item.getPhone());
+        for (UserAddress item : userAddressList)
+            list.add("Địa chỉ: " + item.getFullAddress() + "\n" + "Tên: " + item.getName() + "\n" + "SĐT: " + item.getPhone());
         CharSequence[] charSequence = list.toArray(new CharSequence[userAddressList.size()]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -248,7 +249,7 @@ public class CheckoutActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         tvName.setText(userAddressList.get(i).getName());
                         tvPhone.setText(userAddressList.get(i).getPhone());
-                        tvAddress.setText(userAddressList.get(i).getAddress());
+                        tvAddress.setText(userAddressList.get(i).getFullAddress());
                         indexAddress = i;
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {

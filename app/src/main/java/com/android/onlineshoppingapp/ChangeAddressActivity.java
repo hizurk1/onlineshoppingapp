@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -45,6 +48,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
     private List<UserAddress> userAddresses;
+    private ArrayList<String> cityList, districtList, townList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +162,24 @@ public class ChangeAddressActivity extends AppCompatActivity {
             }
         });
 
+        // check name 2
+        etName2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (onFocus) {
+                    layoutName2.setHelperTextEnabled(false);
+                } else {
+                    if (etPhone2.getText().toString().equals("")) {
+                        layoutName2.setHelperText("Tên không được bỏ trống");
+                    } else if (!includeCharInAlphabet(etName2.getText().toString())) {
+                        layoutName2.setHelperText("Tên phải chứa ít nhất 1 ký tự chữ cái");
+                    } else {
+                        layoutName2.setHelperTextEnabled(false);
+                    }
+                }
+            }
+        });
+
         // check phone 1
         etPhone1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -176,6 +198,102 @@ public class ChangeAddressActivity extends AppCompatActivity {
             }
         });
 
+        // check phone 2
+        etPhone2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (onFocus) {
+                    layoutPhone2.setHelperTextEnabled(false);
+                } else {
+                    if (etPhone2.getText().toString().equals("")) {
+                        layoutPhone2.setHelperText("Số điện thoại không được bỏ trống");
+                    } else if (etPhone2.getText().toString().length() < 6) {
+                        layoutPhone2.setHelperText("Số điện thoại phải có ít nhất 6 số");
+                    } else {
+                        layoutPhone2.setHelperTextEnabled(false);
+                    }
+                }
+            }
+        });
+
+        // set value on city
+        cityList = new ArrayList<>();
+        cityList.add("TP. Hồ Chí Minh");
+        cityList.add("Hà Nội");
+        cityList.add("Đà Nẵng");
+
+        ArrayAdapter<String> cityListAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                cityList
+        );
+        ctvCity1.setAdapter(cityListAdapter);
+        ctvCity1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+        ctvCity2.setAdapter(cityListAdapter);
+        ctvCity2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+
+        // set value on district
+        districtList = new ArrayList<>();
+        districtList.add("Quận Thủ Đức");
+        districtList.add("Quận 1");
+        districtList.add("Quận Bình Thạnh");
+
+        ArrayAdapter<String> districtListAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                districtList
+        );
+        ctvDistrict1.setAdapter(districtListAdapter);
+        ctvDistrict1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+        ctvDistrict2.setAdapter(districtListAdapter);
+        ctvDistrict2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+
+        // set value on district
+        townList = new ArrayList<>();
+        townList.add("Phường 1");
+        townList.add("Phường 2");
+        townList.add("Phường 3");
+
+        ArrayAdapter<String> townListAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                townList
+        );
+        ctvTown1.setAdapter(townListAdapter);
+        ctvTown1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+        ctvTown2.setAdapter(townListAdapter);
+        ctvTown2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                closeKeyboard();
+            }
+        });
+
         // check detail 1
         etDetail1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -187,6 +305,22 @@ public class ChangeAddressActivity extends AppCompatActivity {
                         layoutDetail1.setHelperText("Tên đường, số nhà không được bỏ trống");
                     } else {
                         layoutDetail1.setHelperTextEnabled(false);
+                    }
+                }
+            }
+        });
+
+        // check detail 2
+        etDetail2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (onFocus) {
+                    layoutDetail2.setHelperTextEnabled(false);
+                } else {
+                    if (etDetail2.getText().toString().equals("")) {
+                        layoutDetail2.setHelperText("Tên đường, số nhà không được bỏ trống");
+                    } else {
+                        layoutDetail2.setHelperTextEnabled(false);
                     }
                 }
             }
@@ -218,58 +352,6 @@ public class ChangeAddressActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        // check name 2
-        etName2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (onFocus) {
-                    layoutName2.setHelperTextEnabled(false);
-                } else {
-                    if (etPhone2.getText().toString().equals("")) {
-                        layoutName2.setHelperText("Tên không được bỏ trống");
-                    } else if (!includeCharInAlphabet(etName2.getText().toString())) {
-                        layoutName2.setHelperText("Tên phải chứa ít nhất 1 ký tự chữ cái");
-                    } else {
-                        layoutName2.setHelperTextEnabled(false);
-                    }
-                }
-            }
-        });
-
-        // check phone 2
-        etPhone2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (onFocus) {
-                    layoutPhone2.setHelperTextEnabled(false);
-                } else {
-                    if (etPhone2.getText().toString().equals("")) {
-                        layoutPhone2.setHelperText("Số điện thoại không được bỏ trống");
-                    } else if (etPhone2.getText().toString().length() < 6) {
-                        layoutPhone2.setHelperText("Số điện thoại phải có ít nhất 6 số");
-                    } else {
-                        layoutPhone2.setHelperTextEnabled(false);
-                    }
-                }
-            }
-        });
-
-        // check detail 2
-        etDetail2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean onFocus) {
-                if (onFocus) {
-                    layoutDetail2.setHelperTextEnabled(false);
-                } else {
-                    if (etDetail2.getText().toString().equals("")) {
-                        layoutDetail2.setHelperText("Tên đường, số nhà không được bỏ trống");
-                    } else {
-                        layoutDetail2.setHelperTextEnabled(false);
-                    }
-                }
-            }
-        });
 
         userAddresses = new ArrayList<>();
         db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
@@ -350,6 +432,13 @@ public class ChangeAddressActivity extends AppCompatActivity {
         return false;
     }
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     @Override
     public void onBackPressed() {

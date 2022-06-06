@@ -63,7 +63,7 @@ public class UserAddressFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         userAddresses = new ArrayList<>();
 
-        db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
+        db.collection("Users").document(fAuth.getCurrentUser().getUid())
                 .collection("Addresses")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -86,20 +86,33 @@ public class UserAddressFragment extends Fragment {
                                 tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
                                 tvAddress2.setText("Chưa thiết đặt");
                             } else if (userAddresses.size() > 1) {
-                                // set Address 1
-                                tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
-                                tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
-                                tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+                                if (userAddresses.get(0).isDefaultAddress()) {
+                                    // set Address 1
+                                    tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                                    tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                                    tvAddress1.setText(userAddresses.get(0).getFullAddress());
 
-                                // set Address 2
-                                tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
-                                tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
-                                tvAddress2.setText(userAddresses.get(1).getAddress().toString());
+                                    // set Address 2
+                                    tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
+                                    tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
+                                    tvAddress2.setText(userAddresses.get(1).getFullAddress());
+                                } else {
+                                    // set Address 1
+                                    tvFullNameAddress1.setText(userAddresses.get(1).getName().toString());
+                                    tvPhoneNumberAddress1.setText(userAddresses.get(1).getPhone().toString());
+                                    tvAddress1.setText(userAddresses.get(1).getFullAddress());
+
+                                    // set Address 2
+                                    tvFullNameAddress2.setText(userAddresses.get(0).getName().toString());
+                                    tvPhoneNumberAddress2.setText(userAddresses.get(0).getPhone().toString());
+                                    tvAddress2.setText(userAddresses.get(0).getFullAddress());
+                                }
+
                             } else {
                                 // set Address 1
                                 tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
                                 tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
-                                tvAddress1.setText(userAddresses.get(0).getAddress().toString());
+                                tvAddress1.setText(userAddresses.get(0).getFullAddress());
 
                                 // set Address 2
                                 tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
