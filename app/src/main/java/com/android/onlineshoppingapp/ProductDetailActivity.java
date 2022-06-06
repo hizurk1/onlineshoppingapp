@@ -184,12 +184,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         tvProductName.setText(product.getProductName());
         tvProductDescription.setText(product.getDescription());
-        int soldNum = product.getQuantitySold();
-        String soldNumStr = String.valueOf(soldNum);
-        if (soldNum > 1000) {
-            soldNumStr = String.valueOf(soldNum / 100 * 100) + "+";
-        }
-        tvProductSold.setText("Đã bán " + soldNumStr);
+        tvProductSold.setText("Đã bán " + String.valueOf(product.getQuantitySold()));
         tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
         productRate.setRating(product.getRate());
 

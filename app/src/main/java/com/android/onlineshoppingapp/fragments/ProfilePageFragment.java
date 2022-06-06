@@ -112,7 +112,18 @@ public class ProfilePageFragment extends Fragment {
         cardMyStore = view.findViewById(R.id.cardMyStore);
 
         // change name
-        textViewFullname.setText(user.getDisplayName());
+        db.collection("Users").document(user.getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().exists()) {
+                                UserInformation userInfo = task.getResult().toObject(UserInformation.class);
+                                textViewFullname.setText(String.format("%s %s", userInfo.getLastName(), userInfo.getFirstName()));
+                            }
+                        }
+                    }
+                });
 
         // change avatar
         if (user.getPhotoUrl() != null) {

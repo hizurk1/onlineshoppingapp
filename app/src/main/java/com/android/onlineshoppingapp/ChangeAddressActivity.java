@@ -410,15 +410,12 @@ public class ChangeAddressActivity extends AppCompatActivity {
     }
 
     public boolean validateData() {
-        if (etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
+        return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
                 etDetail1.getText().toString().equals("") || etName2.getText().toString().equals("") ||
                 etPhone2.getText().toString().equals("") || etDetail2.getText().toString().equals("") ||
                 layoutName1.isHelperTextEnabled() || layoutPhone1.isHelperTextEnabled() ||
                 layoutDetail1.isHelperTextEnabled() || layoutName2.isHelperTextEnabled() ||
-                layoutPhone2.isHelperTextEnabled() || layoutDetail2.isHelperTextEnabled()) {
-            return true;
-        }
-        return false;
+                layoutPhone2.isHelperTextEnabled() || layoutDetail2.isHelperTextEnabled();
     }
 
     public boolean includeCharInAlphabet(String str) {

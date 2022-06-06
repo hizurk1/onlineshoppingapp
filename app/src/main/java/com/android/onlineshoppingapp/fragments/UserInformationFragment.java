@@ -1,16 +1,21 @@
 package com.android.onlineshoppingapp.fragments;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.onlineshoppingapp.ChangeUserInfoActivity;
 import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
@@ -32,6 +37,11 @@ import java.text.SimpleDateFormat;
 public class UserInformationFragment extends Fragment {
 
     private TextView tvFullNameInfo, tvDateOfBirthInfo, tvPhoneNumberInfo, tvSexInfo, tvEmailInfo;
+    private ImageView ivChangeUserInfo;
+
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore db;
+    private UserInformation userInformation;
 
     public UserInformationFragment() {
         // Required empty public constructor
@@ -48,15 +58,41 @@ public class UserInformationFragment extends Fragment {
         tvSexInfo = (TextView) view.findViewById(R.id.tvSexInfo);
         tvDateOfBirthInfo = (TextView) view.findViewById(R.id.tvDateOfBirthInfo);
         tvPhoneNumberInfo = (TextView) view.findViewById(R.id.tvPhoneNumberInfo);
+        ivChangeUserInfo = view.findViewById(R.id.ivChangeUserInfo);
 
+        fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        tvFullNameInfo.setText(MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName());
-        tvEmailInfo.setText(MainActivity.userInformation.getEmail());
-        tvSexInfo.setText(MainActivity.userInformation.getSex());
-        tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(MainActivity.userInformation.getDateOfBirth()));
-        tvPhoneNumberInfo.setText(MainActivity.userInformation.getPhone());
+        db.collection("Users").document(fAuth.getCurrentUser().getUid())
+                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                userInformation = documentSnapshot.toObject(UserInformation.class);
 
+                                tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
+                                tvEmailInfo.setText(userInformation.getEmail());
+                                tvSexInfo.setText(userInformation.getSex());
+                                tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));
+                                tvPhoneNumberInfo.setText(userInformation.getPhone());
 
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        } else {
+                            Log.d(TAG, "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+        ivChangeUserInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ChangeUserInfoActivity.class));
+            }
+        });
 
         return view;
     }
