@@ -27,7 +27,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChangeAddressActivity extends AppCompatActivity {
 
@@ -203,11 +205,13 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 userAddresses.add(userAddress);
                             });
 
-                            // set previous value for et
-                            etName1.setText(userAddresses.get(0).getName());
-                            etName1.setSelectAllOnFocus(true);
-                            etPhone1.setText(userAddresses.get(0).getPhone());
-                            etPhone1.setSelectAllOnFocus(true);
+                            if (!userAddresses.isEmpty()) {
+                                // set previous value for et
+                                etName1.setText(userAddresses.get(0).getName());
+                                etName1.setSelectAllOnFocus(true);
+                                etPhone1.setText(userAddresses.get(0).getPhone());
+                                etPhone1.setSelectAllOnFocus(true);
+                            }
 
                         } else {
                             Log.e("getAddress", task.getException().getMessage());
@@ -280,11 +284,13 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 userAddresses.add(userAddress);
                             });
 
-                            // set previous value for et
-                            etName2.setText(userAddresses.get(1).getName());
-                            etName2.setSelectAllOnFocus(true);
-                            etPhone2.setText(userAddresses.get(1).getPhone());
-                            etPhone2.setSelectAllOnFocus(true);
+                            if (!userAddresses.isEmpty()) {
+                                // set previous value for et
+                                etName2.setText(userAddresses.get(1).getName());
+                                etName2.setSelectAllOnFocus(true);
+                                etPhone2.setText(userAddresses.get(1).getPhone());
+                                etPhone2.setSelectAllOnFocus(true);
+                            }
 
                         } else {
                             Log.e("getAddress", task.getException().getMessage());
@@ -299,6 +305,21 @@ public class ChangeAddressActivity extends AppCompatActivity {
                 if (!validateData()) {
                     boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
                     Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
+
+                    Map<String, Object> data1 = new HashMap<>();
+                    data1.put("name", etName1.getText().toString());
+                    data1.put("phone", etPhone1.getText().toString());
+                    data1.put("address", etDetail1.getText().toString()); // add city district town
+
+                    Map<String, Object> data2 = new HashMap<>();
+                    data2.put("name", etName2.getText().toString());
+                    data2.put("phone", etPhone2.getText().toString());
+                    data2.put("address", etDetail2.getText().toString()); // add city district town
+
+//                    db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
+//                            .collection("Addresses").document();
+
+
                     Toast.makeText(ChangeAddressActivity.this, "Updated", Toast.LENGTH_SHORT).show();
                 }
             }
