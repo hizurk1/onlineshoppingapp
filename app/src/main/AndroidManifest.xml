@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineShoppingApp.NoActionBar">
         <activity
+            android:name=".ChangeAddressActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListOfProductActivity"
             android:exported="false" />
         <activity

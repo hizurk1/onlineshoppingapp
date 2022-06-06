@@ -1,5 +1,6 @@
 package com.android.onlineshoppingapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,10 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.ChangeAddressActivity;
 import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.UserAddress;
@@ -30,6 +33,7 @@ public class UserAddressFragment extends Fragment {
 
     private TextView tvFullNameAddress1, tvFullNameAddress2, tvPhoneNumberAddress1;
     private TextView tvPhoneNumberAddress2, tvAddress1, tvAddress2, tvDefaultFAddress;
+    private ImageView ivChangeUserAddress;
 
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
@@ -53,6 +57,7 @@ public class UserAddressFragment extends Fragment {
         tvPhoneNumberAddress2 = view.findViewById(R.id.tvPhoneNumberAddress2);
         tvAddress1 = view.findViewById(R.id.tvAddress1);
         tvAddress2 = view.findViewById(R.id.tvAddress2);
+        ivChangeUserAddress = view.findViewById(R.id.ivChangeUserAddress);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -107,6 +112,13 @@ public class UserAddressFragment extends Fragment {
                         }
                     }
                 });
+
+        ivChangeUserAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ChangeAddressActivity.class));
+            }
+        });
 
         return view;
     }
