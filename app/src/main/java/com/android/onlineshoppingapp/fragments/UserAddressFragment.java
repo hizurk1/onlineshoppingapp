@@ -3,7 +3,7 @@ package com.android.onlineshoppingapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -11,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.onlineshoppingapp.ChangeAddressActivity;
 import com.android.onlineshoppingapp.MainActivity;
@@ -65,64 +63,58 @@ public class UserAddressFragment extends Fragment {
 
         db.collection("Users").document(fAuth.getCurrentUser().getUid())
                 .collection("Addresses")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getDocuments().forEach(documentSnapshot -> {
-                                UserAddress userAddress = new UserAddress();
-                                userAddress = documentSnapshot.toObject(UserAddress.class);
-                                userAddresses.add(userAddress);
-                            });
+                .addSnapshotListener((value, error) -> {
+                    userAddresses.clear();
+                    if (error != null) Log.e("getAddress", error.getMessage());
 
-                            if (userAddresses.isEmpty()) {
-                                // set Address 1
-                                tvFullNameAddress1.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
-                                tvPhoneNumberAddress1.setText(MainActivity.userInformation.getPhone().toString());
-                                tvAddress1.setText("Chưa thiết đặt");
+                    value.forEach(documentSnapshot -> {
+                        UserAddress userAddress = documentSnapshot.toObject(UserAddress.class);
+                        userAddresses.add(userAddress);
+                    });
 
-                                // set Address 2
-                                tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
-                                tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
-                                tvAddress2.setText("Chưa thiết đặt");
-                            } else if (userAddresses.size() > 1) {
-                                if (userAddresses.get(0).isDefaultAddress()) {
-                                    // set Address 1
-                                    tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
-                                    tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
-                                    tvAddress1.setText(userAddresses.get(0).getFullAddress());
+                    if (userAddresses.isEmpty()) {
+                        // set Address 1
+                        tvFullNameAddress1.setText("Chưa thiết đặt");
+                        tvPhoneNumberAddress1.setText("Chưa thiết đặt");
+                        tvAddress1.setText("Chưa thiết đặt");
 
-                                    // set Address 2
-                                    tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
-                                    tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
-                                    tvAddress2.setText(userAddresses.get(1).getFullAddress());
-                                } else {
-                                    // set Address 1
-                                    tvFullNameAddress1.setText(userAddresses.get(1).getName().toString());
-                                    tvPhoneNumberAddress1.setText(userAddresses.get(1).getPhone().toString());
-                                    tvAddress1.setText(userAddresses.get(1).getFullAddress());
+                        // set Address 2
+                        tvFullNameAddress2.setText("Chưa thiết đặt");
+                        tvPhoneNumberAddress2.setText("Chưa thiết đặt");
+                        tvAddress2.setText("Chưa thiết đặt");
+                    } else if (userAddresses.size() > 1) {
+                        if (userAddresses.get(0).isDefaultAddress()) {
+                            // set Address 1
+                            tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                            tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                            tvAddress1.setText(userAddresses.get(0).getFullAddress());
 
-                                    // set Address 2
-                                    tvFullNameAddress2.setText(userAddresses.get(0).getName().toString());
-                                    tvPhoneNumberAddress2.setText(userAddresses.get(0).getPhone().toString());
-                                    tvAddress2.setText(userAddresses.get(0).getFullAddress());
-                                }
-
-                            } else {
-                                // set Address 1
-                                tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
-                                tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
-                                tvAddress1.setText(userAddresses.get(0).getFullAddress());
-
-                                // set Address 2
-                                tvFullNameAddress2.setText(String.format("%s %s", MainActivity.userInformation.getLastName(), MainActivity.userInformation.getFirstName()));
-                                tvPhoneNumberAddress2.setText(MainActivity.userInformation.getPhone().toString());
-                                tvAddress2.setText("Chưa thiết đặt");
-                            }
-
+                            // set Address 2
+                            tvFullNameAddress2.setText(userAddresses.get(1).getName().toString());
+                            tvPhoneNumberAddress2.setText(userAddresses.get(1).getPhone().toString());
+                            tvAddress2.setText(userAddresses.get(1).getFullAddress());
                         } else {
-                            Log.e("getAddress", task.getException().getMessage());
+                            // set Address 1
+                            tvFullNameAddress1.setText(userAddresses.get(1).getName().toString());
+                            tvPhoneNumberAddress1.setText(userAddresses.get(1).getPhone().toString());
+                            tvAddress1.setText(userAddresses.get(1).getFullAddress());
+
+                            // set Address 2
+                            tvFullNameAddress2.setText(userAddresses.get(0).getName().toString());
+                            tvPhoneNumberAddress2.setText(userAddresses.get(0).getPhone().toString());
+                            tvAddress2.setText(userAddresses.get(0).getFullAddress());
                         }
+
+                    } else {
+                        // set Address 1
+                        tvFullNameAddress1.setText(userAddresses.get(0).getName().toString());
+                        tvPhoneNumberAddress1.setText(userAddresses.get(0).getPhone().toString());
+                        tvAddress1.setText(userAddresses.get(0).getFullAddress());
+
+                        // set Address 2
+                        tvFullNameAddress2.setText("Chưa thiết đặt");
+                        tvPhoneNumberAddress2.setText("Chưa thiết đặt");
+                        tvAddress2.setText("Chưa thiết đặt");
                     }
                 });
 

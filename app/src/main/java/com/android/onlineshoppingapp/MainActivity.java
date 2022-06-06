@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseUser user;
     private FirebaseAuth fAuth;
-    public static UserInformation userInformation = new UserInformation();
+//    public static UserInformation userInformation = new UserInformation();
 
 
     @Override
@@ -61,23 +61,23 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this,LoginActivity.class));
         }
 
-        db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    if (documentSnapshot.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
-                        userInformation = documentSnapshot.toObject(UserInformation.class);
-                        Log.e(TAG, userInformation.getAccountType());
-                    } else {
-                        Log.d(TAG, "No such document");
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+//        db.collection("Users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot documentSnapshot = task.getResult();
+//                    if (documentSnapshot.exists()) {
+//                        Log.d(TAG, "DocumentSnapshot data: " + documentSnapshot.getData());
+//                        userInformation = documentSnapshot.toObject(UserInformation.class);
+//                        Log.e(TAG, userInformation.getAccountType());
+//                    } else {
+//                        Log.d(TAG, "No such document");
+//                    }
+//                } else {
+//                    Log.d(TAG, "get failed with ", task.getException());
+//                }
+//            }
+//        });
 
 
 

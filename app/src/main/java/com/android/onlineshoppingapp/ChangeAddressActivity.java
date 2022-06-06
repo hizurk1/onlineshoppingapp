@@ -22,11 +22,16 @@ import android.widget.Toast;
 
 import com.android.onlineshoppingapp.models.UserAddress;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -169,7 +174,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
                 if (onFocus) {
                     layoutName2.setHelperTextEnabled(false);
                 } else {
-                    if (etPhone2.getText().toString().equals("")) {
+                    if (etName2.getText().toString().equals("")) {
                         layoutName2.setHelperText("Tên không được bỏ trống");
                     } else if (!includeCharInAlphabet(etName2.getText().toString())) {
                         layoutName2.setHelperText("Tên phải chứa ít nhất 1 ký tự chữ cái");
@@ -327,17 +332,23 @@ public class ChangeAddressActivity extends AppCompatActivity {
         });
 
         userAddresses = new ArrayList<>();
-        db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
+        db.collection("Users").document(fAuth.getCurrentUser().getUid())
                 .collection("Addresses")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             task.getResult().getDocuments().forEach(documentSnapshot -> {
-                                UserAddress userAddress = new UserAddress();
-                                userAddress = documentSnapshot.toObject(UserAddress.class);
+                                UserAddress userAddress = documentSnapshot.toObject(UserAddress.class);
                                 userAddresses.add(userAddress);
                             });
+
+                            //set which address is default
+                            if (!userAddresses.get(0).isDefaultAddress()) {
+                                UserAddress temp = userAddresses.get(0);
+                                userAddresses.set(0,userAddresses.get(1));
+                                userAddresses.set(1,temp);
+                            }
 
                             if (!userAddresses.isEmpty()) {
                                 // set previous value for et
@@ -345,6 +356,24 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 etName1.setSelectAllOnFocus(true);
                                 etPhone1.setText(userAddresses.get(0).getPhone());
                                 etPhone1.setSelectAllOnFocus(true);
+                                etDetail1.setText(userAddresses.get(0).getDetail());
+                                etDetail1.setSelectAllOnFocus(true);
+                                ctvCity1.setText(userAddresses.get(0).getCity());
+                                ctvDistrict1.setText(userAddresses.get(0).getDistrict());
+                                ctvTown1.setText(userAddresses.get(0).getTown());
+
+                                if (userAddresses.size() > 1) {
+                                    // set previous value for et
+                                    etName2.setText(userAddresses.get(1).getName());
+                                    etName2.setSelectAllOnFocus(true);
+                                    etPhone2.setText(userAddresses.get(1).getPhone());
+                                    etPhone2.setSelectAllOnFocus(true);
+                                    etDetail2.setText(userAddresses.get(1).getDetail());
+                                    etDetail2.setSelectAllOnFocus(true);
+                                    ctvCity2.setText(userAddresses.get(1).getCity());
+                                    ctvDistrict2.setText(userAddresses.get(1).getDistrict());
+                                    ctvTown2.setText(userAddresses.get(1).getTown());
+                                }
                             }
 
                         } else {
@@ -353,53 +382,72 @@ public class ChangeAddressActivity extends AppCompatActivity {
                     }
                 });
 
-        userAddresses = new ArrayList<>();
-        db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
-                .collection("Addresses")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getDocuments().forEach(documentSnapshot -> {
-                                UserAddress userAddress = new UserAddress();
-                                userAddress = documentSnapshot.toObject(UserAddress.class);
-                                userAddresses.add(userAddress);
-                            });
-
-                            if (!userAddresses.isEmpty()) {
-                                // set previous value for et
-                                etName2.setText(userAddresses.get(1).getName());
-                                etName2.setSelectAllOnFocus(true);
-                                etPhone2.setText(userAddresses.get(1).getPhone());
-                                etPhone2.setSelectAllOnFocus(true);
-                            }
-
-                        } else {
-                            Log.e("getAddress", task.getException().getMessage());
-                        }
-                    }
-                });
 
         // click on change
         btnChangeAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!validateData()) {
-                    boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
-                    Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
+                    db.collection("Users").document(fAuth.getCurrentUser().getUid())
+                            .collection("Addresses")
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
+                                    Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
 
-                    Map<String, Object> data1 = new HashMap<>();
-                    data1.put("name", etName1.getText().toString());
-                    data1.put("phone", etPhone1.getText().toString());
-                    data1.put("address", etDetail1.getText().toString()); // add city district town
+                                    List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+                                    Map<String, Object> data1 = new HashMap<>();
+                                    data1.put("name", etName1.getText().toString());
+                                    data1.put("phone", etPhone1.getText().toString());
+                                    data1.put("city", ctvCity1.getText().toString());
+                                    data1.put("district", ctvDistrict1.getText().toString());
+                                    data1.put("town", ctvTown1.getText().toString());
+                                    data1.put("detail", etDetail1.getText().toString());
+                                    data1.put("defaultAddress", defaultAddress); // add city district town
 
-                    Map<String, Object> data2 = new HashMap<>();
-                    data2.put("name", etName2.getText().toString());
-                    data2.put("phone", etPhone2.getText().toString());
-                    data2.put("address", etDetail2.getText().toString()); // add city district town
-
-//                    db.collection("UserAddresses").document(fAuth.getCurrentUser().getUid())
-//                            .collection("Addresses").document();
+                                    Map<String, Object> data2 = new HashMap<>();
+                                    data2.put("name", etName2.getText().toString());
+                                    data2.put("phone", etPhone2.getText().toString());
+                                    data2.put("city", ctvCity2.getText().toString());
+                                    data2.put("district", ctvDistrict2.getText().toString());
+                                    data2.put("town", ctvTown2.getText().toString());
+                                    data2.put("detail", etDetail2.getText().toString());
+                                    data2.put("defaultAddress", !defaultAddress); // add city district town
+                                    list.add(data1);
+                                    list.add(data2);
+                                    if (queryDocumentSnapshots.isEmpty()) {
+                                        db.collection("Users")
+                                                .document(fAuth.getCurrentUser().getUid())
+                                                .collection("Addresses")
+                                                .add(data1);
+                                        if (cbAddress2.isChecked())
+                                            db.collection("Users")
+                                                    .document(fAuth.getCurrentUser().getUid())
+                                                    .collection("Addresses")
+                                                    .add(data2);
+                                    } else {
+                                        int i = 0;
+                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                            Log.e("", String.valueOf(documentSnapshot.getData()));
+                                            if (i > 0 && cbAddress2.isChecked() || i == 0)
+                                                db.collection("Users")
+                                                        .document(fAuth.getCurrentUser().getUid())
+                                                        .collection("Addresses")
+                                                        .document(documentSnapshot.getId())
+                                                        .set(list.get(i))
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.e("change address", e.getMessage());
+                                                            }
+                                                        });
+                                            i++;
+                                        }
+                                    }
+                                }
+                            });
 
 
                     Toast.makeText(ChangeAddressActivity.this, "Updated", Toast.LENGTH_SHORT).show();
@@ -410,12 +458,17 @@ public class ChangeAddressActivity extends AppCompatActivity {
     }
 
     public boolean validateData() {
-        return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
-                etDetail1.getText().toString().equals("") || etName2.getText().toString().equals("") ||
-                etPhone2.getText().toString().equals("") || etDetail2.getText().toString().equals("") ||
-                layoutName1.isHelperTextEnabled() || layoutPhone1.isHelperTextEnabled() ||
-                layoutDetail1.isHelperTextEnabled() || layoutName2.isHelperTextEnabled() ||
-                layoutPhone2.isHelperTextEnabled() || layoutDetail2.isHelperTextEnabled();
+        if (cbAddress2.isChecked())
+            return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
+                    etDetail1.getText().toString().equals("") || etName2.getText().toString().equals("") ||
+                    etPhone2.getText().toString().equals("") || etDetail2.getText().toString().equals("") ||
+                    layoutName1.isHelperTextEnabled() || layoutPhone1.isHelperTextEnabled() ||
+                    layoutDetail1.isHelperTextEnabled() || layoutName2.isHelperTextEnabled() ||
+                    layoutPhone2.isHelperTextEnabled() || layoutDetail2.isHelperTextEnabled();
+        else
+            return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
+                    etDetail1.getText().toString().equals("") || layoutName1.isHelperTextEnabled() ||
+                    layoutPhone1.isHelperTextEnabled() || layoutDetail1.isHelperTextEnabled();
     }
 
     public boolean includeCharInAlphabet(String str) {

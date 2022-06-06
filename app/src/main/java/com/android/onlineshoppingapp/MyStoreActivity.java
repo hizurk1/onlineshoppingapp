@@ -127,7 +127,7 @@ public class MyStoreActivity extends AppCompatActivity {
         });
 
         // change shop name
-        String fullname = MainActivity.userInformation.getLastName() + " " + MainActivity.userInformation.getFirstName();
+        String fullname = user.getDisplayName();
         tvShopName.setText(fullname);
 
         // click on verify button store

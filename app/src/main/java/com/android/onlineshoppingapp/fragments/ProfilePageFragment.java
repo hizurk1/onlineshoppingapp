@@ -69,7 +69,6 @@ public class ProfilePageFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private StorageReference storageReference;
-    private String accountType = MainActivity.userInformation.getAccountType();
 
     private TextView textViewFullname, tvUserRanking;
     private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
