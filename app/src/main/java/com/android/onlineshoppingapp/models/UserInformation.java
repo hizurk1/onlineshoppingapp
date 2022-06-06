@@ -3,9 +3,10 @@ package com.android.onlineshoppingapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserInformation implements Parcelable {
+public class UserInformation implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
@@ -36,17 +37,6 @@ public class UserInformation implements Parcelable {
         accountType = in.readString();
     }
 
-    public static final Creator<UserInformation> CREATOR = new Creator<UserInformation>() {
-        @Override
-        public UserInformation createFromParcel(Parcel in) {
-            return new UserInformation(in);
-        }
-
-        @Override
-        public UserInformation[] newArray(int size) {
-            return new UserInformation[size];
-        }
-    };
 
     public String getFirstName() {
         return firstName;
@@ -104,18 +94,4 @@ public class UserInformation implements Parcelable {
         this.accountType = accountType;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(firstName);
-        parcel.writeString(lastName);
-        parcel.writeString(email);
-        parcel.writeString(Phone);
-        parcel.writeString(sex);
-        parcel.writeString(accountType);
-    }
 }

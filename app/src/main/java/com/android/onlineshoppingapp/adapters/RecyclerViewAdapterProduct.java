@@ -156,7 +156,6 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
 
                         DocumentSnapshot documentSnapshot = value;
                         Map<String, Object> map = documentSnapshot.getData();
-                        Log.e(TAG,product.getProductName());
                         if (map != null) {
                             List<String> string = (List<String>) map.get("url");
                             Glide.with(context)

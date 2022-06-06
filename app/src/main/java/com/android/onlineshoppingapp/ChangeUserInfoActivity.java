@@ -20,12 +20,12 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.models.UserInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.Timestamp;
@@ -51,6 +51,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
     private List<String> sexList;
+    private UserInformation userInformation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +74,19 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        userInformation = (UserInformation) getIntent().getSerializableExtra("userInformation");
+
         // click on back
         ivBack.setOnClickListener(view -> {
             onBackPressed();
         });
 
         // set previous data
-        etLName.setText(MainActivity.userInformation.getLastName());
-        etFName.setText(MainActivity.userInformation.getFirstName());
-        etPhone.setText(MainActivity.userInformation.getPhone());
-        etEmail.setText(MainActivity.userInformation.getEmail());
-        ctvSex.setText(MainActivity.userInformation.getSex());
+        etLName.setText(userInformation.getLastName());
+        etFName.setText(userInformation.getFirstName());
+        etPhone.setText(userInformation.getPhone());
+        etEmail.setText(userInformation.getEmail());
+        ctvSex.setText(userInformation.getSex());
 
         sexList = new ArrayList<>();
         sexList.add("Nam");
@@ -103,7 +106,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
             }
         });
 
-        etDateOfBirth.setText(new SimpleDateFormat("dd/MM/yyyy").format(MainActivity.userInformation.getDateOfBirth()));
+        etDateOfBirth.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));
 
         // check data
         etFName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
