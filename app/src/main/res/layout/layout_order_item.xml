@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -28,11 +30,12 @@
                 android:layout_marginStart="15dp"
                 android:text="shop"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tvOrderStatusOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -40,7 +43,7 @@
             android:layout_marginEnd="10dp"
             android:text="Trạng thái"
             android:textColor="@color/light_green"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
     </RelativeLayout>
 
@@ -73,6 +76,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvProductNameOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tên sản phẩm"
@@ -80,6 +84,7 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/tvCategoryOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Loại: " />
@@ -98,6 +103,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvProductPriceOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="đ0"
@@ -105,6 +111,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvNumberOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="x0" />
@@ -145,13 +152,14 @@
                 android:layout_height="wrap_content"
                 android:text="Thành tiền:"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <TextView
+                android:id="@+id/tvPriceTotalOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:text="đ0"
                 android:textColor="@color/red_error"
                 android:textStyle="bold" />
