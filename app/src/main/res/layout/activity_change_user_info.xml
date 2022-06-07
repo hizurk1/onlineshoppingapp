@@ -39,65 +39,47 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutLNameCUserInfo"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:hint="Họ (không bắt buộc)"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layoutLNameCUserInfo"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLNameCUserInfo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_toStartOf="@+id/splitTxtFieldNameChangeInfo"
-                    android:hint="Họ"
-                    app:helperTextEnabled="true"
-                    app:helperTextTextColor="@color/red_error">
+                    android:inputType="textCapWords"
+                    android:maxLength="20"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLNameCUserInfo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:maxLength="20"
-                        tools:ignore="SpeakableTextPresentCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutFNameCUserInfo"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:hint="Tên"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@color/red_error">
 
-                <View
-                    android:id="@+id/splitTxtFieldNameChangeInfo"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_centerInParent="true" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layoutFNameCUserInfo"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFNameCUserInfo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/splitTxtFieldNameChangeInfo"
-                    android:hint="Tên"
-                    app:helperTextEnabled="true"
-                    app:helperTextTextColor="@color/red_error">
+                    android:inputType="textCapWords"
+                    android:maxLength="20"
+                    tools:ignore="SpeakableTextPresentCheck" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etFNameCUserInfo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:maxLength="20"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </RelativeLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutPhoneCUserInfo"

@@ -132,8 +132,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean onFocus) {
                 if (!onFocus) {
-                    if (editTextLastName.getText().toString().trim().equals("")) {
-                        txtLayoutLastName.setHelperText("Họ không được để trống");
+                    if (editTextLastName.getText().toString().equals("")) {
+                        txtLayoutLastName.setHelperTextEnabled(false);
                     } else if (!includeCharInAlphabet(editTextLastName.getText().toString().trim())) {
                         txtLayoutLastName.setHelperText("Họ không hợp lệ");
                     }
@@ -308,9 +308,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // validate date of birth
                 if (validateDateOfBirth()) {
-                    if (editTextFirstName.getText().toString().equals("") ||
-                            editTextLastName.getText().toString().equals("") ||
-                            editTextEmail.getText().toString().equals("") ||
+                    if (editTextEmail.getText().toString().equals("") ||
                             editTextPhone.getText().toString().equals("") ||
                             editTextPassword.getText().toString().equals("")) {
                         Toast.makeText(RegisterActivity.this, "Bạn chưa điền đầy đủ thông tin!",

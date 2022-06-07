@@ -133,7 +133,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
                     layoutLName.setHelperTextEnabled(false);
                 } else {
                     if (etLName.getText().toString().equals("")) {
-                        layoutLName.setHelperText("Họ không được bỏ trống");
+                        layoutLName.setHelperTextEnabled(false);
                     } else if (!includeCharInAlphabet(etLName.getText().toString())) {
                         layoutLName.setHelperText("Họ phải chứa ít nhất 1 ký tự chữ cái");
                     } else {
@@ -199,6 +199,8 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Toast.makeText(ChangeUserInfoActivity.this, "Bạn chưa nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -206,7 +208,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
     }
 
     public boolean validateData() {
-        return etLName.getText().toString().equals("") || etFName.getText().toString().equals("") ||
+        return etFName.getText().toString().equals("") ||
                 etPhone.getText().toString().equals("") || etDateOfBirth.getText().toString().equals("") ||
                 layoutFName.isHelperTextEnabled() || layoutLName.isHelperTextEnabled() ||
                 layoutPhone.isHelperTextEnabled();

@@ -118,7 +118,12 @@ public class ProfilePageFragment extends Fragment {
                         if (task.isSuccessful()) {
                             if (task.getResult().exists()) {
                                 UserInformation userInfo = task.getResult().toObject(UserInformation.class);
-                                textViewFullname.setText(String.format("%s %s", userInfo.getLastName(), userInfo.getFirstName()));
+                                if (!userInfo.getLastName().equals("")) {
+                                    textViewFullname.setText(String.format("%s %s", userInfo.getLastName(), userInfo.getFirstName()));
+                                } else {
+                                    textViewFullname.setText(userInfo.getFirstName());
+                                }
+
                             }
                         }
                     }

@@ -73,6 +73,11 @@ public class UserInformationFragment extends Fragment {
                         if (value.exists()) {
                             userInformation = value.toObject(UserInformation.class);
 
+                            if (!userInformation.getLastName().equals("")) {
+                                tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
+                            } else {
+                                tvFullNameInfo.setText(userInformation.getFirstName());
+                            }
                             tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
                             tvEmailInfo.setText(userInformation.getEmail());
                             tvSexInfo.setText(userInformation.getSex());
