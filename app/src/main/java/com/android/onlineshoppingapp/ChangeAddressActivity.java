@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -34,10 +38,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class ChangeAddressActivity extends AppCompatActivity {
 
@@ -53,7 +64,11 @@ public class ChangeAddressActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
     private List<UserAddress> userAddresses;
-    private ArrayList<String> cityList, districtList, townList;
+    private ArrayList<String> cityNameList, districtNameList, townNameList, districtNameList2, townNameList2;
+    private List<Map<String, Object>> cityList, districtList, townList, districtList2, townList2;
+    private Map<String, Object> data1 = new HashMap<>();
+    private Map<String, Object> data2 = new HashMap<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,11 +156,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
         switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    switch1.setChecked(false);
-                } else {
-                    switch1.setChecked(true);
-                }
+                switch1.setChecked(!b);
             }
         });
 
@@ -223,14 +234,12 @@ public class ChangeAddressActivity extends AppCompatActivity {
 
         // set value on city
         cityList = new ArrayList<>();
-        cityList.add("TP. Hồ Chí Minh");
-        cityList.add("Hà Nội");
-        cityList.add("Đà Nẵng");
+        cityNameList = new ArrayList<>();
 
         ArrayAdapter<String> cityListAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
-                cityList
+                cityNameList
         );
         ctvCity1.setAdapter(cityListAdapter);
         ctvCity1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -239,6 +248,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
                 closeKeyboard();
             }
         });
+
         ctvCity2.setAdapter(cityListAdapter);
         ctvCity2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -249,14 +259,14 @@ public class ChangeAddressActivity extends AppCompatActivity {
 
         // set value on district
         districtList = new ArrayList<>();
-        districtList.add("Quận Thủ Đức");
-        districtList.add("Quận 1");
-        districtList.add("Quận Bình Thạnh");
+        districtNameList = new ArrayList<>();
+        districtList2 = new ArrayList<>();
+        districtNameList2 = new ArrayList<>();
 
         ArrayAdapter<String> districtListAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
-                districtList
+                districtNameList
         );
         ctvDistrict1.setAdapter(districtListAdapter);
         ctvDistrict1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -265,7 +275,10 @@ public class ChangeAddressActivity extends AppCompatActivity {
                 closeKeyboard();
             }
         });
-        ctvDistrict2.setAdapter(districtListAdapter);
+        ctvDistrict2.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                districtNameList2));
         ctvDistrict2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -275,14 +288,14 @@ public class ChangeAddressActivity extends AppCompatActivity {
 
         // set value on district
         townList = new ArrayList<>();
-        townList.add("Phường 1");
-        townList.add("Phường 2");
-        townList.add("Phường 3");
+        townNameList = new ArrayList<>();
+        townList2 = new ArrayList<>();
+        townNameList2 = new ArrayList<>();
 
         ArrayAdapter<String> townListAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_dropdown_item,
-                townList
+                townNameList
         );
         ctvTown1.setAdapter(townListAdapter);
         ctvTown1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -291,7 +304,10 @@ public class ChangeAddressActivity extends AppCompatActivity {
                 closeKeyboard();
             }
         });
-        ctvTown2.setAdapter(townListAdapter);
+        ctvTown2.setAdapter(new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                townNameList2));
         ctvTown2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -299,6 +315,345 @@ public class ChangeAddressActivity extends AppCompatActivity {
             }
         });
 
+        //set city/province
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                //set city/province
+                try {
+                    //Create URL
+                    URL url = new URL("https://provinces.open-api.vn/api/");
+
+                    try {
+                        //Create Connection
+                        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+                        if (httpsURLConnection.getResponseCode() == 200) {
+                            InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                            JsonReader jsonReader = new JsonReader(inputStreamReader);
+                            jsonReader.beginArray();
+                            while (jsonReader.hasNext()) {
+                                jsonReader.beginObject();
+                                Map<String, Object> map = new HashMap<>();
+                                while (jsonReader.hasNext()) {
+                                    String name = String.valueOf(jsonReader.nextName());
+                                    if (name.equals("name"))
+                                        map.put("name", jsonReader.nextString());
+                                    else if (name.equals("code"))
+                                        map.put("code", jsonReader.nextInt());
+                                    else if (name.equals("division_type"))
+                                        map.put("division_type", jsonReader.nextString());
+                                    else if (name.equals("codename"))
+                                        map.put("codename", jsonReader.nextString());
+                                    else if (name.equals("phone_code"))
+                                        map.put("phone_code", jsonReader.nextString());
+                                    else
+                                        jsonReader.skipValue();
+                                }
+                                cityList.add(map);
+                                jsonReader.endObject();
+                            }
+                            jsonReader.endArray();
+                            for (Map<String, Object> item : cityList) {
+                                cityNameList.add(String.valueOf(item.get("name")));
+                            }
+                            jsonReader.close();
+                        } else {
+                            Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            Log.e("API address", httpsURLConnection.getResponseMessage());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //set district
+        ctvCity1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Map<String, Object> map = cityList.get(i);
+                data1.put("cityCode",map.get("code"));
+                districtList.clear();
+                districtNameList.clear();
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Create URL
+                            URL url = new URL("https://provinces.open-api.vn/api/p/" + map.get("code") + "?depth=2");
+
+                            try {
+                                //Create Connection
+                                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                                httpsURLConnection.setRequestMethod("GET");
+
+                                if (httpsURLConnection.getResponseCode() == 200) {
+                                    InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                                    JsonReader jsonReader = new JsonReader(inputStreamReader);
+                                    jsonReader.beginObject();
+                                    while (jsonReader.hasNext()) {
+                                        String name = jsonReader.nextName();
+                                        if (name.equals("districts") && jsonReader.peek() != JsonToken.NULL) {
+                                            jsonReader.beginArray();
+                                            while (jsonReader.hasNext()) {
+                                                jsonReader.beginObject();
+                                                Map<String, Object> map = new HashMap<>();
+                                                while (jsonReader.hasNext()) {
+                                                    String key = jsonReader.nextName();
+                                                    if (key.equals("name"))
+                                                        map.put("name", jsonReader.nextString());
+                                                    else if (key.equals("code"))
+                                                        map.put("code", jsonReader.nextInt());
+                                                    else if (key.equals("division_type"))
+                                                        map.put("division_type", jsonReader.nextString());
+                                                    else jsonReader.skipValue();
+                                                }
+                                                districtList.add(map);
+                                                jsonReader.endObject();
+                                            }
+                                            jsonReader.endArray();
+                                        } else
+                                            jsonReader.skipValue();
+
+                                    }
+                                    jsonReader.endObject();
+                                    jsonReader.close();
+                                    httpsURLConnection.disconnect();
+                                    for (Map<String, Object> item : districtList) {
+                                        districtNameList.add(String.valueOf(item.get("name")));
+                                    }
+                                } else {
+                                    Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                    Log.e("API address", httpsURLConnection.getResponseMessage());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+        ctvCity2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Map<String, Object> map = cityList.get(i);
+                data2.put("districtCode",map.get("code"));
+                districtList2.clear();
+                districtNameList2.clear();
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            //Create URL
+                            URL url = new URL("https://provinces.open-api.vn/api/p/" + map.get("code") + "?depth=2");
+
+                            try {
+                                //Create Connection
+                                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                                httpsURLConnection.setRequestMethod("GET");
+
+                                if (httpsURLConnection.getResponseCode() == 200) {
+                                    InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                                    JsonReader jsonReader = new JsonReader(inputStreamReader);
+                                    jsonReader.beginObject();
+                                    while (jsonReader.hasNext()) {
+                                        String name = jsonReader.nextName();
+                                        if (name.equals("districts") && jsonReader.peek() != JsonToken.NULL) {
+                                            jsonReader.beginArray();
+                                            while (jsonReader.hasNext()) {
+                                                jsonReader.beginObject();
+                                                Map<String, Object> map = new HashMap<>();
+                                                while (jsonReader.hasNext()) {
+                                                    String key = jsonReader.nextName();
+                                                    if (key.equals("name"))
+                                                        map.put("name", jsonReader.nextString());
+                                                    else if (key.equals("code"))
+                                                        map.put("code", jsonReader.nextInt());
+                                                    else if (key.equals("division_type"))
+                                                        map.put("division_type", jsonReader.nextString());
+                                                    else jsonReader.skipValue();
+                                                }
+                                                districtList2.add(map);
+                                                jsonReader.endObject();
+                                            }
+                                            jsonReader.endArray();
+                                        } else
+                                            jsonReader.skipValue();
+
+                                    }
+                                    jsonReader.endObject();
+                                    jsonReader.close();
+                                    httpsURLConnection.disconnect();
+                                    for (Map<String, Object> item : districtList2) {
+                                        districtNameList2.add(String.valueOf(item.get("name")));
+                                    }
+                                } else {
+                                    Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                    Log.e("API address", httpsURLConnection.getResponseMessage());
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+        //set ward
+        ctvDistrict1.setOnItemClickListener((adapterView, view, i, l) -> {
+            Map<String, Object> map = districtList.get(i);
+            data1.put("districtCode",map.get("code"));
+            townList.clear();
+            townNameList.clear();
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //Create URL
+                        URL url = new URL("https://provinces.open-api.vn/api/d/" + map.get("code") + "?depth=2");
+
+                        try {
+                            //Create Connection
+                            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                            httpsURLConnection.setRequestMethod("GET");
+
+                            if (httpsURLConnection.getResponseCode() == 200) {
+                                InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                                JsonReader jsonReader = new JsonReader(inputStreamReader);
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String name = jsonReader.nextName();
+                                    if (name.equals("wards") && jsonReader.peek() != JsonToken.NULL) {
+                                        jsonReader.beginArray();
+                                        while (jsonReader.hasNext()) {
+                                            jsonReader.beginObject();
+                                            Map<String, Object> map = new HashMap<>();
+                                            while (jsonReader.hasNext()) {
+                                                String key = jsonReader.nextName();
+                                                if (key.equals("name"))
+                                                    map.put("name", jsonReader.nextString());
+                                                else if (key.equals("code"))
+                                                    map.put("code", jsonReader.nextInt());
+                                                else if (key.equals("division_type"))
+                                                    map.put("division_type", jsonReader.nextString());
+                                                else jsonReader.skipValue();
+                                            }
+                                            townList.add(map);
+                                            jsonReader.endObject();
+                                        }
+                                        jsonReader.endArray();
+                                    } else
+                                        jsonReader.skipValue();
+
+                                }
+                                jsonReader.endObject();
+                                jsonReader.close();
+                                httpsURLConnection.disconnect();
+                                for (Map<String, Object> item : townList) {
+                                    townNameList.add(String.valueOf(item.get("name")));
+                                }
+                            } else {
+                                Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                Log.e("API address", httpsURLConnection.getResponseMessage());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
+        ctvDistrict2.setOnItemClickListener((adapterView, view, i, l) -> {
+            Map<String, Object> map = districtList2.get(i);
+            data2.put("districtCode",map.get("code"));
+            townList2.clear();
+            townNameList2.clear();
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //Create URL
+                        URL url = new URL("https://provinces.open-api.vn/api/d/" + map.get("code") + "?depth=2");
+
+                        try {
+                            //Create Connection
+                            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                            httpsURLConnection.setRequestMethod("GET");
+
+                            if (httpsURLConnection.getResponseCode() == 200) {
+                                InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                                JsonReader jsonReader = new JsonReader(inputStreamReader);
+                                jsonReader.beginObject();
+                                while (jsonReader.hasNext()) {
+                                    String name = jsonReader.nextName();
+                                    if (name.equals("wards") && jsonReader.peek() != JsonToken.NULL) {
+                                        jsonReader.beginArray();
+                                        while (jsonReader.hasNext()) {
+                                            jsonReader.beginObject();
+                                            Map<String, Object> map = new HashMap<>();
+                                            while (jsonReader.hasNext()) {
+                                                String key = jsonReader.nextName();
+                                                if (key.equals("name"))
+                                                    map.put("name", jsonReader.nextString());
+                                                else if (key.equals("code"))
+                                                    map.put("code", jsonReader.nextInt());
+                                                else if (key.equals("division_type"))
+                                                    map.put("division_type", jsonReader.nextString());
+                                                else jsonReader.skipValue();
+                                            }
+                                            townList2.add(map);
+                                            jsonReader.endObject();
+                                        }
+                                        jsonReader.endArray();
+                                    } else
+                                        jsonReader.skipValue();
+
+                                }
+                                jsonReader.endObject();
+                                jsonReader.close();
+                                httpsURLConnection.disconnect();
+                                for (Map<String, Object> item : townList2) {
+                                    townNameList2.add(String.valueOf(item.get("name")));
+                                }
+                            } else {
+                                Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                Log.e("API address", httpsURLConnection.getResponseMessage());
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        });
+
+        //get ward code
+        ctvTown1.setOnItemClickListener((adapterView, view, i, l) -> {
+            Map<String, Object> map = townList.get(i);
+            data1.put("townCode",map.get("code"));
+        });
+        ctvTown2.setOnItemClickListener((adapterView, view, i, l) -> {
+            Map<String, Object> map = townList2.get(i);
+            data2.put("townCode",map.get("code"));
+        });
         // check detail 1
         etDetail1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -343,14 +698,14 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 userAddresses.add(userAddress);
                             });
 
-                            //set which address is default
-                            if (!userAddresses.get(0).isDefaultAddress()) {
-                                UserAddress temp = userAddresses.get(0);
-                                userAddresses.set(0,userAddresses.get(1));
-                                userAddresses.set(1,temp);
-                            }
 
                             if (!userAddresses.isEmpty()) {
+                                //set which address is default
+                                if (!userAddresses.get(0).isDefaultAddress() && userAddresses.size() > 1) {
+                                    UserAddress temp = userAddresses.get(0);
+                                    userAddresses.set(0, userAddresses.get(1));
+                                    userAddresses.set(1, temp);
+                                }
                                 // set previous value for et
                                 etName1.setText(userAddresses.get(0).getName());
                                 etName1.setSelectAllOnFocus(true);
@@ -358,9 +713,9 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 etPhone1.setSelectAllOnFocus(true);
                                 etDetail1.setText(userAddresses.get(0).getDetail());
                                 etDetail1.setSelectAllOnFocus(true);
-                                ctvCity1.setText(userAddresses.get(0).getCity());
-                                ctvDistrict1.setText(userAddresses.get(0).getDistrict());
-                                ctvTown1.setText(userAddresses.get(0).getTown());
+//                                ctvCity1.setText(userAddresses.get(0).getCity());
+//                                ctvDistrict1.setText(userAddresses.get(0).getDistrict());
+//                                ctvTown1.setText(userAddresses.get(0).getTown());
 
                                 if (userAddresses.size() > 1) {
                                     // set previous value for et
@@ -370,9 +725,9 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                     etPhone2.setSelectAllOnFocus(true);
                                     etDetail2.setText(userAddresses.get(1).getDetail());
                                     etDetail2.setSelectAllOnFocus(true);
-                                    ctvCity2.setText(userAddresses.get(1).getCity());
-                                    ctvDistrict2.setText(userAddresses.get(1).getDistrict());
-                                    ctvTown2.setText(userAddresses.get(1).getTown());
+//                                    ctvCity2.setText(userAddresses.get(1).getCity());
+//                                    ctvDistrict2.setText(userAddresses.get(1).getDistrict());
+//                                    ctvTown2.setText(userAddresses.get(1).getTown());
                                 }
                             }
 
@@ -394,11 +749,9 @@ public class ChangeAddressActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
-                                    Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
-
+//                                    Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
                                     List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-                                    Map<String, Object> data1 = new HashMap<>();
+                                    boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
                                     data1.put("name", etName1.getText().toString());
                                     data1.put("phone", etPhone1.getText().toString());
                                     data1.put("city", ctvCity1.getText().toString());
@@ -407,7 +760,6 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                     data1.put("detail", etDetail1.getText().toString());
                                     data1.put("defaultAddress", defaultAddress); // add city district town
 
-                                    Map<String, Object> data2 = new HashMap<>();
                                     data2.put("name", etName2.getText().toString());
                                     data2.put("phone", etPhone2.getText().toString());
                                     data2.put("city", ctvCity2.getText().toString());
