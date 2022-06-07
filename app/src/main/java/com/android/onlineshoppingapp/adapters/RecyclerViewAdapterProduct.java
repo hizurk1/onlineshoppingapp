@@ -47,7 +47,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
 
     public RecyclerViewAdapterProduct(List<Product> listProducts, Context context) {
         this.listProducts = listProducts;
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public RecyclerViewAdapterProduct(List<Product> listProducts) {
@@ -85,6 +85,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         private TextView tvProductName, tvProductPrice, tvSoldNum, tvSaleOff;
         private RatingBar ratingbarProduct;
         private CardView cardProductItem;
+        private View view;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,7 +98,7 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
             ratingbarProduct = itemView.findViewById(R.id.ratingbarProduct);
             tvSaleOff = itemView.findViewById(R.id.tvSaleOff);
             cardProductItem = itemView.findViewById(R.id.cardProductItem);
-
+            view = itemView;
         }
     }
 
@@ -135,11 +136,11 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
         holder.cardProductItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ProductDetailActivity.class);
+                Intent intent = new Intent(view.getContext(), ProductDetailActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("product", product);
                 intent.putExtras(bundle);
-                context.startActivities(new Intent[]{intent});
+                view.getContext().startActivities(new Intent[]{intent});
             }
         });
 
@@ -158,11 +159,13 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
                         Map<String, Object> map = documentSnapshot.getData();
                         if (map != null) {
                             List<String> string = (List<String>) map.get("url");
-                            Glide.with(context)
+                            Glide.with(holder.view)
                                     .load(string.get(0)).into(holder.ivProductLogo);
                         }
                     }
                 });
 
     }
+
+
 }

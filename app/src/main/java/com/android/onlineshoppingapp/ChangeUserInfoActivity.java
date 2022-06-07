@@ -189,9 +189,7 @@ public class ChangeUserInfoActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             Toast.makeText(ChangeUserInfoActivity.this, "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
-                                            finishAffinity();
-                                            startActivity(new Intent(ChangeUserInfoActivity.this, MainActivity.class));
-                                            startActivity(new Intent(ChangeUserInfoActivity.this, SettingsActivity.class));
+                                            onBackPressed();
                                         } else {
                                             Log.e("updateError", task.getException().getMessage());
                                         }

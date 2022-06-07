@@ -1,9 +1,12 @@
 package com.android.onlineshoppingapp.fragments;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,18 +29,29 @@ import com.android.onlineshoppingapp.adapters.BannerImageAdapter;
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.BannerImage;
 import com.android.onlineshoppingapp.models.Product;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomePageFragment extends Fragment {
 
-    private RecyclerView recyclerTopitem, recyclerRightItem;
+    private RecyclerView recyclerTopSaleItem, recyclerForYouItem;
     private ImageView ivShoppingCart;
     private ViewPager2 viewPager2;
-    private List<BannerImage> imageList;
     private BannerImageAdapter bannerImageAdapter;
     private final Handler sliderHandler = new Handler();
+    private List<BannerImage> imageList;
+    public List<Product> listTopSale, listForYou;
+
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,9 +59,10 @@ public class HomePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
         // init
-        List<Product> list = getlistData();
-
         ivShoppingCart = view.findViewById(R.id.ivShopCartHome);
+
+        fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // click on shopping cart
         ivShoppingCart.setOnClickListener(new View.OnClickListener() {
@@ -83,26 +98,65 @@ public class HomePageFragment extends Fragment {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 sliderHandler.removeCallbacks(sliderRunnable);
-                sliderHandler.postDelayed(sliderRunnable, 3000);
+                sliderHandler.postDelayed(sliderRunnable, 5000);
             }
         });
 
-        //Top sell item
-        recyclerTopitem = (RecyclerView) view.findViewById(R.id.hgTopitem);
-        recyclerTopitem.setAdapter(new RecyclerViewAdapterProduct(list));
-        LinearLayoutManager layoutmangerTopitem = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerTopitem.setLayoutManager(layoutmangerTopitem);
+        listTopSale = new ArrayList<>();
+        db.collection("Products")
+                .orderBy("quantitySold", Query.Direction.DESCENDING)
+                .limit(10)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+                        listTopSale.clear();
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            listTopSale.add(product);
+                        }
+                        //Top sell item
+                        recyclerTopSaleItem = (RecyclerView) view.findViewById(R.id.hgTopitem);
+                        recyclerTopSaleItem.setAdapter(new RecyclerViewAdapterProduct(listTopSale));
+                        LinearLayoutManager layoutmangerTopitem = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+                        recyclerTopSaleItem.setLayoutManager(layoutmangerTopitem);
+                    }
+                });
 
-        //For you
-        recyclerRightItem = (RecyclerView) view.findViewById(R.id.hgRighPrForYou);
-        RecyclerViewAdapterProduct adapterProduct = new RecyclerViewAdapterProduct(list);
-        recyclerRightItem.setAdapter(adapterProduct);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        recyclerRightItem.setLayoutManager(gridLayoutManager);
+        listForYou = new ArrayList<>();
+        db.collection("Products")
+                .orderBy("likeNumber", Query.Direction.DESCENDING)
+                .limit(20)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+                        listForYou.clear();
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            listForYou.add(product);
+                        }
 
-        int heightOfForYou = (adapterProduct.getItemCount() % 2 == 0) ?
-                (adapterProduct.getItemCount() * 350) : (adapterProduct.getItemCount() * 460);
-        recyclerRightItem.setMinimumHeight(heightOfForYou);
+                        //For you
+                        recyclerForYouItem = (RecyclerView) view.findViewById(R.id.hgRighPrForYou);
+                        RecyclerViewAdapterProduct adapterProduct = new RecyclerViewAdapterProduct(listForYou);
+                        recyclerForYouItem.setAdapter(adapterProduct);
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+                        recyclerForYouItem.setLayoutManager(gridLayoutManager);
+
+                        int heightOfForYou = (adapterProduct.getItemCount() % 2 == 0) ?
+                                (adapterProduct.getItemCount() * 350) : (adapterProduct.getItemCount() * 460);
+                        recyclerForYouItem.setMinimumHeight(heightOfForYou);
+                    }
+                });
 
         return view;
     }
@@ -116,7 +170,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        sliderHandler.postDelayed(sliderRunnable, 3000);
+        sliderHandler.postDelayed(sliderRunnable, 5000);
     }
 
     private Runnable sliderRunnable = new Runnable() {
@@ -132,27 +186,6 @@ public class HomePageFragment extends Fragment {
         list.add(new BannerImage(R.drawable.banner2));
         list.add(new BannerImage(R.drawable.banner3));
 
-        return list;
-    }
-
-    private List<Product> getlistData() {
-        List<Product> list = new ArrayList<Product>();
-        Product item1 = new Product(String.valueOf(1), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item2 = new Product(String.valueOf(2), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item3 = new Product(String.valueOf(3), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item4 = new Product(String.valueOf(4), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item5 = new Product(String.valueOf(5), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item6 = new Product(String.valueOf(6), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item7 = new Product(String.valueOf(7), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        Product item8 = new Product(String.valueOf(8), "Xe mô hình", "String seller", "Vượt mọi trở ngại, thẳng tiến vạch đích!!!", 999, 5, 174, 23);
-        list.add(item1);
-        list.add(item2);
-        list.add(item3);
-        list.add(item4);
-        list.add(item5);
-        list.add(item6);
-        list.add(item7);
-        list.add(item8);
         return list;
     }
 
