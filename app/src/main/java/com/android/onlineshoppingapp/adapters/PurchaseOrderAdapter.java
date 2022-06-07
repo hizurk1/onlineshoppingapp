@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.android.onlineshoppingapp.fragments.CancelOrderFragment;
 import com.android.onlineshoppingapp.fragments.ReceiveOrderFragment;
 import com.android.onlineshoppingapp.fragments.ShippingFragment;
 import com.android.onlineshoppingapp.fragments.WaitForProductFragment;
@@ -34,6 +35,8 @@ public class PurchaseOrderAdapter extends FragmentStateAdapter {
                 return new ShippingFragment();
             case 3:
                 return new WaitForReviewFragment();
+            case 4:
+                return new CancelOrderFragment();
             default:
                 return new ReceiveOrderFragment();
         }
@@ -41,6 +44,6 @@ public class PurchaseOrderAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

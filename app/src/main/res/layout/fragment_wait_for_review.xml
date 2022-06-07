@@ -8,7 +8,7 @@
     tools:context=".fragments.WaitForReviewFragment">
 
     <LinearLayout
-        android:id="@+id/layoutEmptyOrder4"
+        android:id="@+id/layoutEmptyOrder3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
