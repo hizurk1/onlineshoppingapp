@@ -167,6 +167,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
                         order.put("address", userAddressList.get(indexAddress));
                         order.put("totalPrice", cart.getTotalPrice());
+                        order.put("orderStatus", 0);
                         CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
                         String orderId = orderRef.document().getId();
                         orderRef.document(orderId).set(order).addOnSuccessListener(new OnSuccessListener<Void>() {

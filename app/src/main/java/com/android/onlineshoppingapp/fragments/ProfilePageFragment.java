@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.MyStoreActivity;
+import com.android.onlineshoppingapp.PurchaseOrderActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.SettingsActivity;
 import com.android.onlineshoppingapp.ShoppingCartActivity;
@@ -188,7 +189,9 @@ public class ProfilePageFragment extends Fragment {
         ivWallet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), PurchaseOrderActivity.class);
+                intent.putExtra("orderState", "receiveOrder");
+                startActivity(intent);
             }
         });
 
@@ -196,7 +199,9 @@ public class ProfilePageFragment extends Fragment {
         ivChecking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), PurchaseOrderActivity.class);
+                intent.putExtra("orderState", "waitForProduct");
+                startActivity(intent);
             }
         });
 
@@ -204,7 +209,9 @@ public class ProfilePageFragment extends Fragment {
         ivDelivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), PurchaseOrderActivity.class);
+                intent.putExtra("orderState", "shipping");
+                startActivity(intent);
             }
         });
 
@@ -212,7 +219,9 @@ public class ProfilePageFragment extends Fragment {
         ivFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), PurchaseOrderActivity.class);
+                intent.putExtra("orderState", "waitForReview");
+                startActivity(intent);
             }
         });
 
@@ -220,7 +229,6 @@ public class ProfilePageFragment extends Fragment {
         cardSeen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
         });
 

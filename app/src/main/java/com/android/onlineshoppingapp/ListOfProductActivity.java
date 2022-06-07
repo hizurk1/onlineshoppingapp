@@ -55,7 +55,6 @@ public class ListOfProductActivity extends AppCompatActivity {
         });
 
         String seeMoreStatus = getIntent().getStringExtra("see_more_product");
-        Log.w("see more status", seeMoreStatus);
         switch (seeMoreStatus) {
             case "popular":
                 showPopularProduct();

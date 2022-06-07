@@ -149,17 +149,6 @@
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/hgSeemore"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:text="Xem thêm"
-                        android:textColor="@color/light_green"
-                        android:textStyle="bold|italic" />
-
                 </RelativeLayout>
 
                 <LinearLayout
