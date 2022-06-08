@@ -18,6 +18,7 @@ import com.android.onlineshoppingapp.adapters.OrderAdapter;
 import com.android.onlineshoppingapp.models.Order;
 import com.android.onlineshoppingapp.models.OrderProduct;
 import com.android.onlineshoppingapp.models.Product;
+import com.android.onlineshoppingapp.models.UserAddress;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -69,6 +70,7 @@ public class ReceiveOrderFragment extends Fragment {
                         order.setOrderer(documentSnapshot.getString("orderer"));
                         order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
                         order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
+                        order.setAddress(documentSnapshot.get("address", UserAddress.class));
                         orderList.add(order);
 
                     }

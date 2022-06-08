@@ -11,8 +11,11 @@ public class UserAddress {
     private String district;
     private String town;
     private boolean defaultAddress;
+    private String cityCode;
+    private String districtCode;
+    private String townCode;
 
-    public UserAddress(String name, String phone, String detail, String city, String district, String town, boolean defaultAddress) {
+    public UserAddress(String name, String phone, String detail, String city, String district, String town, boolean defaultAddress, String cityCode, String districtCode, String townCode) {
         this.name = name;
         this.phone = phone;
         this.detail = detail;
@@ -20,6 +23,9 @@ public class UserAddress {
         this.district = district;
         this.town = town;
         this.defaultAddress = defaultAddress;
+        this.cityCode = cityCode;
+        this.districtCode = districtCode;
+        this.townCode = townCode;
     }
 
     public UserAddress() {
@@ -83,5 +89,29 @@ public class UserAddress {
 
     public String getFullAddress() {
         return this.getDetail() + ", " + this.getTown() + ", " + this.getDistrict() + ", " + this.getCity();
+    }
+
+    public String getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(String cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public String getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
+    }
+
+    public String getTownCode() {
+        return townCode;
+    }
+
+    public void setTownCode(String townCode) {
+        this.townCode = townCode;
     }
 }

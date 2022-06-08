@@ -8,9 +8,11 @@ public class Order {
     private int orderStatus;
     private int totalPrice;
     private List<OrderProduct> listOrderProduct;
+    private UserAddress address;
 
-    public Order(String orderId, String orderer, int orderStatus, int totalPrice, List<OrderProduct> listOrderProduct) {
+    public Order(String orderId, String orderer, int orderStatus, int totalPrice, List<OrderProduct> listOrderProduct, UserAddress address) {
         this.orderId = orderId;
+        this.address = address;
         this.orderer = orderer;
         this.orderStatus = orderStatus;
         this.totalPrice = totalPrice;
@@ -59,5 +61,13 @@ public class Order {
 
     public void setListOrderProduct(List<OrderProduct> listOrderProduct) {
         this.listOrderProduct = listOrderProduct;
+    }
+
+    public UserAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(UserAddress address) {
+        this.address = address;
     }
 }

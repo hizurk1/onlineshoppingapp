@@ -18,12 +18,16 @@ import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Order;
 import com.android.onlineshoppingapp.models.OrderProduct;
 import com.android.onlineshoppingapp.models.Product;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
@@ -71,6 +75,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         } else {
             holder.btnCancel.setOnClickListener(view -> {
                 Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
+                Map<String, Object> update = new HashMap<>();
+                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                update.put("address", order.getAddress());
+                update.put("totalPrice", order.getTotalPrice());
+                update.put("orderStatus", 4);
+                FirebaseFirestore.getInstance()
+                        .collection("Orders")
+                        .document(order.getOrderId())
+                        .set(update)
+                        .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
             });
         }
 
