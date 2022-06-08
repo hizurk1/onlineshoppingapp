@@ -713,9 +713,6 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 etPhone1.setSelectAllOnFocus(true);
                                 etDetail1.setText(userAddresses.get(0).getDetail());
                                 etDetail1.setSelectAllOnFocus(true);
-//                                ctvCity1.setText(userAddresses.get(0).getCity());
-//                                ctvDistrict1.setText(userAddresses.get(0).getDistrict());
-//                                ctvTown1.setText(userAddresses.get(0).getTown());
 
                                 if (userAddresses.size() > 1) {
                                     // set previous value for et
@@ -725,9 +722,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                     etPhone2.setSelectAllOnFocus(true);
                                     etDetail2.setText(userAddresses.get(1).getDetail());
                                     etDetail2.setSelectAllOnFocus(true);
-//                                    ctvCity2.setText(userAddresses.get(1).getCity());
-//                                    ctvDistrict2.setText(userAddresses.get(1).getDistrict());
-//                                    ctvTown2.setText(userAddresses.get(1).getTown());
+
                                 }
                             }
 
@@ -800,9 +795,10 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-
-                    Toast.makeText(ChangeAddressActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChangeAddressActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                } else {
+                    Toast.makeText(ChangeAddressActivity.this, "Bạn chưa điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -814,12 +810,21 @@ public class ChangeAddressActivity extends AppCompatActivity {
             return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
                     etDetail1.getText().toString().equals("") || etName2.getText().toString().equals("") ||
                     etPhone2.getText().toString().equals("") || etDetail2.getText().toString().equals("") ||
+                    ctvCity1.getText().toString().equals("Chọn thành phố / tỉnh") ||
+                    ctvCity2.getText().toString().equals("Chọn thành phố / tỉnh") ||
+                    ctvDistrict1.getText().toString().equals("Chọn quận / huyện") ||
+                    ctvDistrict2.getText().toString().equals("Chọn quận / huyện") ||
+                    ctvTown1.getText().toString().equals("Chọn phường / xã") ||
+                    ctvTown2.getText().toString().equals("Chọn phường / xã") ||
                     layoutName1.isHelperTextEnabled() || layoutPhone1.isHelperTextEnabled() ||
                     layoutDetail1.isHelperTextEnabled() || layoutName2.isHelperTextEnabled() ||
                     layoutPhone2.isHelperTextEnabled() || layoutDetail2.isHelperTextEnabled();
         else
             return etName1.getText().toString().equals("") || etPhone1.getText().toString().equals("") ||
                     etDetail1.getText().toString().equals("") || layoutName1.isHelperTextEnabled() ||
+                    ctvCity1.getText().toString().equals("Chọn thành phố / tỉnh") ||
+                    ctvDistrict1.getText().toString().equals("Chọn quận / huyện") ||
+                    ctvTown1.getText().toString().equals("Chọn phường / xã") ||
                     layoutPhone1.isHelperTextEnabled() || layoutDetail1.isHelperTextEnabled();
     }
 

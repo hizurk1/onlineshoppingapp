@@ -82,6 +82,6 @@ public class UserAddress {
     }
 
     public String getFullAddress() {
-        return this.getCity() + ", " + this.getDistrict() + ", " + this.getTown() + ", " + this.getDetail();
+        return this.getDetail() + ", " + this.getTown() + ", " + this.getDistrict() + ", " + this.getCity();
     }
 }
