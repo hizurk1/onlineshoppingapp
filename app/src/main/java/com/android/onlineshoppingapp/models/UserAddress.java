@@ -11,11 +11,11 @@ public class UserAddress {
     private String district;
     private String town;
     private boolean defaultAddress;
-    private String cityCode;
-    private String districtCode;
-    private String townCode;
+    private Long cityCode;
+    private Long districtCode;
+    private Long townCode;
 
-    public UserAddress(String name, String phone, String detail, String city, String district, String town, boolean defaultAddress, String cityCode, String districtCode, String townCode) {
+    public UserAddress(String name, String phone, String detail, String city, String district, String town, boolean defaultAddress, Long cityCode, Long districtCode, Long townCode) {
         this.name = name;
         this.phone = phone;
         this.detail = detail;
@@ -91,27 +91,27 @@ public class UserAddress {
         return this.getDetail() + ", " + this.getTown() + ", " + this.getDistrict() + ", " + this.getCity();
     }
 
-    public String getCityCode() {
+    public Long getCityCode() {
         return cityCode;
     }
 
-    public void setCityCode(String cityCode) {
+    public void setCityCode(Long cityCode) {
         this.cityCode = cityCode;
     }
 
-    public String getDistrictCode() {
+    public Long getDistrictCode() {
         return districtCode;
     }
 
-    public void setDistrictCode(String districtCode) {
+    public void setDistrictCode(Long districtCode) {
         this.districtCode = districtCode;
     }
 
-    public String getTownCode() {
+    public Long getTownCode() {
         return townCode;
     }
 
-    public void setTownCode(String townCode) {
+    public void setTownCode(Long townCode) {
         this.townCode = townCode;
     }
 }

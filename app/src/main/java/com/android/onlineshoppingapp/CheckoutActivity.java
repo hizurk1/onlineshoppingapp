@@ -2,16 +2,13 @@ package com.android.onlineshoppingapp;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -21,16 +18,10 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.models.Cart;
 import com.android.onlineshoppingapp.models.UserAddress;
 import com.android.onlineshoppingapp.models.cartProduct;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -47,7 +38,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private ImageView ivBackCheckout;
     private Button btnCheckout;
     //    private final UserAddress userAddress = new UserAddress();
-    private List<UserAddress> userAddressList = new ArrayList<UserAddress>();
+    private List<UserAddress> userAddressList = new ArrayList<>();
     private final int fee = 15000;
     public int total = 0;
     private Cart cart;
@@ -83,14 +74,11 @@ public class CheckoutActivity extends AppCompatActivity {
         tvFastDeliveryTxtCheckout.setText(String.format("GIAO HÀNG NHANH (%,dđ)", fee));
 
         // click on change
-        tvChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (userAddressList.isEmpty()) {
-                    Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
-                } else {
-                    showDialogChangeAddress();
-                }
+        tvChange.setOnClickListener(view -> {
+            if (userAddressList.isEmpty()) {
+                Toast.makeText(CheckoutActivity.this, "Navigate to edit", Toast.LENGTH_SHORT).show();
+            } else {
+                showDialogChangeAddress();
             }
         });
 
@@ -126,27 +114,18 @@ public class CheckoutActivity extends AppCompatActivity {
         tvTotal.setText(String.format("%,dđ", total));
 
         // click on button checkout
-        btnCheckout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialogConfirmCheckout();
-            }
-        });
+        btnCheckout.setOnClickListener(view -> showDialogConfirmCheckout());
 
         //set address
-        DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        userRef.collection("Addresses").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                userAddressList = queryDocumentSnapshots.toObjects(UserAddress.class);
-                setAddress(userAddressList.get(0));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, e.getMessage());
-            }
-        });
+        DocumentReference userRef = FirebaseFirestore.getInstance()
+                .collection("Users")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        userRef.collection("Addresses")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    userAddressList = queryDocumentSnapshots.toObjects(UserAddress.class);
+                    setAddress(userAddressList.get(0));
+                }).addOnFailureListener(e -> Log.e(TAG, e.getMessage()));
     }
 
     private void setAddress(UserAddress userAddress) {
@@ -170,22 +149,18 @@ public class CheckoutActivity extends AppCompatActivity {
                         order.put("orderStatus", 0);
                         CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
                         String orderId = orderRef.document().getId();
-                        orderRef.document(orderId).set(order).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                List<String> productCartList = new ArrayList<>();
-                                for (cartProduct item : cart.getCartProductList()) {
-                                    productCartList.add(item.getProductId());
-                                    Map<String, Object> productOrder = new HashMap<>();
-                                    productOrder.put("productRef",
-                                            FirebaseFirestore.getInstance()
-                                                    .document("Products/" + item.getProductId() + "/"));
-                                    productOrder.put("orderQuantity", item.getOrderQuantity());
-                                    orderRef.document(orderId).collection("Products")
-                                            .document(item.getProductId()).set(productOrder)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
+                        orderRef.document(orderId)
+                                .set(order)
+                                .addOnSuccessListener(unused -> {
+                                    for (cartProduct item : cart.getCartProductList()) {
+                                        Map<String, Object> productOrder = new HashMap<>();
+                                        productOrder.put("productRef",
+                                                FirebaseFirestore.getInstance()
+                                                        .document("Products/" + item.getProductId() + "/"));
+                                        productOrder.put("orderQuantity", item.getOrderQuantity());
+                                        orderRef.document(orderId).collection("Products")
+                                                .document(item.getProductId()).set(productOrder)
+                                                .addOnSuccessListener(unused1 -> {
                                                     Toast.makeText(CheckoutActivity.this,
                                                             "Thanh toán thành công", Toast.LENGTH_SHORT).show();
                                                     //Delete cart
@@ -207,22 +182,17 @@ public class CheckoutActivity extends AppCompatActivity {
                                                     product.put("rate", item.getRate());
                                                     product.put("likeNumber", item.getLikeNumber());
                                                     product.put("quantitySold", item.getQuantitySold() + item.getOrderQuantity());
-                                                    product.put("quantity",item.getQuantity() - item.getOrderQuantity());
+                                                    product.put("quantity", item.getQuantity() - item.getOrderQuantity());
                                                     productRef.set(product);
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
+                                                }).addOnFailureListener(e -> {
                                                     Toast.makeText(CheckoutActivity.this,
                                                             "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
                                                     Log.e(TAG, e.getMessage());
-                                                }
-                                            });
-                                }
+                                                });
+                                    }
 
 
-                            }
-                        });
+                                });
                         startActivity(new Intent(CheckoutActivity.this, MainActivity.class));
                         finishAffinity();
                     }

@@ -27,15 +27,12 @@ import android.widget.Toast;
 import com.android.onlineshoppingapp.models.UserAddress;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
@@ -376,69 +373,9 @@ public class ChangeAddressActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = cityList.get(i);
-                data1.put("cityCode", map.get("code"));
                 districtList.clear();
                 districtNameList.clear();
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            //Create URL
-                            URL url = new URL("https://provinces.open-api.vn/api/p/" + map.get("code") + "?depth=2");
-
-                            try {
-                                //Create Connection
-                                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                                httpsURLConnection.setRequestMethod("GET");
-
-                                if (httpsURLConnection.getResponseCode() == 200) {
-                                    InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
-                                    JsonReader jsonReader = new JsonReader(inputStreamReader);
-                                    jsonReader.beginObject();
-                                    while (jsonReader.hasNext()) {
-                                        String name = jsonReader.nextName();
-                                        if (name.equals("districts") && jsonReader.peek() != JsonToken.NULL) {
-                                            jsonReader.beginArray();
-                                            while (jsonReader.hasNext()) {
-                                                jsonReader.beginObject();
-                                                Map<String, Object> map = new HashMap<>();
-                                                while (jsonReader.hasNext()) {
-                                                    String key = jsonReader.nextName();
-                                                    if (key.equals("name"))
-                                                        map.put("name", jsonReader.nextString());
-                                                    else if (key.equals("code"))
-                                                        map.put("code", jsonReader.nextInt());
-                                                    else if (key.equals("division_type"))
-                                                        map.put("division_type", jsonReader.nextString());
-                                                    else jsonReader.skipValue();
-                                                }
-                                                districtList.add(map);
-                                                jsonReader.endObject();
-                                            }
-                                            jsonReader.endArray();
-                                        } else
-                                            jsonReader.skipValue();
-
-                                    }
-                                    jsonReader.endObject();
-                                    jsonReader.close();
-                                    httpsURLConnection.disconnect();
-                                    for (Map<String, Object> item : districtList) {
-                                        districtNameList.add(String.valueOf(item.get("name")));
-                                    }
-                                } else {
-                                    Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                                    Log.e("API address", httpsURLConnection.getResponseMessage());
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                getDistrict(String.valueOf(map.get("code")), districtList, districtNameList, data1);
             }
         });
 
@@ -446,203 +383,23 @@ public class ChangeAddressActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = cityList.get(i);
-                data2.put("cityCode", map.get("code"));
                 districtList2.clear();
                 districtNameList2.clear();
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            //Create URL
-                            URL url = new URL("https://provinces.open-api.vn/api/p/" + map.get("code") + "?depth=2");
-
-                            try {
-                                //Create Connection
-                                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                                httpsURLConnection.setRequestMethod("GET");
-
-                                if (httpsURLConnection.getResponseCode() == 200) {
-                                    InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
-                                    JsonReader jsonReader = new JsonReader(inputStreamReader);
-                                    jsonReader.beginObject();
-                                    while (jsonReader.hasNext()) {
-                                        String name = jsonReader.nextName();
-                                        if (name.equals("districts") && jsonReader.peek() != JsonToken.NULL) {
-                                            jsonReader.beginArray();
-                                            while (jsonReader.hasNext()) {
-                                                jsonReader.beginObject();
-                                                Map<String, Object> map = new HashMap<>();
-                                                while (jsonReader.hasNext()) {
-                                                    String key = jsonReader.nextName();
-                                                    if (key.equals("name"))
-                                                        map.put("name", jsonReader.nextString());
-                                                    else if (key.equals("code"))
-                                                        map.put("code", jsonReader.nextInt());
-                                                    else if (key.equals("division_type"))
-                                                        map.put("division_type", jsonReader.nextString());
-                                                    else jsonReader.skipValue();
-                                                }
-                                                districtList2.add(map);
-                                                jsonReader.endObject();
-                                            }
-                                            jsonReader.endArray();
-                                        } else
-                                            jsonReader.skipValue();
-
-                                    }
-                                    jsonReader.endObject();
-                                    jsonReader.close();
-                                    httpsURLConnection.disconnect();
-                                    for (Map<String, Object> item : districtList2) {
-                                        districtNameList2.add(String.valueOf(item.get("name")));
-                                    }
-                                } else {
-                                    Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                                    Log.e("API address", httpsURLConnection.getResponseMessage());
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                getDistrict(String.valueOf(map.get("code")), districtList2, districtNameList2, data2);
             }
         });
         //set ward
         ctvDistrict1.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = districtList.get(i);
-            data1.put("districtCode", map.get("code"));
             townList.clear();
             townNameList.clear();
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //Create URL
-                        URL url = new URL("https://provinces.open-api.vn/api/d/" + map.get("code") + "?depth=2");
-
-                        try {
-                            //Create Connection
-                            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                            httpsURLConnection.setRequestMethod("GET");
-
-                            if (httpsURLConnection.getResponseCode() == 200) {
-                                InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
-                                JsonReader jsonReader = new JsonReader(inputStreamReader);
-                                jsonReader.beginObject();
-                                while (jsonReader.hasNext()) {
-                                    String name = jsonReader.nextName();
-                                    if (name.equals("wards") && jsonReader.peek() != JsonToken.NULL) {
-                                        jsonReader.beginArray();
-                                        while (jsonReader.hasNext()) {
-                                            jsonReader.beginObject();
-                                            Map<String, Object> map = new HashMap<>();
-                                            while (jsonReader.hasNext()) {
-                                                String key = jsonReader.nextName();
-                                                if (key.equals("name"))
-                                                    map.put("name", jsonReader.nextString());
-                                                else if (key.equals("code"))
-                                                    map.put("code", jsonReader.nextInt());
-                                                else if (key.equals("division_type"))
-                                                    map.put("division_type", jsonReader.nextString());
-                                                else jsonReader.skipValue();
-                                            }
-                                            townList.add(map);
-                                            jsonReader.endObject();
-                                        }
-                                        jsonReader.endArray();
-                                    } else
-                                        jsonReader.skipValue();
-
-                                }
-                                jsonReader.endObject();
-                                jsonReader.close();
-                                httpsURLConnection.disconnect();
-                                for (Map<String, Object> item : townList) {
-                                    townNameList.add(String.valueOf(item.get("name")));
-                                }
-                            } else {
-                                Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                                Log.e("API address", httpsURLConnection.getResponseMessage());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            getTown(String.valueOf(map.get("code")), townList, townNameList, data1);
         });
         ctvDistrict2.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = districtList2.get(i);
-            data2.put("districtCode", map.get("code"));
             townList2.clear();
             townNameList2.clear();
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //Create URL
-                        URL url = new URL("https://provinces.open-api.vn/api/d/" + map.get("code") + "?depth=2");
-
-                        try {
-                            //Create Connection
-                            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-                            httpsURLConnection.setRequestMethod("GET");
-
-                            if (httpsURLConnection.getResponseCode() == 200) {
-                                InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
-                                JsonReader jsonReader = new JsonReader(inputStreamReader);
-                                jsonReader.beginObject();
-                                while (jsonReader.hasNext()) {
-                                    String name = jsonReader.nextName();
-                                    if (name.equals("wards") && jsonReader.peek() != JsonToken.NULL) {
-                                        jsonReader.beginArray();
-                                        while (jsonReader.hasNext()) {
-                                            jsonReader.beginObject();
-                                            Map<String, Object> map = new HashMap<>();
-                                            while (jsonReader.hasNext()) {
-                                                String key = jsonReader.nextName();
-                                                if (key.equals("name"))
-                                                    map.put("name", jsonReader.nextString());
-                                                else if (key.equals("code"))
-                                                    map.put("code", jsonReader.nextInt());
-                                                else if (key.equals("division_type"))
-                                                    map.put("division_type", jsonReader.nextString());
-                                                else jsonReader.skipValue();
-                                            }
-                                            townList2.add(map);
-                                            jsonReader.endObject();
-                                        }
-                                        jsonReader.endArray();
-                                    } else
-                                        jsonReader.skipValue();
-
-                                }
-                                jsonReader.endObject();
-                                jsonReader.close();
-                                httpsURLConnection.disconnect();
-                                for (Map<String, Object> item : townList2) {
-                                    townNameList2.add(String.valueOf(item.get("name")));
-                                }
-                            } else {
-                                Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                                Log.e("API address", httpsURLConnection.getResponseMessage());
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            getTown(String.valueOf(map.get("code")), townList2, townNameList2, data2);
         });
 
         //get ward code
@@ -713,6 +470,18 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                 etPhone1.setSelectAllOnFocus(true);
                                 etDetail1.setText(userAddresses.get(0).getDetail());
                                 etDetail1.setSelectAllOnFocus(true);
+                                ctvCity1.setText(userAddresses.get(0).getCity(), false);
+                                data1.put("city", userAddresses.get(0).getCity());
+                                data1.put("cityCode", userAddresses.get(0).getCityCode());
+                                getDistrict(String.valueOf(userAddresses.get(0).getCityCode()), districtList, districtNameList, data1);
+                                ctvDistrict1.setText(userAddresses.get(0).getDistrict(),false);
+                                data1.put("district", userAddresses.get(0).getDistrict());
+                                data1.put("districtCode", userAddresses.get(0).getDistrictCode());
+                                getTown(String.valueOf(userAddresses.get(0).getDistrictCode()), townList, townNameList, data1);
+                                ctvTown1.setText(userAddresses.get(0).getTown(),false);
+                                data1.put("town", userAddresses.get(0).getTown());
+                                data1.put("townCode", userAddresses.get(0).getTownCode());
+
 
                                 if (userAddresses.size() > 1) {
                                     // set previous value for et
@@ -722,7 +491,17 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                     etPhone2.setSelectAllOnFocus(true);
                                     etDetail2.setText(userAddresses.get(1).getDetail());
                                     etDetail2.setSelectAllOnFocus(true);
-
+                                    ctvCity2.setText(userAddresses.get(1).getCity(), false);
+                                    data2.put("city", userAddresses.get(1).getCity());
+                                    data2.put("cityCode", userAddresses.get(1).getCityCode());
+                                    getDistrict(String.valueOf(userAddresses.get(1).getCityCode()), districtList2, districtNameList2, data2);
+                                    ctvDistrict2.setText(userAddresses.get(1).getDistrict(),false);
+                                    data2.put("district", userAddresses.get(1).getDistrict());
+                                    data2.put("districtCode", userAddresses.get(1).getDistrictCode());
+                                    getTown(String.valueOf(userAddresses.get(1).getDistrictCode()), townList2, townNameList2, data2);
+                                    ctvTown2.setText(userAddresses.get(1).getTown(),false);
+                                    data2.put("town", userAddresses.get(1).getTown());
+                                    data2.put("townCode", userAddresses.get(1).getTownCode());
                                 }
                             }
 
@@ -741,70 +520,67 @@ public class ChangeAddressActivity extends AppCompatActivity {
                     db.collection("Users").document(fAuth.getCurrentUser().getUid())
                             .collection("Addresses")
                             .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
 //                                    Log.w("defaultAddress", (defaultAddress) ? "1" : "2");
-                                    List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-                                    boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
-                                    data1.put("name", etName1.getText().toString());
-                                    data1.put("phone", etPhone1.getText().toString());
-                                    data1.put("city", ctvCity1.getText().toString());
-                                    data1.put("district", ctvDistrict1.getText().toString());
-                                    data1.put("town", ctvTown1.getText().toString());
-                                    data1.put("detail", etDetail1.getText().toString());
-                                    data1.put("defaultAddress", defaultAddress); // add city district town
+                                List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+                                boolean defaultAddress = switch1.isChecked(); // true = 1, false = 2
+                                data1.put("name", etName1.getText().toString());
+                                data1.put("phone", etPhone1.getText().toString());
+                                data1.put("city", ctvCity1.getText().toString());
+                                data1.put("district", ctvDistrict1.getText().toString());
+                                data1.put("town", ctvTown1.getText().toString());
+                                data1.put("detail", etDetail1.getText().toString());
+                                data1.put("defaultAddress", defaultAddress); // add city district town
 
-                                    data2.put("name", etName2.getText().toString());
-                                    data2.put("phone", etPhone2.getText().toString());
-                                    data2.put("city", ctvCity2.getText().toString());
-                                    data2.put("district", ctvDistrict2.getText().toString());
-                                    data2.put("town", ctvTown2.getText().toString());
-                                    data2.put("detail", etDetail2.getText().toString());
-                                    data2.put("defaultAddress", !defaultAddress); // add city district town
-                                    list.add(data1);
-                                    list.add(data2);
-                                    if (queryDocumentSnapshots.isEmpty()) {
+                                data2.put("name", etName2.getText().toString());
+                                data2.put("phone", etPhone2.getText().toString());
+                                data2.put("city", ctvCity2.getText().toString());
+                                data2.put("district", ctvDistrict2.getText().toString());
+                                data2.put("town", ctvTown2.getText().toString());
+                                data2.put("detail", etDetail2.getText().toString());
+                                data2.put("defaultAddress", !defaultAddress); // add city district town
+                                list.add(data1);
+                                list.add(data2);
+                                if (queryDocumentSnapshots.isEmpty()) {
+                                    db.collection("Users")
+                                            .document(fAuth.getCurrentUser().getUid())
+                                            .collection("Addresses")
+                                            .add(data1);
+                                    if (cbAddress2.isChecked())
                                         db.collection("Users")
                                                 .document(fAuth.getCurrentUser().getUid())
                                                 .collection("Addresses")
-                                                .add(data1);
-                                        if (cbAddress2.isChecked())
+                                                .add(data2);
+                                } else {
+                                    int i = 0;
+                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        Log.e("", String.valueOf(documentSnapshot.getData()));
+                                        if ((i == 1 && cbAddress2.isChecked()) || i == 0)
                                             db.collection("Users")
                                                     .document(fAuth.getCurrentUser().getUid())
                                                     .collection("Addresses")
-                                                    .add(data2);
-                                    } else {
-                                        int i = 0;
-                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                            Log.e("", String.valueOf(documentSnapshot.getData()));
-                                            if ((i > 0 && cbAddress2.isChecked()) || i == 0)
-                                                db.collection("Users")
-                                                        .document(fAuth.getCurrentUser().getUid())
-                                                        .collection("Addresses")
-                                                        .document(documentSnapshot.getId())
-                                                        .set(list.get(i))
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Log.e("change address", e.getMessage());
-                                                            }
-                                                        });
-                                            i++;
-                                        }
-                                        //add address 2 when user just have 1 address before
-                                        if (i > 0 && cbAddress2.isChecked()) {
-                                            db.collection("Users")
-                                                    .document(fAuth.getCurrentUser().getUid())
-                                                    .collection("Addresses")
-                                                    .add(list.get(i))
+                                                    .document(documentSnapshot.getId())
+                                                    .set(list.get(i))
                                                     .addOnFailureListener(new OnFailureListener() {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
                                                             Log.e("change address", e.getMessage());
                                                         }
                                                     });
-                                        }
+                                        i++;
+                                    }
+                                    //add address 2 when user just have 1 address before
+                                    if (i == 1 && cbAddress2.isChecked()) {
+                                        db.collection("Users")
+                                                .document(fAuth.getCurrentUser().getUid())
+                                                .collection("Addresses")
+                                                .add(list.get(i))
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e("change address", e.getMessage());
+                                                    }
+                                                });
                                     }
                                 }
                             });
@@ -816,6 +592,134 @@ public class ChangeAddressActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getTown(String code, List<Map<String, Object>> townList, List<String> townNameList, Map<String, Object> data) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                data.put("districtCode", code);
+                try {
+                    //Create URL
+                    URL url = new URL("https://provinces.open-api.vn/api/d/" + code + "?depth=2");
+
+                    try {
+                        //Create Connection
+                        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                        httpsURLConnection.setRequestMethod("GET");
+
+                        if (httpsURLConnection.getResponseCode() == 200) {
+                            InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                            JsonReader jsonReader = new JsonReader(inputStreamReader);
+                            jsonReader.beginObject();
+                            while (jsonReader.hasNext()) {
+                                String name = jsonReader.nextName();
+                                if (name.equals("wards") && jsonReader.peek() != JsonToken.NULL) {
+                                    jsonReader.beginArray();
+                                    while (jsonReader.hasNext()) {
+                                        jsonReader.beginObject();
+                                        Map<String, Object> map = new HashMap<>();
+                                        while (jsonReader.hasNext()) {
+                                            String key = jsonReader.nextName();
+                                            if (key.equals("name"))
+                                                map.put("name", jsonReader.nextString());
+                                            else if (key.equals("code"))
+                                                map.put("code", jsonReader.nextInt());
+                                            else if (key.equals("division_type"))
+                                                map.put("division_type", jsonReader.nextString());
+                                            else jsonReader.skipValue();
+                                        }
+                                        townList.add(map);
+                                        jsonReader.endObject();
+                                    }
+                                    jsonReader.endArray();
+                                } else
+                                    jsonReader.skipValue();
+
+                            }
+                            jsonReader.endObject();
+                            jsonReader.close();
+                            httpsURLConnection.disconnect();
+                            for (Map<String, Object> item : townList) {
+                                townNameList.add(String.valueOf(item.get("name")));
+                            }
+                        } else {
+                            Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            Log.e("API address", httpsURLConnection.getResponseMessage());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getDistrict(String code, List<Map<String, Object>> districtList, List<String> districtNameList, Map<String, Object> data) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                data.put("cityCode", code);
+                try {
+                    //Create URL
+                    URL url = new URL("https://provinces.open-api.vn/api/p/" + code + "?depth=2");
+
+                    try {
+                        //Create Connection
+                        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                        httpsURLConnection.setRequestMethod("GET");
+
+                        if (httpsURLConnection.getResponseCode() == 200) {
+                            InputStreamReader inputStreamReader = new InputStreamReader(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8);
+                            JsonReader jsonReader = new JsonReader(inputStreamReader);
+                            jsonReader.beginObject();
+                            while (jsonReader.hasNext()) {
+                                String name = jsonReader.nextName();
+                                if (name.equals("districts") && jsonReader.peek() != JsonToken.NULL) {
+                                    jsonReader.beginArray();
+                                    while (jsonReader.hasNext()) {
+                                        jsonReader.beginObject();
+                                        Map<String, Object> map = new HashMap<>();
+                                        while (jsonReader.hasNext()) {
+                                            String key = jsonReader.nextName();
+                                            if (key.equals("name"))
+                                                map.put("name", jsonReader.nextString());
+                                            else if (key.equals("code"))
+                                                map.put("code", jsonReader.nextInt());
+                                            else if (key.equals("division_type"))
+                                                map.put("division_type", jsonReader.nextString());
+                                            else jsonReader.skipValue();
+                                        }
+                                        districtList.add(map);
+                                        jsonReader.endObject();
+                                    }
+                                    jsonReader.endArray();
+                                } else
+                                    jsonReader.skipValue();
+
+                            }
+                            jsonReader.endObject();
+                            jsonReader.close();
+                            httpsURLConnection.disconnect();
+                            for (Map<String, Object> item : districtList) {
+                                districtNameList.add(String.valueOf(item.get("name")));
+                            }
+                        } else {
+                            Toast.makeText(ChangeAddressActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            Log.e("API address", httpsURLConnection.getResponseMessage());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public boolean validateData() {
