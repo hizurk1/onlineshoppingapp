@@ -95,7 +95,21 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+        db.collection("Users")
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                .collection("Wishlists")
+                .document(product.getProductId())
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) Log.e(TAG, error.getMessage());
+                    Log.e("", String.valueOf(value.get("productRef")));
 
+                    if (value != null && value.exists())  {
+                        Log.e("", String.valueOf(value.get("productRef")));
+                        ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_error)));
+                    } else {
+                        ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.normal_grey)));
+                    }
+                });
     }
     // -------------- Function ------------------
 
@@ -181,20 +195,21 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void removeFromWishlist() {
-
-//        db.collection("Users").document(fAuth.getCurrentUser().getUid())
-//                .collection("Wishlists").document(product.getProductId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            db.collection("Products").document(product.getProductId())
-//                                    .update("likeNumber", FieldValue.increment(-1));
-//                            Toast.makeText(ProductDetailActivity.this, "Đã xoá khỏi yêu thích", Toast.LENGTH_SHORT).show();
-//                            ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.normal_grey)));
-//                        }
-//                    }
-//                });
-
+        db.collection("Users")
+                .document(fAuth.getCurrentUser().getUid())
+                .collection("Wishlists")
+                .document(product.getProductId())
+                .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            db.collection("Products").document(product.getProductId())
+                                    .update("likeNumber", FieldValue.increment(-1));
+                            Toast.makeText(ProductDetailActivity.this, "Đã xoá khỏi yêu thích", Toast.LENGTH_SHORT).show();
+                            ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.normal_grey)));
+                        }
+                    }
+                });
     }
 
     private void addToWishlist() {
@@ -203,17 +218,17 @@ public class ProductDetailActivity extends AppCompatActivity {
         wishList.put("productRef", FirebaseFirestore.getInstance().document("Products/" + product.getProductId() + "/"));
 
         db.collection("Users").document(fAuth.getCurrentUser().getUid())
-                .collection("Wishlists").add(wishList).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            db.collection("Products").document(product.getProductId())
-                                    .update("likeNumber", FieldValue.increment(1));
-                            ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_error)));
-                            Toast.makeText(ProductDetailActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e("wishList", task.getException().getMessage());
-                        }
+                .collection("Wishlists")
+                .document(product.getProductId())
+                .set(wishList)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        db.collection("Products").document(product.getProductId())
+                                .update("likeNumber", FieldValue.increment(1));
+                        ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_error)));
+                        Toast.makeText(ProductDetailActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("wishList", task.getException().getMessage());
                     }
                 });
 
@@ -232,7 +247,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         tvProductSold.setText("Đã bán " + String.valueOf(product.getQuantitySold()));
         tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
         productRate.setRating(product.getRate());
-
     }
 
     private List<ProductImage> getListPhoto(Product product) {
