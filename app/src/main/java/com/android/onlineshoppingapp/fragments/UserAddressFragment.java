@@ -67,10 +67,11 @@ public class UserAddressFragment extends Fragment {
                     userAddresses.clear();
                     if (error != null) Log.e("getAddress", error.getMessage());
 
-                    value.forEach(documentSnapshot -> {
-                        UserAddress userAddress = documentSnapshot.toObject(UserAddress.class);
-                        userAddresses.add(userAddress);
-                    });
+//                    value.forEach(documentSnapshot -> {
+//                        UserAddress userAddress = documentSnapshot.toObject(UserAddress.class);
+//                        userAddresses.add(userAddress);
+//                    });
+                    userAddresses = value.toObjects(UserAddress.class);
 
                     if (userAddresses.isEmpty()) {
                         // set Address 1

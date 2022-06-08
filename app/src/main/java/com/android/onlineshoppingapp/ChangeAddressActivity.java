@@ -598,7 +598,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                data.put("districtCode", code);
+                data.put("districtCode", Long.valueOf(code));
                 try {
                     //Create URL
                     URL url = new URL("https://provinces.open-api.vn/api/d/" + code + "?depth=2");
@@ -662,7 +662,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                data.put("cityCode", code);
+                data.put("cityCode", Long.valueOf(code));
                 try {
                     //Create URL
                     URL url = new URL("https://provinces.open-api.vn/api/p/" + code + "?depth=2");
