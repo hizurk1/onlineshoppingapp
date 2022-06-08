@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -25,6 +26,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class ListOfProductActivity extends AppCompatActivity {
 
@@ -65,8 +68,36 @@ public class ListOfProductActivity extends AppCompatActivity {
             case "all":
                 showAllProduct();
                 break;
+            case "search":
+                searchProduct(getIntent().getStringExtra("searchString"));
+                break;
         }
 
+    }
+
+    private void searchProduct(String searchString) {
+        rvPopularProducts = findViewById(R.id.rvListOfProduct);
+        db.collection("Products")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Product> productList = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        Product product = documentSnapshot.toObject(Product.class);
+                        assert product != null;
+                        product.setProductId(documentSnapshot.getId());
+                        productList.add(product);
+                    }
+                    productList = productList.stream()
+                            .filter(str -> str.getProductName().trim().contains(searchString.trim()) ||
+                                    str.getProductName().trim().contains(searchString.toLowerCase().trim()) ||
+                                    str.getProductName().trim().contains(searchString.toUpperCase().trim()))
+                            .collect(Collectors.toList());
+
+                    // setup recyclerview: recently products
+                    recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
+                    rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                    rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                });
     }
 
     private void showPopularProduct() {

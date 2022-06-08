@@ -20,9 +20,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
+import com.android.onlineshoppingapp.ListOfProductActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.ShoppingCartActivity;
 import com.android.onlineshoppingapp.adapters.BannerImageAdapter;
@@ -30,6 +32,7 @@ import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.BannerImage;
 import com.android.onlineshoppingapp.models.Product;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -39,11 +42,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomePageFragment extends Fragment {
 
     private RecyclerView recyclerTopSaleItem, recyclerForYouItem;
-    private ImageView ivShoppingCart;
+    private ImageView ivShoppingCart, ivSearchBtn;
+    private EditText etSearch;
     private ViewPager2 viewPager2;
     private BannerImageAdapter bannerImageAdapter;
     private final Handler sliderHandler = new Handler();
@@ -60,6 +65,8 @@ public class HomePageFragment extends Fragment {
 
         // init
         ivShoppingCart = view.findViewById(R.id.ivShopCartHome);
+        ivSearchBtn = view.findViewById(R.id.ivSearchBtn);
+        etSearch = view.findViewById(R.id.etSearch);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -70,6 +77,15 @@ public class HomePageFragment extends Fragment {
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), ShoppingCartActivity.class));
             }
+        });
+
+        //set event for search function
+        ivSearchBtn.setOnClickListener(view1 -> {
+            String searchString = String.valueOf(etSearch.getText());
+            Intent intent = new Intent(getContext(), ListOfProductActivity.class);
+            intent.putExtra("see_more_product", "search");
+            intent.putExtra("searchString", searchString);
+            startActivity(intent);
         });
 
         // banner image
@@ -157,6 +173,7 @@ public class HomePageFragment extends Fragment {
                         recyclerForYouItem.setMinimumHeight(heightOfForYou);
                     }
                 });
+
 
         return view;
     }
