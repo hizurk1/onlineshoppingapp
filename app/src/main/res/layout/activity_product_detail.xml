@@ -136,40 +136,20 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="10dp"
-                    android:clickable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="2dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/heart" />
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardSharePD"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginVertical="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_toLeftOf="@id/cardLikePD"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="2dp">
 
                     <ImageView
+                        android:id="@+id/ivHeartPD"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_share"
-                        app:tint="#FF454749" />
+                        android:src="@drawable/heart"
+                        app:tint="@color/normal_grey" />
 
                 </androidx.cardview.widget.CardView>
 

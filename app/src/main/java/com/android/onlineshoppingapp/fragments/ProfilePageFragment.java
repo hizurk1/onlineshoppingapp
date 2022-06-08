@@ -293,7 +293,9 @@ public class ProfilePageFragment extends Fragment {
         cardSupport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "project.onlineshoppingapp@gmail.com", null));
+                getActivity().startActivity(Intent.createChooser(emailIntent, null));
             }
         });
 
