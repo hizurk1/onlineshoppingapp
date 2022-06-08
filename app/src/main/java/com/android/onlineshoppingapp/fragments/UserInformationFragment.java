@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class UserInformationFragment extends Fragment {
 
@@ -66,36 +67,36 @@ public class UserInformationFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        db.collection("Users").document(fAuth.getCurrentUser().getUid())
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (value.exists()) {
-                            userInformation = value.toObject(UserInformation.class);
+        if (fAuth.getCurrentUser() != null)
+            db.collection("Users").document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                            if (value != null && value.exists()) {
+                                userInformation = value.toObject(UserInformation.class);
 
-                            if (!userInformation.getLastName().equals("")) {
-                                tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
-                            } else {
-                                tvFullNameInfo.setText(userInformation.getFirstName());
-                            }
-                            tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
-                            tvEmailInfo.setText(userInformation.getEmail());
-                            tvSexInfo.setText(userInformation.getSex());
-                            tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));
-                            tvPhoneNumberInfo.setText(userInformation.getPhone());
-
-                            ivChangeUserInfo.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    startActivity(new Intent(getActivity(), ChangeUserInfoActivity.class).putExtra("userInformation", userInformation));
+                                if (!Objects.requireNonNull(userInformation).getLastName().equals("")) {
+                                    tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
+                                } else {
+                                    tvFullNameInfo.setText(userInformation.getFirstName());
                                 }
-                            });
-                        } else {
-                            Log.d(TAG, "No such document");
-                        }
-                    }
-                });
+                                tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
+                                tvEmailInfo.setText(userInformation.getEmail());
+                                tvSexInfo.setText(userInformation.getSex());
+                                tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));
+                                tvPhoneNumberInfo.setText(userInformation.getPhone());
 
+                                ivChangeUserInfo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivity(new Intent(getActivity(), ChangeUserInfoActivity.class).putExtra("userInformation", userInformation));
+                                    }
+                                });
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        }
+                    });
 
 
         return view;
