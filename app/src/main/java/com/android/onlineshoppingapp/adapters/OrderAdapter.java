@@ -86,7 +86,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         DocumentReference productRef = (DocumentReference) documentSnapshot1.get("productRef");
                         productRef.get().addOnSuccessListener(documentSnapshot2 -> {
                             Product product = documentSnapshot2.toObject(Product.class);
-                            OrderProduct orderProduct = new OrderProduct(product.getProductId(),
+                            OrderProduct orderProduct = new OrderProduct(documentSnapshot2.getId(),
                                     product.getProductName(),
                                     product.getSeller(),
                                     product.getDescription(),
@@ -99,7 +99,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                                     Integer.valueOf(String.valueOf(documentSnapshot1.get("orderQuantity"))));
                             orderProductList.add(orderProduct);
                             order.setListOrderProduct(orderProductList);
-                            OrderProductAdapter orderProductAdapter = new OrderProductAdapter(order.getListOrderProduct());
+                            OrderProductAdapter orderProductAdapter = new OrderProductAdapter(order.getListOrderProduct(), context);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                             holder.recyclerView.setLayoutManager(linearLayoutManager);
                             holder.recyclerView.setAdapter(orderProductAdapter);

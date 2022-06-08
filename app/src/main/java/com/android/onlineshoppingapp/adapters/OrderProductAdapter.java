@@ -2,6 +2,7 @@ package com.android.onlineshoppingapp.adapters;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Order;
 import com.android.onlineshoppingapp.models.OrderProduct;
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Map;
 
 public class OrderProductAdapter extends RecyclerView.Adapter<OrderProductAdapter.OrderProductViewHolder> {
     private List<OrderProduct> orderProductList;
+    private Context context;
 
-    public OrderProductAdapter(List<OrderProduct> orderProductList) {
+    public OrderProductAdapter(List<OrderProduct> orderProductList, Context context) {
         this.orderProductList = orderProductList;
+        this.context = context;
     }
 
     @NonNull
@@ -46,6 +53,21 @@ public class OrderProductAdapter extends RecyclerView.Adapter<OrderProductAdapte
         holder.tvPrice.setText(String.format("đ%,d", orderProduct.getProductPrice()));
         holder.tvNumber.setText(String.format("x%d", orderProduct.getOrderQuantity()));
         holder.tvCategory.setText(orderProduct.getCategory());
+
+        //set image
+        DocumentReference imgRef = FirebaseFirestore.getInstance()
+                .collection("productImages")
+                .document(orderProduct.getProductId());
+        imgRef.get().addOnSuccessListener(documentSnapshot -> {
+            Map<String, Object> map = documentSnapshot.getData();
+
+            if (map != null) {
+                List<String> string = (List<String>) map.get("url");
+                Glide.with(context)
+                        .load(string.get(0)).into(holder.ivProductImg);
+            }
+        });
+
     }
 
     @Override
