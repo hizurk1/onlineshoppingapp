@@ -1,5 +1,6 @@
 package com.android.onlineshoppingapp.adapters;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +11,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Order;
+import com.android.onlineshoppingapp.models.OrderProduct;
+import com.android.onlineshoppingapp.models.Product;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private List<Order> orderList;
+    Context context;
 
-    public OrderAdapter(List<Order> orderList) {
+    public OrderAdapter(List<Order> orderList, Context context) {
         this.orderList = orderList;
+        this.context = context;
     }
 
     @NonNull
@@ -41,23 +51,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             holder.btnCancel.setVisibility(View.INVISIBLE);
         }
 
-        holder.tvShopName.setText(order.getSeller());
+        holder.tvShopName.setText(order.getOrderId());
         String orderStatus = getOrderStatus(order);
         holder.tvOrderStatus.setText(orderStatus);
         if (order.getOrderStatus() == 4) {
             holder.tvOrderStatus.setTextColor(holder.itemView.getResources().getColor(R.color.red_error));
         }
 
-        if (order.getProductName().length() > 45) {
-            holder.tvProductName.setText(String.format("%s...", order.getProductName().substring(0, 45)));
-        } else {
-            holder.tvProductName.setText(order.getProductName());
-        }
 
-        holder.tvCategory.setText("Loại:");
-        holder.tvPrice.setText(String.format("đ%,d", order.getProductPrice()));
-        holder.tvNumber.setText(String.format("x%d", order.getOrderQuantity()));
         holder.tvPriceTotal.setText(String.format("đ%,d", order.getTotalPrice()));
+//        holder.tvCategory.setText("Loại:");
+
 
         if (order.getOrderStatus() == 3) {
             holder.btnCancel.setText("Đánh giá");
@@ -69,6 +73,42 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
             });
         }
+
+
+        FirebaseFirestore.getInstance().collection("Orders")
+                .document(order.getOrderId())
+                .collection("Products")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                    List<OrderProduct> orderProductList = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots1) {
+                        //get product info
+                        DocumentReference productRef = (DocumentReference) documentSnapshot1.get("productRef");
+                        productRef.get().addOnSuccessListener(documentSnapshot2 -> {
+                            Product product = documentSnapshot2.toObject(Product.class);
+                            OrderProduct orderProduct = new OrderProduct(product.getProductId(),
+                                    product.getProductName(),
+                                    product.getSeller(),
+                                    product.getDescription(),
+                                    product.getCategory(),
+                                    product.getProductPrice(),
+                                    product.getRate(),
+                                    product.getLikeNumber(),
+                                    product.getQuantitySold(),
+                                    product.getQuantity(),
+                                    Integer.valueOf(String.valueOf(documentSnapshot1.get("orderQuantity"))));
+                            orderProductList.add(orderProduct);
+                            order.setListOrderProduct(orderProductList);
+                            OrderProductAdapter orderProductAdapter = new OrderProductAdapter(order.getListOrderProduct());
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                            holder.recyclerView.setLayoutManager(linearLayoutManager);
+                            holder.recyclerView.setAdapter(orderProductAdapter);
+                        });
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("get order info", e.getMessage()));
+
+
 
     }
 
@@ -85,6 +125,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         private TextView tvShopName, tvOrderStatus, tvProductName, tvCategory, tvPrice, tvNumber, tvPriceTotal;
         private Button btnCancel;
         private ImageView ivProductImg;
+        private RecyclerView recyclerView;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,7 +139,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             tvNumber = itemView.findViewById(R.id.tvNumberOrder);
             btnCancel = itemView.findViewById(R.id.btnCancelOrder);
             ivProductImg = itemView.findViewById(R.id.ivProductImageOrder);
-
+            recyclerView = itemView.findViewById(R.id.rvProducts);
         }
     }
 

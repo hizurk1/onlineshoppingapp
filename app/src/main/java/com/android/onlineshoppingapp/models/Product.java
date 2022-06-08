@@ -7,50 +7,29 @@ public class Product implements Serializable {
     protected String productName;
     protected String seller;
     protected String description;
+    protected String category = "Khác";
     protected int productPrice;
     protected float rate;
     protected int likeNumber;
     protected int quantitySold;
     protected int quantity;
 
-    public Product(String productId, String productName, String seller, String description, int productPrice, float rate, int likeNumber, int quantitySold) {
+    public Product(String productId, String productName, String seller, String description, String category, int productPrice, float rate, int likeNumber, int quantitySold, int quantity) {
         this.productId = productId;
         this.productName = productName;
         this.seller = seller;
         this.description = description;
+        this.category = category;
         this.productPrice = productPrice;
         this.rate = rate;
         this.likeNumber = likeNumber;
         this.quantitySold = quantitySold;
+        this.quantity = quantity;
     }
-
-    public Product(String productId, String productName, float rate, int productPrice, int quantitySold) {
-        this.productId = productId;
-        this.productName = productName;
-        this.rate = rate;
-        this.productPrice = productPrice;
-        this.quantitySold = quantitySold;
-    }
-
-    public Product() {
-
-    }
-    public Product(String productName, String seller, String description, int productPrice) {
-        this.productName = productName;
-        this.seller = seller;
-        this.description = description;
-        this.productPrice = productPrice;
-        this.rate = 0;
-        this.quantitySold = 0;
-        this.likeNumber = 0;
-    }
+    public Product() {}
 
     public String getSeller() {
         return seller;
-    }
-
-    public void setSeller(String seller) {
-        this.seller = seller;
     }
 
     public String getDescription() {
@@ -115,5 +94,13 @@ public class Product implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

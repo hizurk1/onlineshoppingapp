@@ -18,10 +18,13 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
@@ -46,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -92,6 +96,7 @@ public class MyStoreActivity extends AppCompatActivity {
     private List<Uri> imageList = new ArrayList<Uri>();
     private String newProductId;
 
+    private List<String> categoryList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +287,23 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         });
 
+        //set category
+        AutoCompleteTextView ctvCategory = sheetView.findViewById(R.id.tvCategory);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                categoryList
+        );
+        ctvCategory.setAdapter(adapter);
+        AsyncTask.execute(() -> {
+            categoryList.clear();
+            db.collection("Categories").get().addOnSuccessListener(queryDocumentSnapshots -> {
+               for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                   categoryList.add(documentSnapshot.getString("name"));
+               }
+            });
+        });
+
         // add image
         RecyclerView rvImages = sheetView.findViewById(R.id.rvImages);
         // setup recyclerview:
@@ -308,18 +330,19 @@ public class MyStoreActivity extends AppCompatActivity {
                 uploadImage();
                 addProduct(etProductName.getText().toString(),
                         etProductDescription.getText().toString(),
-                        Integer.parseInt(etProductPrice.getText().toString()), Integer.parseInt(etProductQuantity.getText().toString()));
+                        Integer.parseInt(etProductPrice.getText().toString()), Integer.parseInt(etProductQuantity.getText().toString()), String.valueOf(ctvCategory.getText()));
                 bottomSheetDialogAddProduct.dismiss();
             }
         });
 
     }
 
-    private void addProduct(String etProductName, String etProductDescription, int etProductPrice, int etProductQuantity) {
+    private void addProduct(String etProductName, String etProductDescription, int etProductPrice, int etProductQuantity, String category) {
         Map<String, Object> product = new HashMap<>();
         product.put("productName", etProductName);
         product.put("seller", fAuth.getCurrentUser().getUid());
         product.put("description", etProductDescription);
+        product.put("category", category);
         product.put("productPrice", etProductPrice);
         product.put("createTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
         product.put("rate", 0);
