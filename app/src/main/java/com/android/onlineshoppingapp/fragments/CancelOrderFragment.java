@@ -69,6 +69,7 @@ public class CancelOrderFragment extends Fragment {
                         order.setOrderer(documentSnapshot.getString("orderer"));
                         order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
                         order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
+                        order.setAddress(documentSnapshot.get("address", UserAddress.class));
                         orderList.add(order);
                     }
                     // set up
