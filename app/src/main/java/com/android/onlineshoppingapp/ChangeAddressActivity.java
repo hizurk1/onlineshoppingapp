@@ -376,7 +376,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = cityList.get(i);
-                data1.put("cityCode",map.get("code"));
+                data1.put("cityCode", map.get("code"));
                 districtList.clear();
                 districtNameList.clear();
                 AsyncTask.execute(new Runnable() {
@@ -446,7 +446,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, Object> map = cityList.get(i);
-                data2.put("districtCode",map.get("code"));
+                data2.put("cityCode", map.get("code"));
                 districtList2.clear();
                 districtNameList2.clear();
                 AsyncTask.execute(new Runnable() {
@@ -514,7 +514,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
         //set ward
         ctvDistrict1.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = districtList.get(i);
-            data1.put("districtCode",map.get("code"));
+            data1.put("districtCode", map.get("code"));
             townList.clear();
             townNameList.clear();
             AsyncTask.execute(new Runnable() {
@@ -580,7 +580,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
         });
         ctvDistrict2.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = districtList2.get(i);
-            data2.put("districtCode",map.get("code"));
+            data2.put("districtCode", map.get("code"));
             townList2.clear();
             townNameList2.clear();
             AsyncTask.execute(new Runnable() {
@@ -648,11 +648,11 @@ public class ChangeAddressActivity extends AppCompatActivity {
         //get ward code
         ctvTown1.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = townList.get(i);
-            data1.put("townCode",map.get("code"));
+            data1.put("townCode", map.get("code"));
         });
         ctvTown2.setOnItemClickListener((adapterView, view, i, l) -> {
             Map<String, Object> map = townList2.get(i);
-            data2.put("townCode",map.get("code"));
+            data2.put("townCode", map.get("code"));
         });
         // check detail 1
         etDetail1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -778,7 +778,7 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                         int i = 0;
                                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                             Log.e("", String.valueOf(documentSnapshot.getData()));
-                                            if (i > 0 && cbAddress2.isChecked() || i == 0)
+                                            if ((i > 0 && cbAddress2.isChecked()) || i == 0)
                                                 db.collection("Users")
                                                         .document(fAuth.getCurrentUser().getUid())
                                                         .collection("Addresses")
@@ -791,6 +791,19 @@ public class ChangeAddressActivity extends AppCompatActivity {
                                                             }
                                                         });
                                             i++;
+                                        }
+                                        //add address 2 when user just have 1 address before
+                                        if (i > 0 && cbAddress2.isChecked()) {
+                                            db.collection("Users")
+                                                    .document(fAuth.getCurrentUser().getUid())
+                                                    .collection("Addresses")
+                                                    .add(list.get(i))
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.e("change address", e.getMessage());
+                                                        }
+                                                    });
                                         }
                                     }
                                 }
