@@ -155,7 +155,7 @@ public class MyStoreActivity extends AppCompatActivity {
         cardManageProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(MyStoreActivity.this, ManageProductActivity.class));
             }
         });
 
@@ -313,6 +313,7 @@ public class MyStoreActivity extends AppCompatActivity {
         btnAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rvImages.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet_layout_addproduct"
+    android:id="@+id/bottom_sheet_layout_edit_product"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bottom_sheet_background"
@@ -14,18 +14,18 @@
         android:layout_height="40dp">
 
         <ImageView
-            android:id="@+id/bottomSheetAddProductClose"
+            android:id="@+id/bottomSheetEditProductClose"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_close" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Thêm sản phẩm mới"
+            android:text="Chỉnh sửa sản phẩm"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -39,7 +39,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
@@ -56,7 +55,7 @@
                     android:textSize="14sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_bottomSheetAddProductName"
+                    android:id="@+id/layout_bottomSheetEditProductName"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,7 +63,7 @@
                     app:helperTextTextColor="@color/red_error">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/bottomSheetAddProductName"
+                        android:id="@+id/bottomSheetEditProductName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
@@ -89,7 +88,7 @@
                     android:textSize="14sp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_bottomSheetAddProductDescription"
+                    android:id="@+id/layout_bottomSheetEditProductDescription"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
@@ -97,7 +96,7 @@
                     app:helperTextTextColor="@color/red_error">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/bottomSheetAddProductDescription"
+                        android:id="@+id/bottomSheetEditProductDescription"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:inputType="textMultiLine"
@@ -114,8 +113,9 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layoutCategory"
+                    android:id="@+id/layoutCategoryEditProduct"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                     app:helperTextTextColor="@color/red_error">
 
                     <AutoCompleteTextView
-                        android:id="@+id/tvCategory"
+                        android:id="@+id/tvCategoryEditProduct"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -133,6 +133,7 @@
                         android:text="Chọn danh mục" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -153,7 +154,7 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layout_bottomSheetAddProductPrice"
+                        android:id="@+id/layout_bottomSheetEditProductPrice"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -163,7 +164,7 @@
                         app:helperTextTextColor="@color/red_error">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/bottomSheetAddProductPrice"
+                            android:id="@+id/bottomSheetEditProductPrice"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -189,7 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -203,7 +204,7 @@
                     android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/layout_bottomSheetAddProductQuantity"
+                        android:id="@+id/layout_bottomSheetEditProductQuantity"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -213,7 +214,7 @@
                         app:helperTextTextColor="@color/red_error">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/bottomSheetAddProductQuantity"
+                            android:id="@+id/bottomSheetEditProductQuantity"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -237,7 +238,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -246,30 +247,30 @@
                         android:text="Ảnh mô tả" />
 
                     <Button
-                        android:id="@+id/btnAddImage"
+                        android:id="@+id/btnAddImageEditProduct"
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
                         android:layout_marginStart="40dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Thêm ảnh" />
+                        android:text="Thêm ảnh"
+                        android:textAllCaps="false" />
 
 
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvImages"
+                    android:id="@+id/rvImagesEditProduct"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
                     android:visibility="gone"
-                    android:layout_marginTop="5dp" />
+                    android:layout_height="80dp" />
+
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnBottomSheetAddProduct"
+                android:id="@+id/btnBottomSheetEditProduct"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_marginHorizontal="20dp"
-                android:text="Thêm"
+                android:text="Cập nhật"
                 android:textSize="18sp" />
 
         </LinearLayout>

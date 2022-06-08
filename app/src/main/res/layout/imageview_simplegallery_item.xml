@@ -5,11 +5,8 @@
     >
     <ImageView
         android:id="@+id/imageViewSimpleGallery"
-        android:layout_width="110sp"
-        android:layout_height="110sp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="5dp" />
 
 </LinearLayout>

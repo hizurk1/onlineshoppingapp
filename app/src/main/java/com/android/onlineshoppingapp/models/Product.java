@@ -26,7 +26,19 @@ public class Product implements Serializable {
         this.quantitySold = quantitySold;
         this.quantity = quantity;
     }
-    public Product() {}
+
+    public Product(String productName, String description, int productPrice, int quantity) {
+        this.productName = productName;
+        this.description = description;
+        this.productPrice = productPrice;
+        this.quantity = quantity;
+        this.rate = 0;
+        this.quantitySold = 0;
+        this.likeNumber = 0;
+    }
+
+    public Product() {
+    }
 
     public String getSeller() {
         return seller;
