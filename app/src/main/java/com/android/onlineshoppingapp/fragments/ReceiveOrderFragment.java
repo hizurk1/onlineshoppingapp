@@ -50,6 +50,8 @@ public class ReceiveOrderFragment extends Fragment {
         orderList = new ArrayList<>();
         orderList.add(new Order("Bánh bao", "BB", "Ngon", 10000, "AAA", 0, 30000, 3));
         orderList.add(new Order("Sữa tươi không đường vị ngon 100% làm từ sữa tốt cho sức khoẻ", "ABC", "Ngon", 5000, "AAA", 0, 35000, 7));
+        orderList.add(new Order("Sữa tươi có đường vị ngon 200% làm từ sữa tốt cho sức khoẻ", "ABC", "Ngon", 5000, "AAA", 0, 35000, 7));
+        orderList.add(new Order("Sữa tươi có đường vị ngon 200% làm từ sữa tốt cho sức khoẻ", "ABC", "Ngon", 5000, "AAA", 0, 35000, 7));
 
         // set up
         if (orderList.isEmpty()) {

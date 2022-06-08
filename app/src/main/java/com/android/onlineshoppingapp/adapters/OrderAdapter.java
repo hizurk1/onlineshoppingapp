@@ -1,11 +1,13 @@
 package com.android.onlineshoppingapp.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,10 +37,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         Order order = orderList.get(position);
         if (order == null) return;
+        if (order.getOrderStatus() == 2 || order.getOrderStatus() == 4) {
+            holder.btnCancel.setVisibility(View.INVISIBLE);
+        }
 
         holder.tvShopName.setText(order.getSeller());
         String orderStatus = getOrderStatus(order);
         holder.tvOrderStatus.setText(orderStatus);
+        if (order.getOrderStatus() == 4) {
+            holder.tvOrderStatus.setTextColor(holder.itemView.getResources().getColor(R.color.red_error));
+        }
 
         if (order.getProductName().length() > 45) {
             holder.tvProductName.setText(String.format("%s...", order.getProductName().substring(0, 45)));
@@ -50,9 +58,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.tvPrice.setText(String.format("đ%,d", order.getProductPrice()));
         holder.tvNumber.setText(String.format("x%d", order.getOrderQuantity()));
         holder.tvPriceTotal.setText(String.format("đ%,d", order.getTotalPrice()));
-        holder.btnCancel.setOnClickListener(view -> {
-            order.setOrderStatus(4);
-        });
+
+        if (order.getOrderStatus() == 3) {
+            holder.btnCancel.setText("Đánh giá");
+            holder.btnCancel.setOnClickListener(view -> {
+                Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            holder.btnCancel.setOnClickListener(view -> {
+                Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
+            });
+        }
 
     }
 
