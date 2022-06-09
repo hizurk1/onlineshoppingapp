@@ -76,8 +76,8 @@ public class ManageProductActivity extends AppCompatActivity {
     private List<Product> productList;
     private List<Product> selectionProduct = new ArrayList<>();
     private List<String> categoryList = new ArrayList<>();
-    public static List<String> imageUriList = new ArrayList<String>();
-    private List<Uri> imageList = new ArrayList<Uri>();
+    public static List<String> imageUriList = new ArrayList<>();
+    private List<Uri> imageList = new ArrayList<>();
 
     private String productId;
     private int count = 0;
@@ -229,7 +229,7 @@ public class ManageProductActivity extends AppCompatActivity {
         btnAddImage = sheetView.findViewById(R.id.btnAddImageEditProduct);
 
         Product currentProduct = productList.get(position);
-        Log.d("currentProduct", currentProduct.getProductName());
+//        Log.d("currentProduct", currentProduct.getProductName());
 
         sheetView.findViewById(R.id.bottomSheetEditProductClose).setOnClickListener(view -> {
             sheetDialog.dismiss();
@@ -306,15 +306,38 @@ public class ManageProductActivity extends AppCompatActivity {
                 }
             });
         });
+        ctvCategory.setText(productList.get(position).getCategory(), false);
 
         // add image
         RecyclerView rvImages = sheetView.findViewById(R.id.rvImagesEditProduct);
+        //set image
+        AsyncTask.execute(() -> {
+            db.collection("productImages")
+                    .document(productList.get(position).getProductId())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        imageList.clear();
+                        imageUriList.clear();
+                        if (documentSnapshot.exists()) {
+                            imageUriList = (List<String>) documentSnapshot.getData().get("url");
+                            for (String item : imageUriList) {
+                                imageList.add(Uri.parse(item));
+                            }
+                            Log.e("", String.valueOf(imageList));
+                            simpleGalleryRecyclerAdapter.notifyDataSetChanged();
+                        }
+                        if (imageUriList.size() > 0)
+                            rvImages.setVisibility(View.VISIBLE);
+                    });
+        });
+
         // setup recyclerview:
         simpleGalleryRecyclerAdapter = new SimpleGalleryRecyclerAdapter(imageList, ManageProductActivity.this);
         rvImages.setLayoutManager(new LinearLayoutManager(ManageProductActivity.this, LinearLayoutManager.HORIZONTAL, false));
         rvImages.setAdapter(simpleGalleryRecyclerAdapter);
+
         btnAddImage.setOnClickListener(view -> {
-            rvImages.setVisibility(View.VISIBLE);
+
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -346,8 +369,6 @@ public class ManageProductActivity extends AppCompatActivity {
         product.put("productPrice", etProductPrice);
         product.put("quantity", etProductQuantity);
         db.collection("Products").document(productId).update(product).addOnSuccessListener(unused -> {
-            imageUriList.clear();
-            imageList.clear();
             Toast.makeText(ManageProductActivity.this, "Cập nhật sản phẩm thành công", Toast.LENGTH_SHORT).show();
         });
 
@@ -356,7 +377,6 @@ public class ManageProductActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imageList.clear();
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 if (data.getClipData() != null) {
@@ -378,6 +398,7 @@ public class ManageProductActivity extends AppCompatActivity {
                     imageList.add(imageuri);
                 }
                 simpleGalleryRecyclerAdapter.notifyDataSetChanged();
+                Log.e("add", String.valueOf(imageList));
             }
 
         }

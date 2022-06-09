@@ -35,8 +35,10 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ManageProductAdapter extends RecyclerView.Adapter<ManageProductAdapter.ManageProductViewHolder> {
 
@@ -96,21 +98,24 @@ public class ManageProductAdapter extends RecyclerView.Adapter<ManageProductAdap
         if (product == null)
             return;
         db = FirebaseFirestore.getInstance();
-        db.collection("productImages")
-                .document(product.getProductId())
-                .addSnapshotListener((value, error) -> {
-                    if (value != null && value.exists()) {
-                        Map<String, Object> map = value.getData();
-                        if (map != null) {
-                            List<String> string = (List<String>) map.get("url");
-                            assert string != null;
-                            Glide.with(context)
-                                    .load(string.get(0)).into(holder.ivProductImg);
-                        }
-                    } else
-                        holder.ivProductImg.setImageResource(R.drawable.logoapp);
 
-                });
+        AsyncTask.execute(() -> {
+            db.collection("productImages")
+                    .document(product.getProductId())
+                    .addSnapshotListener((value, error) -> {
+                        if (value != null && value.exists()) {
+                            Map<String, Object> map = value.getData();
+                            if (map != null) {
+                                List<String> string = new ArrayList<>();
+                                string = (List<String>) map.get("url");
+                                Glide.with(Objects.requireNonNull(holder.itemView))
+                                        .load(string.get(0)).into(holder.ivProductImg);
+                            }
+                        } else
+                            holder.ivProductImg.setImageResource(R.drawable.logoapp);
+
+                    });
+        });
 
 
         if (product.getProductName().length() > 45) {

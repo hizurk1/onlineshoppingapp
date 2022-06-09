@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Product;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class SimpleGalleryRecyclerAdapter extends RecyclerView.Adapter<SimpleGal
     }
 
     private void setValueOfEachItem(ImageViewHolder holder, Uri uri) {
-        holder.imageViewSimpleGallery.setImageURI(uri);
+//        holder.imageViewSimpleGallery.setImageURI(uri);
+        Glide.with(context)
+                .load(uri).into(holder.imageViewSimpleGallery);
 
 
     }
