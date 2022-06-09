@@ -66,6 +66,8 @@ public class OrderProductAdapter extends RecyclerView.Adapter<OrderProductAdapte
                 Glide.with(context)
                         .load(string.get(0)).into(holder.ivProductImg);
             }
+            else
+                holder.ivProductImg.setImageResource(R.drawable.logoapp);
         });
 
     }

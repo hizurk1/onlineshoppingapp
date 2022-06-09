@@ -162,6 +162,8 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
                             Glide.with(holder.view)
                                     .load(string.get(0)).into(holder.ivProductLogo);
                         }
+                        else
+                            holder.ivProductLogo.setImageResource(R.drawable.logoapp);
                     }
                 });
 

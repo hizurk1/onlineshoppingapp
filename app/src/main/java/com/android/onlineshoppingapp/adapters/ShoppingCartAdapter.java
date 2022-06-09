@@ -264,6 +264,8 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                             Glide.with(context)
                                     .load(string.get(0)).into(holder.ivProductImg);
                         }
+                        else
+                            holder.ivProductImg.setImageResource(R.drawable.logoapp);
                     }
                 });
 
