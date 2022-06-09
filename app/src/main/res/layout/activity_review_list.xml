@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReviewListActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_green"
+            android:paddingVertical="12dp">
+
+            <ImageView
+                android:id="@+id/ivBackReviewList"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Đánh giá sản phẩm"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp">
+
+                        <TextView
+                            android:id="@+id/tvRateReviewList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginHorizontal="40dp"
+                            android:text="5.0"
+                            android:textColor="@color/black"
+                            android:textSize="40sp"
+                            android:textStyle="bold" />
+
+                        <RatingBar
+                            android:id="@+id/ratingbarReviewList"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvRateReviewList"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2dp"
+                            android:numStars="5"
+                            android:rating="0" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/ratingbarReviewList"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="2dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvNumberOfReview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:text="Đánh giá"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:scrollbars="none"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipGroupReviewList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            app:singleSelection="true">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipNewestReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="Mới nhất" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipOldestReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cũ nhất" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip5ReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5 ☆" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip4ReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="4 ☆" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip3ReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="3 ☆" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip2ReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2 ☆" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chip1ReviewList"
+                                style="@style/CustomChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1 ☆" />
+
+                        </com.google.android.material.chip.ChipGroup>
+
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvReviewList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="20dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</RelativeLayout>

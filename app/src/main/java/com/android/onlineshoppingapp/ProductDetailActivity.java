@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,7 +57,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView ivBackToPrevious, ivHeartPD;
     private CardView cardLikePD, cardViewShoppingCartPD;
     private Button btnAddToCartPD;
+    private MaterialCardView cardSeeReview;
+
     public Product product = new Product();
+
     private FirebaseFirestore db;
     private FirebaseAuth fAuth;
 
@@ -101,7 +105,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                 .document(product.getProductId())
                 .addSnapshotListener((value, error) -> {
                     if (error != null) Log.e(TAG, error.getMessage());
-                    Log.e("", String.valueOf(value.get("productRef")));
 
                     if (value != null && value.exists())  {
                         Log.e("", String.valueOf(value.get("productRef")));
@@ -121,6 +124,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         ivHeartPD = findViewById(R.id.ivHeartPD);
         cardViewShoppingCartPD = findViewById(R.id.cardViewShoppingCartPD);
         btnAddToCartPD = findViewById(R.id.btnAddToCartPD);
+        cardSeeReview = findViewById(R.id.cardSeeReviewPD);
 
         // click on back
         ivBackToPrevious.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +194,12 @@ public class ProductDetailActivity extends AppCompatActivity {
                             }
                         });
             }
+        });
+
+        cardSeeReview.setOnClickListener(view -> {
+            Intent intent = new Intent(ProductDetailActivity.this, ReviewListActivity.class);
+            intent.putExtra("productRate", product.getRate());
+            startActivity(intent);
         });
 
     }

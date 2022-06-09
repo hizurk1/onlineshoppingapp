@@ -4,195 +4,285 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ProductDetailActivity">
 
-    <RelativeLayout
-        android:id="@+id/layoutTopBarPD"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="@color/light_green">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ivBackToPrevious"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:src="@drawable/ic_arrow_back"
-            app:tint="@color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Chi tiết sản phẩm"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </RelativeLayout>
-
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/layoutTopBarPD"
-        android:layout_marginBottom="80dp"
-        android:background="#f9fafe">
-
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/layoutTopBarPD"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="10dp">
+            android:layout_height="52dp"
+            android:background="@color/light_green">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/viewPagerProductDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp" />
-
-                <me.relex.circleindicator.CircleIndicator
-                    android:id="@+id/circleIndicatorProductDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="center_horizontal" />
-
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/ivBackToPrevious"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="@color/white" />
 
             <TextView
-                android:id="@+id/tvProductNamePD"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="10dp"
-                android:text="Tên sản phẩm"
-                android:textColor="@color/black"
+                android:layout_centerInParent="true"
+                android:text="Chi tiết sản phẩm"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+        </RelativeLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            android:id="@+id/ratePD"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:numStars="5"
-                            android:rating="0" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginHorizontal="10dp"
-                            android:layout_marginVertical="3dp"
-                            android:background="@color/dark_grey" />
-
-                        <TextView
-                            android:id="@+id/tvProductSoldPD"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="Đã bán 0" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvProductPricePD"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="2dp"
-                        android:text="0đ"
-                        android:textColor="@color/red_error"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardLikePD"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginVertical="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:clickable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="2dp">
-
-                    <ImageView
-                        android:id="@+id/ivHeartPD"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/heart"
-                        app:tint="@color/normal_grey" />
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f9fafe">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@color/white"
                 android:orientation="vertical">
 
-                <TextView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_height="350dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp"
-                    android:text="Mô tả"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
 
-                <TextView
-                    android:id="@+id/tvProductDescriptionPD"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.viewpager.widget.ViewPager
+                            android:id="@+id/viewPagerProductDetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="350dp" />
+
+                        <me.relex.circleindicator.CircleIndicator
+                            android:id="@+id/circleIndicatorProductDetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_gravity="center_horizontal" />
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="10dp"
-                    android:text="Nội dung"
-                    android:textSize="16sp" />
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvProductNamePD"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Tên sản phẩm"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="5dp"
+                                    android:orientation="horizontal">
+
+                                    <RatingBar
+                                        android:id="@+id/ratePD"
+                                        style="@style/Widget.AppCompat.RatingBar.Small"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:numStars="5"
+                                        android:rating="0" />
+
+                                    <View
+                                        android:layout_width="1dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginHorizontal="10dp"
+                                        android:layout_marginVertical="3dp"
+                                        android:background="@color/dark_grey" />
+
+                                    <TextView
+                                        android:id="@+id/tvProductSoldPD"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:text="Đã bán 0" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tvProductPricePD"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="2dp"
+                                    android:text="0đ"
+                                    android:textColor="@color/red_error"
+                                    android:textSize="25sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardLikePD"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginVertical="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:clickable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="2dp">
+
+                                <ImageView
+                                    android:id="@+id/ivHeartPD"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/heart"
+                                    app:tint="@color/normal_grey" />
+
+                            </androidx.cardview.widget.CardView>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Mô tả"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvProductDescriptionPD"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:text="Nội dung"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardSeeReviewPD"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Xem đánh giá"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/black" />
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp" />
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:background="@color/white">
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_bottom" />
 
         <Button
             android:id="@+id/btnAddToCartPD"

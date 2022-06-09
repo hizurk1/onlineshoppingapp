@@ -44,4 +44,21 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="RatingBar" parent="Base.Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressDrawable">@drawable/abc_ratingbar_small_material</item>
+        <item name="android:indeterminateDrawable">@drawable/abc_ratingbar_small_material</item>
+        <item name="android:minHeight">25dp</item>
+        <item name="android:isIndicator">true</item>
+        <item name="android:thumb">@null</item>
+        <item name="colorControlNormal">@color/light_grey</item>
+        <item name="colorControlActivated">@color/normal_yellow</item>
+    </style>
+
+    <style name="CustomChipStyle" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="checkedIconTint">@color/mtrl_choice_chip_text_color</item>
+        <item name="android:textColor">@color/mtrl_choice_chip_text_color</item>
+        <item name="chipBackgroundColor">@color/mtrl_choice_chip_background_color</item>
+        <item name="rippleColor">@color/mtrl_choice_chip_ripple_color</item>
+    </style>
+
 </resources>
