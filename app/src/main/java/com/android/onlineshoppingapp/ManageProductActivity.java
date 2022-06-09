@@ -59,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ManageProductActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -106,23 +107,27 @@ public class ManageProductActivity extends AppCompatActivity {
         tvToolBar.setText("Quản lý sản phẩm");
 
         productList = new ArrayList<>();
-        db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid()).addSnapshotListener((value, error) -> {
-                    if (error != null) return;
-                    productList.clear();
-                    for (QueryDocumentSnapshot document : value) {
-                        Product product = document.toObject(Product.class);
-                        product.setProductId(document.getId());
-                        productList.add(product);
-                    }
 
-                    adapter = new ManageProductAdapter(productList, this);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-                    recyclerView.setHasFixedSize(true);
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(adapter);
+        AsyncTask.execute(() -> {
+            db.collection("Products")
+                    .whereEqualTo("seller", Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                    .addSnapshotListener((value, error) -> {
+                        if (error != null) return;
+                        productList.clear();
+                        assert value != null;
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            productList.add(product);
+                        }
+                        adapter = new ManageProductAdapter(productList, ManageProductActivity.this);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(ManageProductActivity.this, LinearLayoutManager.VERTICAL, false);
+//                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                    });
 
-                });
+        });
 
         ivClose.setOnClickListener(view -> {
             clearActionMode();
@@ -202,16 +207,16 @@ public class ManageProductActivity extends AppCompatActivity {
 
     private void deleteProduct(Product product) {
         db = FirebaseFirestore.getInstance();
-        db.collection("Products").document(product.getProductId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(ManageProductActivity.this, "Xoá thành công", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("deleteError", task.getException().getMessage());
-                }
-            }
-        });
+        db.collection("Products")
+                .document(product.getProductId())
+                .delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ManageProductActivity.this, "Xoá thành công", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("deleteError", Objects.requireNonNull(task.getException()).getMessage());
+                    }
+                });
     }
 
     public void showSheetToEdit(int position) {

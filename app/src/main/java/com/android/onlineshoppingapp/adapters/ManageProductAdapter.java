@@ -3,6 +3,7 @@ package com.android.onlineshoppingapp.adapters;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -98,18 +99,19 @@ public class ManageProductAdapter extends RecyclerView.Adapter<ManageProductAdap
         db.collection("productImages")
                 .document(product.getProductId())
                 .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, String.valueOf(error));
-                        return;
-                    }
-                    DocumentSnapshot documentSnapshot = value;
-                    Map<String, Object> map = documentSnapshot.getData();
-                    if (map != null) {
-                        List<String> string = (List<String>) map.get("url");
-                        Glide.with(holder.itemView)
-                                .load(string.get(0)).into(holder.ivProductImg);
-                    }
+                    if (value != null && value.exists()) {
+                        Map<String, Object> map = value.getData();
+                        if (map != null) {
+                            List<String> string = (List<String>) map.get("url");
+                            assert string != null;
+                            Glide.with(context)
+                                    .load(string.get(0)).into(holder.ivProductImg);
+                        }
+                    } else
+                        holder.ivProductImg.setImageResource(R.drawable.logoapp);
+
                 });
+
 
         if (product.getProductName().length() > 45) {
             holder.tvProductName.setText(String.format("%s...", product.getProductName().substring(0, 45)));

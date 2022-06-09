@@ -251,21 +251,21 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
         //set image
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
-                    Map<String, Object> map = documentSnapshot.getData();
+        db.collection("productImages")
+                .document(product.getProductId()).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        Map<String, Object> map = documentSnapshot.getData();
 
-                    if (map != null) {
-                        List<String> string = (List<String>) map.get("url");
-                        Glide.with(context)
-                                .load(string.get(0)).into(holder.ivProductImg);
+                        if (map != null) {
+                            List<String> string = (List<String>) map.get("url");
+                            assert string != null;
+                            Glide.with(context)
+                                    .load(string.get(0)).into(holder.ivProductImg);
+                        }
                     }
-                }
-            }
-        });
+                });
 
         // click on checkbox
         holder.cbProduct.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

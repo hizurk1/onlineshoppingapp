@@ -76,27 +76,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 if (textInputEditTextEmail.getText().toString().equals("")) {
                     textInputLayoutEmail.setHelperText("Email không được bỏ trống!");
                 } else {
-                    EnterCodeFragment enterCodeFragment = new EnterCodeFragment();
-
-                    // prepare data
-                    Bundle data = new Bundle();
-                    data.putString("userEmail", textInputEditTextEmail.getText().toString());
-
-                    // create CODE
-                    Random random = new Random();
-                    String verificationCode = String.valueOf(random.nextInt(999999 - 100000) + 100000);
-                    data.putString("verifyCode", verificationCode);
-
                     // send code to user email
-                    sendCodeByEmail(textInputEditTextEmail.getText().toString().trim(), verificationCode);
-                    System.out.println("VERIFICATION CODE: " + verificationCode);
                     fAuth.sendPasswordResetEmail(textInputEditTextEmail.getText().toString());
-
-                    // send to fragment
-                    enterCodeFragment.setArguments(data);
-
-                    // call fragment
-                    callEnterCodeFragment(enterCodeFragment);
+                    Toast.makeText(ForgotPasswordActivity.this, "Đã gửi mail đặt lại mật khẩu", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(ForgotPasswordActivity.this, LoginActivity.class));
                 }
             }
         });
@@ -108,65 +91,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    private void sendCodeByEmail(String receiverEmail, String verificationCode) {
-
-        try {
-            String senderEmail = "project.onlineshoppingapp@gmail.com";
-            String senderPassword = "hulwohxxyuihmesr";
-
-            String stringHost = "smtp.gmail.com";
-
-            Properties properties = System.getProperties();
-            properties.put("mail.smtp.host", stringHost);
-            properties.put("mail.smtp.port", "465");
-            properties.put("mail.smtp.ssl.enable", "true");
-            properties.put("mail.smtp.auth", "true");
-
-            javax.mail.Session session = Session.getInstance(properties, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(senderEmail, senderPassword);
-                }
-            });
-
-            // send email to user: receiverEmail
-            MimeMessage mimeMessage = new MimeMessage(session);
-            mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverEmail));
-
-            mimeMessage.setSubject("[OnlineShoppingApp] Mã xác minh thay đổi mật khẩu");
-            mimeMessage.setText("Xin chào," +
-                    "\n\nBạn vừa yêu cầu mã xác minh để thay đổi mật khẩu của bạn " +
-                    "cho địa chỉ email: " + receiverEmail +
-                    "\n\nMã xác minh: " + verificationCode +
-                    "\n\nVui lòng nhập mã xác minh bên trên để chúng tôi có thể tiếp tục thực hiện " +
-                    "các bước thay đổi mật khẩu cho tài khoản của bạn." +
-                    "\n\nTrân trọng,\nĐội ngũ OnlineShoppingApp");
-
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Transport.send(mimeMessage);
-                    } catch (MessagingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            thread.start();
-
-        } catch (AddressException e) {
-            e.printStackTrace();
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void callEnterCodeFragment(EnterCodeFragment fragment) {
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_forgotpass, fragment)
-                .commit();
     }
 
 }
