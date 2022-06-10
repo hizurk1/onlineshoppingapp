@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.Product;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -65,8 +66,52 @@ public class ListOfProductActivity extends AppCompatActivity {
             case "favorite":
                 showFavoriteProduct();
                 break;
+            case "purchasedProduct":
+                showPurchasedProduct();
+                break;
         }
 
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void showPurchasedProduct() {
+        rvPopularProducts = findViewById(R.id.rvListOfProduct);
+        db.collection("Users")
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                .collection("boughtProducts")
+                .addSnapshotListener((value, error) -> {
+                    if (error != null)
+                        Log.e("showPurchasedProduct", error.getMessage());
+
+                    if (value != null) {
+                        List<Product> productList = new ArrayList<>();
+                        List<String> productIdList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : value) {
+                            productIdList.add(documentSnapshot.getId());
+                        }
+
+                        //get product info
+                        for (String item : productIdList) {
+                            Log.e("", item);
+                            DocumentReference productRef = db.collection("Products").document(item);
+                            productRef.addSnapshotListener((value1, error1) -> {
+                                if (value1 != null) {
+                                    Product product = value1.toObject(Product.class);
+                                    if (product != null) {
+                                        product.setProductId(value1.getId());
+                                    }
+                                    productList.add(product);
+                                    recyclerViewAdapterProduct.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
+                        rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+
+                    }
+                });
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -76,11 +121,18 @@ public class ListOfProductActivity extends AppCompatActivity {
                 .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
                 .collection("Wishlists")
                 .addSnapshotListener((value, error) -> {
-                    List<Product> productList = new ArrayList<>();
+                    if (error != null)
+                        Log.e("showFavoriteProduct", error.getMessage());
+
                     if (value != null) {
-                        for (DocumentSnapshot documentSnapshot : value) {
+                        List<Product> productList = new ArrayList<>();
+                        List<String> productIdList = new ArrayList<>();
+
+                        for (DocumentSnapshot documentSnapshot : value)
+                            productIdList.add(documentSnapshot.getId());
+                        for (String item : productIdList) {
                             db.collection("Products")
-                                    .document(documentSnapshot.getId())
+                                    .document(item)
                                     .addSnapshotListener((value1, error1) -> {
                                         if (error1 != null)
                                             Log.e("showFavoriteProduct", error1.getMessage());
@@ -94,11 +146,12 @@ public class ListOfProductActivity extends AppCompatActivity {
                                         }
                                     });
                         }
+                        // setup recyclerview
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
+                        rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
                     }
-                    // setup recyclerview: recently products
-                    recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
-                    rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
-                    rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+
                 });
     }
 

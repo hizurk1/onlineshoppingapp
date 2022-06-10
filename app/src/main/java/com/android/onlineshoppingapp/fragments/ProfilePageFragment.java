@@ -212,52 +212,40 @@ public class ProfilePageFragment extends Fragment {
         });
 
         // click on card follow
-        cardFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cardFollow.setOnClickListener(view14 -> {
 
-            }
         });
 
         // click on card purchased product
-        cardPurchasedProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
+        cardPurchasedProduct.setOnClickListener(view13 -> {
+            Intent intent = new Intent(getActivity(), ListOfProductActivity.class);
+            intent.putExtra("see_more_product", "purchasedProduct");
+            startActivity(intent);
         });
 
         // show card my store
-        db.collection("Users").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("Users")
+                .document(user.getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
 
-                if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
-                    cardMyStore.setVisibility(View.VISIBLE);
-                    cardPurchasedProduct.setVisibility(View.GONE);
-                } else {
-                    cardMyStore.setVisibility(View.GONE);
-                    cardPurchasedProduct.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+                    if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                        cardMyStore.setVisibility(View.VISIBLE);
+                        cardPurchasedProduct.setVisibility(View.GONE);
+                    } else {
+                        cardMyStore.setVisibility(View.GONE);
+                        cardPurchasedProduct.setVisibility(View.VISIBLE);
+                    }
+                });
 
 
-        cardMyStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), MyStoreActivity.class));
-            }
-        });
+        cardMyStore.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), MyStoreActivity.class)));
 
         // click on card support
-        cardSupport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                        "mailto", "project.onlineshoppingapp@gmail.com", null));
-                getActivity().startActivity(Intent.createChooser(emailIntent, null));
-            }
+        cardSupport.setOnClickListener(view12 -> {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "project.onlineshoppingapp@gmail.com", null));
+            getActivity().startActivity(Intent.createChooser(emailIntent, null));
         });
 
 
@@ -266,27 +254,27 @@ public class ProfilePageFragment extends Fragment {
 
     //--------------- Function ----------------
 
-    private void checkSignIn() {
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail().build();
-        gsc = GoogleSignIn.getClient(getActivity(), gso);
-
-        // get data
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-        if (account != null) {
-            String userName = account.getDisplayName();
-            String userEmail = account.getEmail();
-            Toast.makeText(getActivity(), "Name: " + userName + "\nEmail: " + userEmail, Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-
-    private void signOut() {
-        gsc.signOut().addOnCompleteListener(task -> {
-            fAuth.signOut();
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-        });
-    }
+//    private void checkSignIn() {
+//        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestEmail().build();
+//        gsc = GoogleSignIn.getClient(getActivity(), gso);
+//
+//        // get data
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+//        if (account != null) {
+//            String userName = account.getDisplayName();
+//            String userEmail = account.getEmail();
+//            Toast.makeText(getActivity(), "Name: " + userName + "\nEmail: " + userEmail, Toast.LENGTH_SHORT)
+//                    .show();
+//        }
+//    }
+//
+//    private void signOut() {
+//        gsc.signOut().addOnCompleteListener(task -> {
+//            fAuth.signOut();
+//            startActivity(new Intent(getActivity(), LoginActivity.class));
+//        });
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -318,7 +306,7 @@ public class ProfilePageFragment extends Fragment {
 
     private void getDownloadUri(StorageReference ref) {
         ref.getDownloadUrl()
-                .addOnSuccessListener(uri -> setUserPhotoUri(uri))
+                .addOnSuccessListener(this::setUserPhotoUri)
                 .addOnFailureListener(e -> Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
         ;
     }
