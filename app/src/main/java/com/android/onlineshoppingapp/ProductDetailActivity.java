@@ -217,7 +217,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
         cardSeeShopPD.setOnClickListener(view -> {
-            startActivity(new Intent(ProductDetailActivity.this, MyStoreActivity.class));
+            Intent intent = new Intent(ProductDetailActivity.this, MyStoreActivity.class);
+            intent.putExtra("sellerOfProduct", product.getSeller());
+            startActivity(intent);
         });
 
         cardSeeReview.setOnClickListener(view -> {

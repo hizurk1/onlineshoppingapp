@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
         String category = "AAA"; // get category
         holder.tvCategory.setText(String.format("Loại: %s", category));
 
+        float ratePoint = holder.ratingBar.getRating();
+
         holder.btnSubmit.setOnClickListener(view -> {
             String content = holder.etWriteReview.getText().toString();
             if (content.equals("")) {
@@ -70,6 +73,7 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
         private Button btnSubmit;
         private TextView tvProductName, tvCategory;
         private EditText etWriteReview;
+        private RatingBar ratingBar;
 
         public WriteReviewViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -78,6 +82,7 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
             tvCategory = itemView.findViewById(R.id.tvCategoryReview);
             etWriteReview = itemView.findViewById(R.id.etWriteReview);
             btnSubmit = itemView.findViewById(R.id.btnWriteReview);
+            ratingBar = itemView.findViewById(R.id.ratingWriteReview);
 
         }
     }

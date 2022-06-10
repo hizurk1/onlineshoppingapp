@@ -53,10 +53,19 @@
 
     </LinearLayout>
 
+    <RatingBar
+        android:id="@+id/ratingWriteReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginStart="20dp"
         android:text="Viết đánh giá"
         android:textColor="@color/black"
