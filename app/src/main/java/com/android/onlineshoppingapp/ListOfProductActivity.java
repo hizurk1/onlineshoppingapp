@@ -58,15 +58,16 @@ public class ListOfProductActivity extends AppCompatActivity {
         });
 
         String seeMoreStatus = getIntent().getStringExtra("see_more_product");
+        String seller = getIntent().getStringExtra("sellerDetail");
         switch (seeMoreStatus) {
             case "popular":
-                showPopularProduct();
+                showPopularProduct(seller);
                 break;
             case "recently":
-                showRecentlyProduct();
+                showRecentlyProduct(seller);
                 break;
             case "all":
-                showAllProduct();
+                showAllProduct(seller);
                 break;
             case "search":
                 searchProduct(getIntent().getStringExtra("searchString"));
@@ -129,13 +130,13 @@ public class ListOfProductActivity extends AppCompatActivity {
                 });
     }
 
-    private void showPopularProduct() {
+    private void showPopularProduct(String seller) {
 
         popularProductList = new ArrayList<>();
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
                 .orderBy("quantitySold", Query.Direction.DESCENDING)
                 .orderBy("productPrice", Query.Direction.ASCENDING)
                 .get()
@@ -160,13 +161,13 @@ public class ListOfProductActivity extends AppCompatActivity {
                 });
     }
 
-    private void showRecentlyProduct() {
+    private void showRecentlyProduct(String seller) {
 
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
                 .orderBy("quantitySold", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -190,13 +191,13 @@ public class ListOfProductActivity extends AppCompatActivity {
                 });
     }
 
-    private void showAllProduct() {
+    private void showAllProduct(String seller) {
 
         allProductList = new ArrayList<>();
         rvAllProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

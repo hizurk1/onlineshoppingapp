@@ -118,11 +118,7 @@ public class MyStoreActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
-        if (user.getPhotoUrl() != null) {
-            Glide.with(this)
-                    .load(user.getPhotoUrl())
-                    .into(ivAvatarStore);
-        }
+
         // click on back
         ivBackToProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +126,86 @@ public class MyStoreActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                            showForSaleAccount();
+                        } else {
+                            showForPurchaseAccount(getIntent().getStringExtra("sellerOfProduct"));
+                        }
+                    }
+                });
+
+    }
+
+    private void showForPurchaseAccount(String seller) {
+
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(user.getPhotoUrl())
+                    .into(ivAvatarStore);
+        }
+
+        // change shop name
+        db.collection("Users").document(seller).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        String lastName = documentSnapshot.getString("lastName");
+                        String firstName = documentSnapshot.getString("firstName");
+                        if (lastName.equals("")) {
+                            tvShopName.setText(firstName);
+                        } else {
+                            tvShopName.setText(String.format("%s %s", lastName, firstName));
+                        }
+                    }
+                });
+
+
+        cardAddProduct.setVisibility(View.GONE);
+        cardManageProduct.setVisibility(View.GONE);
+
+        // customer view part
+
+        // show product
+        showPopularProduct(seller);
+        showRecentlyProduct(seller);
+        showAllProduct(seller);
+
+        // click on see more
+        tvSeemorePopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("popular", seller);
+            }
+        });
+
+        tvSeemoreRecently.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("recently", seller);
+            }
+        });
+
+        tvSeemoreAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigateToListOfProduct("all", seller);
+            }
+        });
+
+    }
+
+    private void showForSaleAccount() {
+
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(user.getPhotoUrl())
+                    .into(ivAvatarStore);
+        }
 
         // change shop name
         String fullname = user.getDisplayName();
@@ -139,9 +215,9 @@ public class MyStoreActivity extends AppCompatActivity {
         verifyStoreBtn();
 
         // show product
-        showPopularProduct();
-        showRecentlyProduct();
-        showAllProduct();
+        showPopularProduct("own");
+        showRecentlyProduct("own");
+        showAllProduct("own");
 
         // click on card add product
         cardAddProduct.setOnClickListener(new View.OnClickListener() {
@@ -163,41 +239,138 @@ public class MyStoreActivity extends AppCompatActivity {
         tvSeemorePopular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigateToListOfProduct("popular");
+                navigateToListOfProduct("popular", "own");
             }
         });
 
         tvSeemoreRecently.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigateToListOfProduct("recently");
+                navigateToListOfProduct("recently", "own");
             }
         });
 
         tvSeemoreAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigateToListOfProduct("all");
+                navigateToListOfProduct("all", "own");
             }
         });
-
     }
 
-    // --------------- Function -----------------
 
-    private void navigateToListOfProduct(String key) {
+    private void showPopularProduct(String seller) {
+
+        popularProductList = new ArrayList<>();
+        rvPopularProducts = findViewById(R.id.rvPopularProductsStore);
+
+        db.collection("Products")
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .orderBy("quantitySold", Query.Direction.DESCENDING)
+                .orderBy("productPrice", Query.Direction.ASCENDING)
+                .limit(10)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+                        popularProductList.clear();
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            popularProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, MyStoreActivity.this);
+                        rvPopularProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                    }
+                });
+    }
+
+    private void showRecentlyProduct(String seller) {
+
+        recentlyProductList = new ArrayList<>();
+        rvRecentlyProducts = findViewById(R.id.rvRecentlyProductsStore);
+
+
+        db.collection("Products")
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .orderBy("createTime", Query.Direction.DESCENDING)
+                .limit(10)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+
+                        recentlyProductList.clear();
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            recentlyProductList.add(product);
+                        }
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, MyStoreActivity.this);
+                        rvRecentlyProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
+
+                    }
+                });
+    }
+
+    private void showAllProduct(String seller) {
+
+        allProductList = new ArrayList<>();
+        rvAllProducts = findViewById(R.id.rvAllProductsStore);
+
+        db.collection("Products")
+                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .limit(10)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.w(TAG, "Listen failed.", error);
+                            return;
+                        }
+
+                        allProductList.clear();
+                        for (QueryDocumentSnapshot document : value) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            allProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, MyStoreActivity.this);
+                        rvAllProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                        rvAllProducts.setAdapter(recyclerViewAdapterProduct);
+                    }
+                });
+    }
+
+    private void navigateToListOfProduct(String key, String seller) {
         Intent intent = new Intent(this, ListOfProductActivity.class);
         switch (key) {
             case "popular":
                 intent.putExtra("see_more_product", "popular");
+                intent.putExtra("sellerDetail", seller);
                 startActivity(intent);
                 break;
             case "recently":
                 intent.putExtra("see_more_product", "recently");
+                intent.putExtra("sellerDetail", seller);
                 startActivity(intent);
                 break;
             case "all":
                 intent.putExtra("see_more_product", "all");
+                intent.putExtra("sellerDetail", seller);
                 startActivity(intent);
                 break;
         }
@@ -298,9 +471,9 @@ public class MyStoreActivity extends AppCompatActivity {
         AsyncTask.execute(() -> {
             categoryList.clear();
             db.collection("Categories").get().addOnSuccessListener(queryDocumentSnapshots -> {
-               for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                   categoryList.add(documentSnapshot.getString("name"));
-               }
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    categoryList.add(documentSnapshot.getString("name"));
+                }
             });
         });
 
@@ -379,102 +552,6 @@ public class MyStoreActivity extends AppCompatActivity {
         });
     }
 
-    private void showAllProduct() {
-
-        allProductList = new ArrayList<>();
-        rvAllProducts = findViewById(R.id.rvAllProductsStore);
-
-        db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
-                .limit(10)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w(TAG, "Listen failed.", error);
-                            return;
-                        }
-
-                        allProductList.clear();
-                        for (QueryDocumentSnapshot document : value) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            allProductList.add(product);
-                        }
-
-                        // setup recyclerview: recently products
-                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, MyStoreActivity.this);
-                        rvAllProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        rvAllProducts.setAdapter(recyclerViewAdapterProduct);
-                    }
-                });
-    }
-
-    private void showRecentlyProduct() {
-
-        recentlyProductList = new ArrayList<>();
-        rvRecentlyProducts = findViewById(R.id.rvRecentlyProductsStore);
-
-
-        db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
-                .orderBy("createTime", Query.Direction.DESCENDING)
-                .limit(10)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w(TAG, "Listen failed.", error);
-                            return;
-                        }
-
-                        recentlyProductList.clear();
-                        for (QueryDocumentSnapshot document : value) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            recentlyProductList.add(product);
-                        }
-                        // setup recyclerview: recently products
-                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, MyStoreActivity.this);
-                        rvRecentlyProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
-
-                    }
-                });
-    }
-
-    private void showPopularProduct() {
-
-        popularProductList = new ArrayList<>();
-        rvPopularProducts = findViewById(R.id.rvPopularProductsStore);
-
-        db.collection("Products")
-                .whereEqualTo("seller", fAuth.getCurrentUser().getUid())
-                .orderBy("quantitySold", Query.Direction.DESCENDING)
-                .orderBy("productPrice", Query.Direction.ASCENDING)
-                .limit(10)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w(TAG, "Listen failed.", error);
-                            return;
-                        }
-                        popularProductList.clear();
-                        for (QueryDocumentSnapshot document : value) {
-                            Product product = document.toObject(Product.class);
-                            product.setProductId(document.getId());
-                            popularProductList.add(product);
-                        }
-
-                        // setup recyclerview: recently products
-                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, MyStoreActivity.this);
-                        rvPopularProducts.setLayoutManager(new LinearLayoutManager(MyStoreActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
-                    }
-                });
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -496,9 +573,6 @@ public class MyStoreActivity extends AppCompatActivity {
                         imageList.add(imageuri);
                         CurrentImageSelect = CurrentImageSelect + 1;
                     }
-//                    textView.setVisibility(View.VISIBLE);
-//                    textView.setText("You Have Selected "+ ImageList.size() +" Pictures" );
-//                    choose.setVisibility(View.GONE);
 
                 } else {
                     Uri imageuri = data.getData();
