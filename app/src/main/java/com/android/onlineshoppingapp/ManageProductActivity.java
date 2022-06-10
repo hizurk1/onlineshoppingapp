@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -25,37 +24,30 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.onlineshoppingapp.adapters.ManageProductAdapter;
 import com.android.onlineshoppingapp.adapters.SimpleGalleryRecyclerAdapter;
 import com.android.onlineshoppingapp.models.Product;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -311,6 +303,10 @@ public class ManageProductActivity extends AppCompatActivity {
         // add image
         RecyclerView rvImages = sheetView.findViewById(R.id.rvImagesEditProduct);
         //set image
+        simpleGalleryRecyclerAdapter = new SimpleGalleryRecyclerAdapter(imageList, productList.get(position), ManageProductActivity.this);
+        // setup recyclerview:
+        rvImages.setLayoutManager(new LinearLayoutManager(ManageProductActivity.this, LinearLayoutManager.HORIZONTAL, false));
+        rvImages.setAdapter(simpleGalleryRecyclerAdapter);
         AsyncTask.execute(() -> {
             db.collection("productImages")
                     .document(productList.get(position).getProductId())
@@ -320,24 +316,19 @@ public class ManageProductActivity extends AppCompatActivity {
                         imageUriList.clear();
                         if (documentSnapshot.exists()) {
                             imageUriList = (List<String>) documentSnapshot.getData().get("url");
-                            for (String item : imageUriList) {
+                            for (String item : imageUriList)
                                 imageList.add(Uri.parse(item));
-                            }
-                            Log.e("", String.valueOf(imageList));
                             simpleGalleryRecyclerAdapter.notifyDataSetChanged();
                         }
                         if (imageUriList.size() > 0)
                             rvImages.setVisibility(View.VISIBLE);
                     });
+
         });
 
-        // setup recyclerview:
-        simpleGalleryRecyclerAdapter = new SimpleGalleryRecyclerAdapter(imageList, ManageProductActivity.this);
-        rvImages.setLayoutManager(new LinearLayoutManager(ManageProductActivity.this, LinearLayoutManager.HORIZONTAL, false));
-        rvImages.setAdapter(simpleGalleryRecyclerAdapter);
+        rvImages.setVisibility(View.VISIBLE);
 
         btnAddImage.setOnClickListener(view -> {
-
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -358,6 +349,34 @@ public class ManageProductActivity extends AppCompatActivity {
             sheetDialog.dismiss();
         });
 
+    }
+
+    public void removeImage(int position, Product product) {
+        imageList.remove(position);
+        imageUriList.remove(position);
+        Log.e("", String.valueOf(position));
+//        Task<ListResult> storageReference = FirebaseStorage.getInstance()
+//                .getReference()
+//                .child("productImages")
+//                .child(product.getProductId())
+//                .listAll()
+//                .addOnSuccessListener(listResult -> {
+//                    int i = 0;
+//                    listResult.getItems().get(position).delete();
+//                    for (StorageReference item : listResult.getItems()) {
+//                        if (i >= position) {
+////                            item.putFile();
+//                        }
+//                        i++;
+//                    }
+//                });
+        if (imageUriList.size() > 0) {
+            Map<String, Object> image = new HashMap<>();
+            image.put("url", imageUriList);
+            db.collection("productImages").document(product.getProductId()).set(image);
+        } else {
+            db.collection("productImages").document(product.getProductId()).delete();
+        }
     }
 
     private void updateProduct(String etProductName, String etProductDescription, int etProductPrice, int etProductQuantity, String category, Product cProduct) {
@@ -392,15 +411,13 @@ public class ManageProductActivity extends AppCompatActivity {
 //                    textView.setVisibility(View.VISIBLE);
 //                    textView.setText("You Have Selected "+ ImageList.size() +" Pictures" );
 //                    choose.setVisibility(View.GONE);
-
                 } else {
                     Uri imageuri = data.getData();
                     imageList.add(imageuri);
                 }
-                simpleGalleryRecyclerAdapter.notifyDataSetChanged();
                 Log.e("add", String.valueOf(imageList));
             }
-
+            simpleGalleryRecyclerAdapter.notifyDataSetChanged();
         }
 
     }
@@ -413,33 +430,23 @@ public class ManageProductActivity extends AppCompatActivity {
                     .child(productId).child(String.valueOf(i));
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageList.get(i));
+                Log.e("", String.valueOf(bitmap));
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
 
                 ref.putBytes(byteArrayOutputStream.toByteArray())
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                getDownloadUri(ref);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(ManageProductActivity.this,
-                                        "Có lỗi xảy ra " + e.getMessage(),
-                                        Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, e.getMessage());
-                            }
+                        .addOnSuccessListener(taskSnapshot -> getDownloadUri(ref))
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(ManageProductActivity.this,
+                                    "Có lỗi xảy ra " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, e.getMessage());
                         });
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        Log.e(TAG, String.valueOf(imageUriList.size()));
-
-
     }
 
     private void getDownloadUri(StorageReference ref) {
@@ -452,7 +459,6 @@ public class ManageProductActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this,
                         "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
-
     }
 
 }

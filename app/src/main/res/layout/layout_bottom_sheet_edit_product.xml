@@ -261,7 +261,7 @@
                     android:id="@+id/rvImagesEditProduct"
                     android:layout_width="match_parent"
                     android:visibility="gone"
-                    android:layout_height="80dp" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 

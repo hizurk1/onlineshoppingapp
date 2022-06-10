@@ -156,14 +156,16 @@ public class RecyclerViewAdapterProduct extends RecyclerView.Adapter<RecyclerVie
                         }
 
                         DocumentSnapshot documentSnapshot = value;
-                        Map<String, Object> map = documentSnapshot.getData();
-                        if (map != null) {
-                            List<String> string = (List<String>) map.get("url");
-                            Glide.with(holder.view)
-                                    .load(string.get(0)).into(holder.ivProductLogo);
+                        if (documentSnapshot.exists()) {
+                            Map<String, Object> map = documentSnapshot.getData();
+                            if (map != null) {
+                                List<String> string = (List<String>) map.get("url");
+                                assert string != null;
+                                Glide.with(holder.view)
+                                        .load(string.get(0)).into(holder.ivProductLogo);
+                            } else
+                                holder.ivProductLogo.setImageResource(R.drawable.logoapp);
                         }
-                        else
-                            holder.ivProductLogo.setImageResource(R.drawable.logoapp);
                     }
                 });
 

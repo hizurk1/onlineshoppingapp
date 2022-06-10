@@ -1,8 +1,10 @@
 package com.android.onlineshoppingapp.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,10 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.onlineshoppingapp.ManageProductActivity;
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Product;
 import com.bumptech.glide.Glide;
@@ -22,10 +26,17 @@ import java.util.List;
 public class SimpleGalleryRecyclerAdapter extends RecyclerView.Adapter<SimpleGalleryRecyclerAdapter.ImageViewHolder> {
     private List<Uri> listUri;
     private Context context;
+    private Product product;
 
     public SimpleGalleryRecyclerAdapter(List<Uri> listUri, Context context) {
         this.listUri = listUri;
         this.context = context;
+    }
+
+    public SimpleGalleryRecyclerAdapter(List<Uri> listUri, Product product, Context context) {
+        this.listUri = listUri;
+        this.context = context;
+        this.product = product;
     }
 
     @NonNull
@@ -42,6 +53,27 @@ public class SimpleGalleryRecyclerAdapter extends RecyclerView.Adapter<SimpleGal
             return;
         }
         setValueOfEachItem(holder, uri);
+
+        //set event
+        holder.imageViewSimpleGallery.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Xác nhận")
+                    .setMessage("Xác nhận xoá hình ảnh")
+                    .setCancelable(false)
+                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ManageProductActivity activity = (ManageProductActivity) context;
+                            activity.removeImage(holder.getBindingAdapterPosition(), product);
+                            notifyDataSetChanged();
+                        }
+                    }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+        });
     }
 
     private void setValueOfEachItem(ImageViewHolder holder, Uri uri) {

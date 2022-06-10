@@ -99,23 +99,21 @@ public class ManageProductAdapter extends RecyclerView.Adapter<ManageProductAdap
             return;
         db = FirebaseFirestore.getInstance();
 
-        AsyncTask.execute(() -> {
-            db.collection("productImages")
-                    .document(product.getProductId())
-                    .addSnapshotListener((value, error) -> {
-                        if (value != null && value.exists()) {
-                            Map<String, Object> map = value.getData();
-                            if (map != null) {
-                                List<String> string = new ArrayList<>();
-                                string = (List<String>) map.get("url");
-                                Glide.with(Objects.requireNonNull(holder.itemView))
-                                        .load(string.get(0)).into(holder.ivProductImg);
-                            }
-                        } else
-                            holder.ivProductImg.setImageResource(R.drawable.logoapp);
+        AsyncTask.execute(() -> db.collection("productImages")
+                .document(product.getProductId())
+                .addSnapshotListener((value, error) -> {
+                    if (value != null && value.exists()) {
+                        Map<String, Object> map = value.getData();
+                        if (map != null) {
+                            List<String> string = new ArrayList<>();
+                            string = (List<String>) map.get("url");
+                            Glide.with(Objects.requireNonNull(holder.itemView.getContext()))
+                                    .load(string.get(0)).into(holder.ivProductImg);
+                        }
+                    } else
+                        holder.ivProductImg.setImageResource(R.drawable.logoapp);
 
-                    });
-        });
+                }));
 
 
         if (product.getProductName().length() > 45) {

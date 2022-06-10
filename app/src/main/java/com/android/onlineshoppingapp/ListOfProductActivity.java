@@ -79,7 +79,29 @@ public class ListOfProductActivity extends AppCompatActivity {
     }
 
     private void showFavoriteProduct() {
-
+        rvPopularProducts = findViewById(R.id.rvListOfProduct);
+        db.collection("Users")
+                .document(fAuth.getCurrentUser().getUid())
+                .collection("Wishlists")
+                .addSnapshotListener((value, error) -> {
+                    List<Product> productList = new ArrayList<>();
+                    productList.clear();
+                    for (DocumentSnapshot documentSnapshot : value) {
+                        db.collection("Products")
+                                .document(documentSnapshot.getId())
+                                .addSnapshotListener((value1, error1) -> {
+                                    Product product = value1.toObject(Product.class);
+                                    assert product != null;
+                                    product.setProductId(value1.getId());
+                                    productList.add(product);
+                                    recyclerViewAdapterProduct.notifyDataSetChanged();
+                                });
+                    }
+                    // setup recyclerview: recently products
+                    recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
+                    rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                    rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                });
     }
 
     private void searchProduct(String searchString) {

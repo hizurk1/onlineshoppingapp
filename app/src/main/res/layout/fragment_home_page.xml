@@ -43,7 +43,8 @@
                     android:layout_marginStart="10dp"
                     android:layout_gravity="center_vertical"
                     android:textColor="@color/normal_grey"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:hint="Tìm kiếm"/>
 
             </LinearLayout>
 
