@@ -278,8 +278,10 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/layoutAddToCartPD"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:visibility="visible"
         android:layout_alignParentBottom="true">
 
         <View

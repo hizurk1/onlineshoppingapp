@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private RatingBar productRate;
     private ImageView ivBackToPrevious, ivHeartPD;
     private CardView cardLikePD, cardViewShoppingCartPD;
+    private RelativeLayout layoutAddToCartPD;
     private Button btnAddToCartPD;
     private MaterialCardView cardSeeReview;
 
@@ -69,7 +71,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         Bundle bundle = getIntent().getExtras();
 
@@ -82,7 +86,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerProductDetail);
         circleIndicator = findViewById(R.id.circleIndicatorProductDetail);
 
-        db = FirebaseFirestore.getInstance();
         db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -125,6 +128,22 @@ public class ProductDetailActivity extends AppCompatActivity {
         cardViewShoppingCartPD = findViewById(R.id.cardViewShoppingCartPD);
         btnAddToCartPD = findViewById(R.id.btnAddToCartPD);
         cardSeeReview = findViewById(R.id.cardSeeReviewPD);
+        layoutAddToCartPD = findViewById(R.id.layoutAddToCartPD);
+
+        fAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                            layoutAddToCartPD.setVisibility(View.GONE);
+                        } else {
+                            layoutAddToCartPD.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
 
         // click on back
         ivBackToPrevious.setOnClickListener(new View.OnClickListener() {
