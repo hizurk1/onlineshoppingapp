@@ -18,6 +18,7 @@ import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Order;
 import com.android.onlineshoppingapp.models.OrderProduct;
 import com.android.onlineshoppingapp.models.Product;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -68,10 +69,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
 
         if (order.getOrderStatus() == 3) {
-            holder.btnCancel.setText("Đánh giá");
-            holder.btnCancel.setOnClickListener(view -> {
-                Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
-            });
+
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                            if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                                holder.btnCancel.setVisibility(View.INVISIBLE);
+                            } else {
+                                holder.btnCancel.setText("Đánh giá");
+                                holder.btnCancel.setOnClickListener(view -> {
+                                    Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        }
+                    });
+
         } else {
             holder.btnCancel.setOnClickListener(view -> {
                 Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();

@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineShoppingApp.NoActionBar">
         <activity
+            android:name=".ShipperActivity"
+            android:exported="false" />
+        <activity
             android:name=".WriteReviewProductActivity"
             android:exported="false" />
         <activity

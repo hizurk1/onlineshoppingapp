@@ -59,7 +59,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     private CardView cardLikePD, cardViewShoppingCartPD;
     private RelativeLayout layoutAddToCartPD;
     private Button btnAddToCartPD;
-    private MaterialCardView cardSeeReview;
+    private MaterialCardView cardSeeReview, cardSeeShopPD;
 
     public Product product = new Product();
 
@@ -129,6 +129,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnAddToCartPD = findViewById(R.id.btnAddToCartPD);
         cardSeeReview = findViewById(R.id.cardSeeReviewPD);
         layoutAddToCartPD = findViewById(R.id.layoutAddToCartPD);
+        cardSeeShopPD = findViewById(R.id.cardSeeShopPD);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -213,6 +214,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                             }
                         });
             }
+        });
+
+        cardSeeShopPD.setOnClickListener(view -> {
+            startActivity(new Intent(ProductDetailActivity.this, MyStoreActivity.class));
         });
 
         cardSeeReview.setOnClickListener(view -> {
