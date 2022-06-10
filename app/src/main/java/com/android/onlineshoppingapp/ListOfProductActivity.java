@@ -91,11 +91,16 @@ public class ListOfProductActivity extends AppCompatActivity {
                         db.collection("Products")
                                 .document(documentSnapshot.getId())
                                 .addSnapshotListener((value1, error1) -> {
-                                    Product product = value1.toObject(Product.class);
-                                    assert product != null;
-                                    product.setProductId(value1.getId());
-                                    productList.add(product);
-                                    recyclerViewAdapterProduct.notifyDataSetChanged();
+                                    if (error1 != null)
+                                        Log.e("showFavoriteProduct", error1.getMessage());
+
+                                    if (value1!=null) {
+                                        Product product = value1.toObject(Product.class);
+                                        assert product != null;
+                                        product.setProductId(value1.getId());
+                                        productList.add(product);
+                                        recyclerViewAdapterProduct.notifyDataSetChanged();
+                                    }
                                 });
                     }
                     // setup recyclerview: recently products

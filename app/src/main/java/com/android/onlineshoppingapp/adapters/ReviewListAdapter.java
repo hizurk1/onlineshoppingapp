@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
 import com.android.onlineshoppingapp.models.Review;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,11 +46,17 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
         Review review = reviewList.get(position);
         if (review == null)
             return;
-
         // show data
         holder.ratingBar.setRating((float) review.getRate());
         holder.tvContent.setText(review.getContent());
-        holder.tvReviewer.setText(String.format("bởi %s", review.getReviewer()));
+        FirebaseFirestore.getInstance()
+                .collection("Users")
+                .document(review.getReviewer())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    holder.tvReviewer.setText(String.format("bởi %s", documentSnapshot.getString("lastName") + " " + documentSnapshot.getString("firstName")));
+                });
+
 
         try {
             holder.tvTime.setText(timeAgo(new Date(),

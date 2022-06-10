@@ -23,9 +23,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,6 +149,7 @@ public class CheckoutActivity extends AppCompatActivity {
                         order.put("address", userAddressList.get(indexAddress));
                         order.put("totalPrice", cart.getTotalPrice());
                         order.put("orderStatus", 0);
+                        order.put("orderTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
                         CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
                         String orderId = orderRef.document().getId();
                         orderRef.document(orderId)
@@ -154,6 +157,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                 .addOnSuccessListener(unused -> {
                                     for (cartProduct item : cart.getCartProductList()) {
                                         Map<String, Object> productOrder = new HashMap<>();
+                                        productOrder.put("isRated", false);
                                         productOrder.put("productRef",
                                                 FirebaseFirestore.getInstance()
                                                         .document("Products/" + item.getProductId() + "/"));
@@ -229,7 +233,6 @@ public class CheckoutActivity extends AppCompatActivity {
                         dialogInterface.dismiss();
                     }
                 }).show();
-
     }
 
     public String getDateDelivery(int delay) {

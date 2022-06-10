@@ -20,8 +20,12 @@ import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.Review;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +33,16 @@ import java.util.Map;
 public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.WriteReviewViewHolder> {
 
     private List<Product> productList;
+    private String orderId;
 
 
     public WriteReviewAdapter(List<Product> reviewList) {
         this.productList = reviewList;
+    }
+
+    public WriteReviewAdapter(List<Product> productList, String orderId) {
+        this.productList = productList;
+        this.orderId = orderId;
     }
 
     @NonNull
@@ -75,32 +85,67 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
         holder.btnSubmit.setOnClickListener(view -> {
             float ratePoint = holder.ratingBar.getRating();
             String content = holder.etWriteReview.getText().toString();
-            if (content.equals("")) {
-                Toast.makeText(view.getContext(), "Đánh giá không được để trống", Toast.LENGTH_SHORT).show();
-            } else {
-                Map<String, Object> map = new HashMap<>();
-                map.put("reviewer", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                map.put("rate", ratePoint);
-                map.put("content", content);
-                map.put("productRef", FirebaseFirestore.getInstance()
-                        .collection("Products")
-                        .document(product.getProductId()));
-                FirebaseFirestore.getInstance()
-                        .collection("productRates")
-                        .add(map)
-                        .addOnSuccessListener(documentReference -> {
-                            productList.remove(position);
-                            notifyDataSetChanged();
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("submit review", e.getMessage());
-                            Toast.makeText(view.getContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                        });
+            Map<String, Object> map = new HashMap<>();
+            map.put("reviewer", FirebaseAuth.getInstance().getCurrentUser().getUid());
+            map.put("rate", ratePoint);
+            map.put("content", content);
+            map.put("createdDate", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+            FirebaseFirestore.getInstance()
+                    .collection("Products")
+                    .document(product.getProductId())
+                    .collection("productRates")
+                    .add(map)
+                    .addOnSuccessListener(documentReference -> {
+                        //set isRated to true
+                        setIsRated(productList.get(position), orderId);
+
+                        //set product rate
+                        FirebaseFirestore.getInstance()
+                                .collection("Products")
+                                .document(product.getProductId())
+                                .collection("productRates")
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        Double total = (double) 0;
+                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                            total += documentSnapshot.getDouble("rate");
+                                        }
+                                        total = total / queryDocumentSnapshots.size();
+                                        Map<String, Object> map1 = new HashMap<>();
+                                        map1.put("rate", total);
+                                        FirebaseFirestore.getInstance()
+                                                .collection("Products")
+                                                .document(product.getProductId())
+                                                .set(map1, SetOptions.merge())
+                                                .addOnFailureListener(e -> Log.e("set product rate", e.getMessage()));
+                                    }
+                                });
+
+                        productList.remove(position);
+                        notifyDataSetChanged();
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("submit review", e.getMessage());
+                        Toast.makeText(view.getContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                    });
 //                Toast.makeText(view.getContext(), "Gửi đánh giá", Toast.LENGTH_SHORT).show();
-            }
         });
 
     }
+
+    private void setIsRated(Product product, String orderId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("isRated", true);
+        FirebaseFirestore.getInstance()
+                .collection("Orders")
+                .document(orderId)
+                .collection("Products")
+                .document(product.getProductId())
+                .set(map, SetOptions.merge())
+                .addOnFailureListener(e -> Log.e("setIsRated", e.getMessage()));
+    }
+
 
     @Override
     public int getItemCount() {

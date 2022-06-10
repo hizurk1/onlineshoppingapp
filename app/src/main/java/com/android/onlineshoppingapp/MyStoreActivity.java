@@ -502,9 +502,12 @@ public class MyStoreActivity extends AppCompatActivity {
             public void onClick(View view) {
                 newProductId = db.collection("Products").document().getId();
                 uploadImage();
+                String category = "Khác";
+                if (!ctvCategory.equals("Chọn danh mục"))
+                    category = String.valueOf(ctvCategory.getText());
                 addProduct(etProductName.getText().toString(),
                         etProductDescription.getText().toString(),
-                        Integer.parseInt(etProductPrice.getText().toString()), Integer.parseInt(etProductQuantity.getText().toString()), String.valueOf(ctvCategory.getText()));
+                        Integer.parseInt(etProductPrice.getText().toString()), Integer.parseInt(etProductQuantity.getText().toString()), category);
                 bottomSheetDialogAddProduct.dismiss();
             }
         });

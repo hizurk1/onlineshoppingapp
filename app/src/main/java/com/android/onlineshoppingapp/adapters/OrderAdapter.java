@@ -109,7 +109,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
 
         if (order.getOrderStatus() == 3) {
-
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).get()
@@ -118,51 +117,49 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             holder.btnCancel.setVisibility(View.INVISIBLE);
                         } else {
                             holder.btnCancel.setText("Đánh giá");
-                            holder.btnCancel.setOnClickListener(view -> {
-                                rateOrder(order.getOrderId());
-//                                Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
-                            });
+                            getProduct(order.getOrderId(), holder);
                         }
                     });
-
         }
 
-
+        //get product
         FirebaseFirestore.getInstance().collection("Orders")
                 .document(order.getOrderId())
                 .collection("Products")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots1 -> {
                     List<OrderProduct> orderProductList = new ArrayList<>();
-                    for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots1) {
-                        //get product info
-                        DocumentReference productRef = (DocumentReference) documentSnapshot1.get("productRef");
-                        productRef.get().addOnSuccessListener(documentSnapshot2 -> {
-                            Product product = documentSnapshot2.toObject(Product.class);
-                            OrderProduct orderProduct = new OrderProduct(documentSnapshot2.getId(),
-                                    product.getProductName(),
-                                    product.getSeller(),
-                                    product.getDescription(),
-                                    product.getCategory(),
-                                    product.getProductPrice(),
-                                    product.getRate(),
-                                    product.getLikeNumber(),
-                                    product.getQuantitySold(),
-                                    product.getQuantity(),
-                                    Integer.valueOf(String.valueOf(documentSnapshot1.get("orderQuantity"))));
-                            orderProductList.add(orderProduct);
-                            order.setListOrderProduct(orderProductList);
-                            OrderProductAdapter orderProductAdapter = new OrderProductAdapter(order.getListOrderProduct(), context);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                            holder.recyclerView.setLayoutManager(linearLayoutManager);
-                            holder.recyclerView.setAdapter(orderProductAdapter);
-                        });
+                    if (!queryDocumentSnapshots1.isEmpty()) {
+                        for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots1) {
+                            //get product info
+                            DocumentReference productRef = (DocumentReference) documentSnapshot1.get("productRef");
+                            productRef.get().addOnSuccessListener(documentSnapshot2 -> {
+                                Product product = documentSnapshot2.toObject(Product.class);
+                                OrderProduct orderProduct = new OrderProduct(documentSnapshot2.getId(),
+                                        product.getProductName(),
+                                        product.getSeller(),
+                                        product.getDescription(),
+                                        product.getCategory(),
+                                        product.getProductPrice(),
+                                        product.getRate(),
+                                        product.getLikeNumber(),
+                                        product.getQuantitySold(),
+                                        product.getQuantity(),
+                                        Integer.valueOf(String.valueOf(documentSnapshot1.get("orderQuantity"))));
+                                orderProductList.add(orderProduct);
+                                order.setListOrderProduct(orderProductList);
+                                OrderProductAdapter orderProductAdapter = new OrderProductAdapter(order.getListOrderProduct(), context);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                                holder.recyclerView.setLayoutManager(linearLayoutManager);
+                                holder.recyclerView.setAdapter(orderProductAdapter);
+                            });
+                        }
                     }
                 })
                 .addOnFailureListener(e -> Log.e("get order info", e.getMessage()));
     }
 
-    private void rateOrder(String orderId) {
+    private void getProduct(String orderId, OrderViewHolder holder) {
         FirebaseFirestore.getInstance()
                 .collection("Orders")
                 .document(orderId)
@@ -174,9 +171,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         if (!documentSnapshot1.getBoolean("isRated"))
                             productList.add(documentSnapshot1.getId());
                     }
-                    Intent intent = new Intent(context, WriteReviewProductActivity.class);
-                    intent.putExtra("productList", (Serializable) productList);
-                    context.startActivity(intent);
+                    if (productList.size() > 0) {
+                        holder.btnCancel.setOnClickListener(view -> {
+                            Intent intent = new Intent(context, WriteReviewProductActivity.class);
+                            intent.putExtra("productList", (Serializable) productList);
+                            intent.putExtra("orderId", orderId);
+                            context.startActivity(intent);
+                        });
+                    }
+                    else {
+                        holder.btnCancel.setVisibility(View.GONE);
+                    }
                 });
     }
 

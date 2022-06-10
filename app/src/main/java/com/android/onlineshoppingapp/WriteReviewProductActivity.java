@@ -42,8 +42,9 @@ public class WriteReviewProductActivity extends AppCompatActivity {
 
         reviewList = new ArrayList<>();
         List<String> productIdList = (List<String>) getIntent().getSerializableExtra("productList");
+        String orderId = getIntent().getStringExtra("orderId");
         List<Product> productList = new ArrayList<>();
-        reviewAdapter = new WriteReviewAdapter(productList);
+        reviewAdapter = new WriteReviewAdapter(productList, orderId);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvWriteReview.setLayoutManager(linearLayoutManager);
         rvWriteReview.setAdapter(reviewAdapter);
@@ -58,9 +59,5 @@ public class WriteReviewProductActivity extends AppCompatActivity {
                        reviewAdapter.notifyDataSetChanged();
                     });
         }
-
-
-
-
     }
 }

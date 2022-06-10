@@ -86,6 +86,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPagerProductDetail);
         circleIndicator = findViewById(R.id.circleIndicatorProductDetail);
 
+        //set image
         db.collection("productImages").document(product.getProductId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -102,6 +103,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             }
         });
 
+        //wish list
         db.collection("Users")
                 .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
                 .collection("Wishlists")
@@ -110,7 +112,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                     if (error != null) Log.e(TAG, error.getMessage());
 
                     if (value != null && value.exists())  {
-                        Log.e("", String.valueOf(value.get("productRef")));
                         ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_error)));
                     } else {
                         ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.normal_grey)));
@@ -224,7 +225,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         cardSeeReview.setOnClickListener(view -> {
             Intent intent = new Intent(ProductDetailActivity.this, ReviewListActivity.class);
-            intent.putExtra("productRate", product.getRate());
+            intent.putExtra("product", product);
             startActivity(intent);
         });
 
