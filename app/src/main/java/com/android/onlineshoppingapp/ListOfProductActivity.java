@@ -69,8 +69,36 @@ public class ListOfProductActivity extends AppCompatActivity {
             case "purchasedProduct":
                 showPurchasedProduct();
                 break;
+            default:
+                showProductCategory(seeMoreStatus);
+                break;
         }
 
+    }
+
+    private void showProductCategory(String category) {
+        recentlyProductList = new ArrayList<>();
+        rvRecentlyProducts = findViewById(R.id.rvListOfProduct);
+
+        db.collection("Products")
+                .whereEqualTo("category", category)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            recentlyProductList.add(product);
+                        }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, ListOfProductActivity.this);
+                        rvRecentlyProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
+                    } else {
+                        Log.e(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
     }
 
     @SuppressLint("NotifyDataSetChanged")
