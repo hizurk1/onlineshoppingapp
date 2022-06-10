@@ -75,164 +75,26 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/layoutAvatar"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:text="Full Name"
                     android:textColor="@color/white"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvUserRanking"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvFullName"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="Thành viên vàng"
-                    android:textColor="@color/white" />
-
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="240dp"
+                android:paddingTop="10dp"
                 android:background="@drawable/bgprofiletop">
-
-                <View
-                    android:id="@+id/split_card_profile"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_marginVertical="35dp"
-                    android:background="@color/white"
-                    android:translationZ="4dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCoin"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="-10dp"
-                    android:layout_toLeftOf="@id/split_card_profile"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="25dp">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_outline_credit_card"
-                                app:tint="@color/light_green" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tvCash"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:text="0"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="VND" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardCoupon"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="-10dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@id/split_card_profile"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="25dp">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="40dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_outline_discount"
-                                app:tint="@color/light_green" />
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tvCoupon"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:text="0"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Mã giảm giá" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="15dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="3dp">
 
@@ -390,145 +252,13 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="130dp">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardSeen"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:clickable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_seen" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Đã xem"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardLove"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
-                    android:clickable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_heart" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="12dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Yêu thích"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardFollow"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="20dp"
-                    android:clickable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:layout_marginHorizontal="15dp"
-                                android:src="@drawable/ic_store" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="12dp"
-                                android:layout_marginTop="10dp"
-                                android:text="Theo dõi"
-                                android:textAlignment="center" />
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </RelativeLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cardGift"
+                    android:id="@+id/cardFollow"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:layout_marginHorizontal="20dp"
@@ -547,14 +277,59 @@
                             android:layout_height="25dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="20dp"
-                            android:src="@drawable/ic_giftbox" />
+                            android:src="@drawable/store" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="70dp"
-                            android:text="Săn thưởng"
+                            android:text="Đã theo dõi"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="15dp"
+                            android:rotation="180"
+                            android:src="@drawable/ic_back"
+                            app:tint="@color/light_green" />
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFavourite"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/heart" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="70dp"
+                            android:text="Yêu thích"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 

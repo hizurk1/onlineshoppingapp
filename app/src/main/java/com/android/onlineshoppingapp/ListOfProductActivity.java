@@ -71,7 +71,14 @@ public class ListOfProductActivity extends AppCompatActivity {
             case "search":
                 searchProduct(getIntent().getStringExtra("searchString"));
                 break;
+            case "favorite":
+                showFavoriteProduct();
+                break;
         }
+
+    }
+
+    private void showFavoriteProduct() {
 
     }
 

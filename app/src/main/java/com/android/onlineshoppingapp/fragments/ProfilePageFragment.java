@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.ListOfProductActivity;
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.MainActivity;
 import com.android.onlineshoppingapp.MyStoreActivity;
@@ -71,9 +72,9 @@ public class ProfilePageFragment extends Fragment {
     private FirebaseStorage storage;
     private StorageReference storageReference;
 
-    private TextView textViewFullname, tvUserRanking;
+    private TextView textViewFullname;
     private ImageView ivSettings, ivShoppingCart, ivAvatar, ivWallet, ivChecking, ivDelivery, ivFeedback;
-    private CardView cardCoin, cardCoupon, cardSeen, cardLove, cardFollow, cardGift, cardPurchasedProduct, cardSupport, cardMyStore;
+    private CardView cardFollow, cardPurchasedProduct, cardSupport, cardMyStore, cardLove;
 
     private final int PICK_IMAGE_REQUEST = 71;
 
@@ -91,25 +92,19 @@ public class ProfilePageFragment extends Fragment {
         storageReference = storage.getReference();
 
         // init
-//        userInf.getString("accountType",accountType);
         textViewFullname = view.findViewById(R.id.tvFullName);
         ivSettings = view.findViewById(R.id.ivSettings);
         ivShoppingCart = view.findViewById(R.id.ivShoppingCart);
         ivAvatar = view.findViewById(R.id.ivAvatar);
-        tvUserRanking = view.findViewById(R.id.tvUserRanking);
-        cardCoin = view.findViewById(R.id.cardCoin);
-        cardCoupon = view.findViewById(R.id.cardCoupon);
         ivWallet = view.findViewById(R.id.ivWallet);
         ivChecking = view.findViewById(R.id.ivChecking);
         ivDelivery = view.findViewById(R.id.ivDelivery);
         ivFeedback = view.findViewById(R.id.ivFeedback);
-        cardSeen = view.findViewById(R.id.cardSeen);
-        cardLove = view.findViewById(R.id.cardLove);
         cardFollow = view.findViewById(R.id.cardFollow);
-        cardGift = view.findViewById(R.id.cardGift);
         cardPurchasedProduct = view.findViewById(R.id.cardPurchasedProduct);
         cardSupport = view.findViewById(R.id.cardSupport);
         cardMyStore = view.findViewById(R.id.cardMyStore);
+        cardLove = view.findViewById(R.id.cardFavourite);
 
         // change name
         db.collection("Users").document(user.getUid())
@@ -137,7 +132,6 @@ public class ProfilePageFragment extends Fragment {
                     .into(ivAvatar);
         }
 
-
         // click on avatar
         ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +143,6 @@ public class ProfilePageFragment extends Fragment {
             }
 
         });
-
 
         // click on settings button
         ivSettings.setOnClickListener(new View.OnClickListener() {
@@ -165,23 +158,6 @@ public class ProfilePageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getActivity(), ShoppingCartActivity.class));
-            }
-        });
-
-
-        // click on card coin
-        cardCoin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        // click on card coupon
-        cardCoupon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
 
@@ -225,31 +201,18 @@ public class ProfilePageFragment extends Fragment {
             }
         });
 
-        // click on card seen
-        cardSeen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
-
         // click on card love
         cardLove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(getActivity(), ListOfProductActivity.class);
+                intent.putExtra("see_more_product", "favorite");
+                startActivity(intent);
             }
         });
 
         // click on card follow
         cardFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        // click on card gift
-        cardGift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -272,11 +235,9 @@ public class ProfilePageFragment extends Fragment {
                 if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
                     cardMyStore.setVisibility(View.VISIBLE);
                     cardPurchasedProduct.setVisibility(View.GONE);
-                    cardGift.setVisibility(View.GONE);
                 } else {
                     cardMyStore.setVisibility(View.GONE);
                     cardPurchasedProduct.setVisibility(View.VISIBLE);
-                    cardGift.setVisibility(View.VISIBLE);
                 }
             }
         });
