@@ -64,11 +64,13 @@ public class ReviewListActivity extends AppCompatActivity {
 
         // set up recyclerview
         reviewList = new ArrayList<>();
-        reviewList.add(new Review("1", "Hieu bui", "Day la noi dung danh gia cuc ky hay", 4, "08/06/2022 11:00:00"));
-        reviewList.add(new Review("2", "Hieu uwu", "Day la noi dung danh gia khong hay lam", 5, "05/01/2022 11:00:00"));
-        reviewList.add(new Review("3", "Hieu", "Day la noi dung danh gia khong hay lam", 2, "05/02/2022 11:00:00"));
-        reviewList.add(new Review("4", "Hieu ko uwu", "Day la noi dung danh gia khong hay lam", 3, "05/01/2021 11:00:00"));
-        reviewList.add(new Review("5", "Hieu ko co uwu", "Day la noi dung danh gia khong hay lam", 1, "05/01/2020 11:00:00"));
+//        reviewList.add(new Review("1", "Hieu bui", "Day la noi dung danh gia cuc ky hay", 4, "08/06/2022 11:00:00"));
+//        reviewList.add(new Review("2", "Hieu uwu", "Day la noi dung danh gia khong hay lam", 5, "05/01/2022 11:00:00"));
+//        reviewList.add(new Review("3", "Hieu", "Day la noi dung danh gia khong hay lam", 2, "05/02/2022 11:00:00"));
+//        reviewList.add(new Review("4", "Hieu ko uwu", "Day la noi dung danh gia khong hay lam", 3, "05/01/2021 11:00:00"));
+//        reviewList.add(new Review("5", "Hieu ko co uwu", "Day la noi dung danh gia khong hay lam", 1, "05/01/2020 11:00:00"));
+
+//        db.collection("")
 
         reviewAdapter = new ReviewListAdapter(reviewList, ReviewListActivity.this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

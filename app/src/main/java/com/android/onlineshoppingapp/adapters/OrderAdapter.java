@@ -1,6 +1,8 @@
 package com.android.onlineshoppingapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.ReviewListActivity;
+import com.android.onlineshoppingapp.WriteReviewProductActivity;
 import com.android.onlineshoppingapp.models.Order;
 import com.android.onlineshoppingapp.models.OrderProduct;
 import com.android.onlineshoppingapp.models.Product;
@@ -24,6 +28,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +38,8 @@ import java.util.Objects;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private List<Order> orderList;
-    Context context;
+    private Context context;
+
 
     public OrderAdapter(List<Order> orderList, Context context) {
         this.orderList = orderList;
@@ -73,18 +79,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Users").document(firebaseAuth.getCurrentUser().getUid()).get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                            if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
-                                holder.btnCancel.setVisibility(View.INVISIBLE);
-                            } else {
-                                holder.btnCancel.setText("Đánh giá");
-                                holder.btnCancel.setOnClickListener(view -> {
-                                    Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
-                                });
-                            }
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                            holder.btnCancel.setVisibility(View.INVISIBLE);
+                        } else {
+                            holder.btnCancel.setText("Đánh giá");
+                            holder.btnCancel.setOnClickListener(view -> {
+                                rateOrder(order.getOrderId());
+//                                Toast.makeText(view.getContext(), "Đánh giá sản phẩm", Toast.LENGTH_SHORT).show();
+                            });
                         }
                     });
 
@@ -137,9 +140,24 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                     }
                 })
                 .addOnFailureListener(e -> Log.e("get order info", e.getMessage()));
+    }
 
-
-
+    private void rateOrder(String orderId) {
+        FirebaseFirestore.getInstance()
+                .collection("Orders")
+                .document(orderId)
+                .collection("Products")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> productList = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots) {
+                        if (!documentSnapshot1.getBoolean("isRated"))
+                            productList.add(documentSnapshot1.getId());
+                    }
+                    Intent intent = new Intent(context, WriteReviewProductActivity.class);
+                    intent.putExtra("productList", (Serializable) productList);
+                    context.startActivity(intent);
+                });
     }
 
     @Override

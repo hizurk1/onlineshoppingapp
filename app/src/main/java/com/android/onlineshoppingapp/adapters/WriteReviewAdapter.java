@@ -1,10 +1,13 @@
 package com.android.onlineshoppingapp.adapters;
 
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,16 +16,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.onlineshoppingapp.R;
+import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.Review;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.WriteReviewViewHolder> {
 
-    private List<Review> reviewList;
+    private List<Product> productList;
 
-    public WriteReviewAdapter(List<Review> reviewList) {
-        this.reviewList = reviewList;
+
+    public WriteReviewAdapter(List<Product> reviewList) {
+        this.productList = reviewList;
     }
 
     @NonNull
@@ -34,28 +44,59 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull WriteReviewViewHolder holder, int position) {
-        Review review = reviewList.get(position);
-        if (review == null)
+        Product product = productList.get(position);
+
+        if (product == null)
             return;
 
-        String productName = "Tên sản phẩm"; // get product name
-        if (productName.length() > 50) {
-            holder.tvProductName.setText(String.format("%s...", productName.substring(0, 50)));
+        AsyncTask.execute(() -> {
+            FirebaseFirestore.getInstance()
+                    .collection("productImages")
+                    .document(product.getProductId())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            List<String> url = (List<String>) documentSnapshot.getData().get("url");
+                            Glide.with(holder.itemView.getContext())
+                                    .load(url.get(0)).into(holder.ivProductImageReview);
+                        } else holder.ivProductImageReview.setImageResource(R.drawable.logoapp);
+                    });
+        });
+
+        if (product.getProductName().length() > 50) {
+            holder.tvProductName.setText(String.format("%s...", product.getProductName().substring(0, 50)));
         } else {
-            holder.tvProductName.setText(productName);
+            holder.tvProductName.setText(product.getProductName());
         }
 
-        String category = "AAA"; // get category
-        holder.tvCategory.setText(String.format("Loại: %s", category));
+        holder.tvCategory.setText(String.format("Loại: %s", product.getCategory()));
 
-        float ratePoint = holder.ratingBar.getRating();
 
         holder.btnSubmit.setOnClickListener(view -> {
+            float ratePoint = holder.ratingBar.getRating();
             String content = holder.etWriteReview.getText().toString();
             if (content.equals("")) {
                 Toast.makeText(view.getContext(), "Đánh giá không được để trống", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(view.getContext(), "Gửi đánh giá", Toast.LENGTH_SHORT).show();
+                Map<String, Object> map = new HashMap<>();
+                map.put("reviewer", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                map.put("rate", ratePoint);
+                map.put("content", content);
+                map.put("productRef", FirebaseFirestore.getInstance()
+                        .collection("Products")
+                        .document(product.getProductId()));
+                FirebaseFirestore.getInstance()
+                        .collection("productRates")
+                        .add(map)
+                        .addOnSuccessListener(documentReference -> {
+                            productList.remove(position);
+                            notifyDataSetChanged();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("submit review", e.getMessage());
+                            Toast.makeText(view.getContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                        });
+//                Toast.makeText(view.getContext(), "Gửi đánh giá", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -63,9 +104,9 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
 
     @Override
     public int getItemCount() {
-        if (reviewList.isEmpty())
+        if (productList.isEmpty())
             return 0;
-        return reviewList.size();
+        return productList.size();
     }
 
     class WriteReviewViewHolder extends RecyclerView.ViewHolder {
@@ -74,6 +115,7 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
         private TextView tvProductName, tvCategory;
         private EditText etWriteReview;
         private RatingBar ratingBar;
+        private ImageView ivProductImageReview;
 
         public WriteReviewViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -83,7 +125,8 @@ public class WriteReviewAdapter extends RecyclerView.Adapter<WriteReviewAdapter.
             etWriteReview = itemView.findViewById(R.id.etWriteReview);
             btnSubmit = itemView.findViewById(R.id.btnWriteReview);
             ratingBar = itemView.findViewById(R.id.ratingWriteReview);
-
+            ivProductImageReview = itemView.findViewById(R.id.ivProductImageReview);
         }
     }
+
 }

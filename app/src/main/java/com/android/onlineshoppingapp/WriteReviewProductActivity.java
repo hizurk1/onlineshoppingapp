@@ -5,9 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.onlineshoppingapp.adapters.WriteReviewAdapter;
+import com.android.onlineshoppingapp.models.Product;
 import com.android.onlineshoppingapp.models.Review;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,11 +41,26 @@ public class WriteReviewProductActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         reviewList = new ArrayList<>();
-
-        reviewAdapter = new WriteReviewAdapter(reviewList);
+        List<String> productIdList = (List<String>) getIntent().getSerializableExtra("productList");
+        List<Product> productList = new ArrayList<>();
+        reviewAdapter = new WriteReviewAdapter(productList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvWriteReview.setLayoutManager(linearLayoutManager);
         rvWriteReview.setAdapter(reviewAdapter);
+        for (String item : productIdList) {
+            db.collection("Products")
+                    .document(item)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                       Product product = documentSnapshot.toObject(Product.class);
+                       product.setProductId(documentSnapshot.getId());
+                       productList.add(product);
+                       reviewAdapter.notifyDataSetChanged();
+                    });
+        }
+
+
+
 
     }
 }

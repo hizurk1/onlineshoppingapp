@@ -2,10 +2,20 @@ package com.android.onlineshoppingapp.models;
 
 public class Review {
     private String productId;
+    private String category;
     private String reviewer;
     private String content;
     private int rate;
     private String createdDate;
+
+    public Review(String productId, String category, String reviewer, String content, int rate, String createdDate) {
+        this.productId = productId;
+        this.category = category;
+        this.reviewer = reviewer;
+        this.content = content;
+        this.rate = rate;
+        this.createdDate = createdDate;
+    }
 
     public Review(String productId, String reviewer, String content, int rate, String createdDate) {
         this.productId = productId;
