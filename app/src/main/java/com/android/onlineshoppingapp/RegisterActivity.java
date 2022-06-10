@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -315,6 +316,9 @@ public class RegisterActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         if (checkBoxAgree.isChecked()) {
+                            ProgressBar progressBar = findViewById(R.id.proGressBarReg);
+                            progressBar.setVisibility(View.VISIBLE);
+                            btnRegister.setVisibility(View.GONE);
                             Toast.makeText(RegisterActivity.this,
 //                                    "Họ và tên: " + editTextLastName.getText().toString().trim() +
 //                                            " " + editTextFirstName.getText().toString().trim() +

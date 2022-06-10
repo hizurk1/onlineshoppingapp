@@ -39,7 +39,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     private List<Order> orderList;
     private Context context;
-
+    public boolean isShipper = false;
 
     public OrderAdapter(List<Order> orderList, Context context) {
         this.orderList = orderList;
@@ -58,8 +58,42 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         Order order = orderList.get(position);
         if (order == null) return;
+
+        if (order.getOrderStatus() == 0 || order.getOrderStatus() == 1) {
+            holder.btnCancel.setOnClickListener(view -> {
+                Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
+                Map<String, Object> update = new HashMap<>();
+                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                update.put("address", order.getAddress());
+                update.put("totalPrice", order.getTotalPrice());
+                update.put("orderStatus", 4);
+                FirebaseFirestore.getInstance()
+                        .collection("Orders")
+                        .document(order.getOrderId())
+                        .set(update)
+                        .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
+            });
+        }
+
         if (order.getOrderStatus() == 2 || order.getOrderStatus() == 4) {
             holder.btnCancel.setVisibility(View.INVISIBLE);
+            if (isShipper && order.getOrderStatus() == 2) {
+                holder.btnCancel.setVisibility(View.VISIBLE);
+                holder.btnCancel.setText("Đã giao");
+                holder.btnCancel.setOnClickListener(view -> {
+                    Toast.makeText(view.getContext(), "Đã giao", Toast.LENGTH_SHORT).show();
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                    update.put("address", order.getAddress());
+                    update.put("totalPrice", order.getTotalPrice());
+                    update.put("orderStatus", 3);
+                    FirebaseFirestore.getInstance()
+                            .collection("Orders")
+                            .document(order.getOrderId())
+                            .set(update)
+                            .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
+                });
+            }
         }
 
         holder.tvShopName.setText(order.getOrderId());
@@ -91,20 +125,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         }
                     });
 
-        } else {
-            holder.btnCancel.setOnClickListener(view -> {
-                Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
-                Map<String, Object> update = new HashMap<>();
-                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                update.put("address", order.getAddress());
-                update.put("totalPrice", order.getTotalPrice());
-                update.put("orderStatus", 4);
-                FirebaseFirestore.getInstance()
-                        .collection("Orders")
-                        .document(order.getOrderId())
-                        .set(update)
-                        .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
-            });
         }
 
 

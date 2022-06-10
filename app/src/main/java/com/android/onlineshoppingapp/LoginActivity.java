@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout layoutEmail, layoutPassword;
     private TextView textViewForgotPass, textViewRegister;
     private CardView googleSignIn;
+    private ProgressBar progressBarLogin;
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
@@ -94,55 +96,57 @@ public class LoginActivity extends AppCompatActivity {
         textViewForgotPass = findViewById(R.id.tvForgotPassword);
         textViewRegister = findViewById(R.id.txtRegister);
         googleSignIn = findViewById(R.id.cardGoogleLogin);
+        progressBarLogin = findViewById(R.id.progressBarLogin);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         requestGoogleSignIn();
 
-//        // check email
-//        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean onFocus) {
-//                if (!onFocus) {
-//                    // get user
-//                    userList = new ArrayList<UserInformation>();
-//                    db = FirebaseFirestore.getInstance();
-//
-//                    db.collection("Users").orderBy("email", Query.Direction.ASCENDING)
-//                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-//                                @Override
-//                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-//
-//                                    if (error != null) {
-//                                        Log.e("Firestore error ", error.getMessage());
-//                                    }
-//
-//                                    for (DocumentChange doc : value.getDocumentChanges()) {
-//                                        if (doc.getType() == DocumentChange.Type.ADDED) {
-//                                            userList.add(doc.getDocument().toObject(UserInformation.class));
-//                                        }
-//                                    }
-//
-//                                    userList.forEach(user -> {
-//                                        userEmailList.add(user.getEmail().toString());
-//                                    });
-//
-//                                    boolean check = false;
-//                                    for (int i = 0; i < userEmailList.size(); i++) {
-//                                        if (editTextEmail.getText().toString().trim().equals(userEmailList.get(i))) {
-//                                            check = true;
-//                                        }
-//                                    }
-//                                    if (!check) {
-//                                        layoutEmail.setHelperText("Email chưa được đăng ký");
-//                                    }
-//                                }
-//                            });
-//                } else {
-//                    layoutEmail.setHelperTextEnabled(false);
-//                }
-//            }
-//        });
+        // check email
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean onFocus) {
+                if (!onFocus) {
+                    // get user
+                    userList = new ArrayList<UserInformation>();
+                    db = FirebaseFirestore.getInstance();
+
+                    db.collection("Users").orderBy("email", Query.Direction.ASCENDING)
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                                    if (error != null) {
+                                        Log.e("Firestore error ", error.getMessage());
+                                    } else {
+                                        for (DocumentChange doc : value.getDocumentChanges()) {
+                                            if (doc.getType() == DocumentChange.Type.ADDED) {
+                                                userList.add(doc.getDocument().toObject(UserInformation.class));
+                                            }
+                                        }
+
+                                        userList.forEach(user -> {
+                                            userEmailList.add(user.getEmail().toString());
+                                        });
+
+                                        boolean check = false;
+                                        for (int i = 0; i < userEmailList.size(); i++) {
+                                            if (editTextEmail.getText().toString().trim().equals(userEmailList.get(i))) {
+                                                check = true;
+                                            }
+                                        }
+                                        if (!check) {
+                                            layoutEmail.setHelperText("Email chưa được đăng ký");
+                                        }
+                                    }
+
+                                }
+                            });
+                } else {
+                    layoutEmail.setHelperTextEnabled(false);
+                }
+            }
+        });
 
         // check password: null
         editTextPassword.setOnFocusChangeListener((view, onFocus) -> {
@@ -159,23 +163,21 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(view -> {
 
             if (!checkNullInputData()) {
+                btnLogin.setVisibility(View.GONE);
+                progressBarLogin.setVisibility(View.VISIBLE);
                 fAuth.signInWithEmailAndPassword(editTextEmail.getText().toString().trim(),
-                        editTextPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            layoutPassword.setHelperTextEnabled(false);
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                    finish();
-                                }
-                            }, 1000);
-                        } else {
-                            layoutPassword.setHelperText("Mật khẩu bạn nhập không đúng");
-                        }
+                        editTextPassword.getText().toString()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        btnLogin.setVisibility(View.GONE);
+                        progressBarLogin.setVisibility(View.VISIBLE);
+                        layoutPassword.setHelperTextEnabled(false);
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        btnLogin.setVisibility(View.VISIBLE);
+                        progressBarLogin.setVisibility(View.GONE);
+                        layoutPassword.setHelperText("Mật khẩu bạn nhập không đúng");
                     }
                 });
             }

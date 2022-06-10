@@ -29,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -80,6 +81,13 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
+        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.getString("accountType").equals("Shipper")) {
+                        finish();
+                        startActivity(new Intent(MainActivity.this, ShipperActivity.class));
+                    }
+                });
 
 
         // show bottom navigation view
