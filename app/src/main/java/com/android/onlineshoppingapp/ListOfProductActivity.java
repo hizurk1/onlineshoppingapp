@@ -2,43 +2,36 @@ package com.android.onlineshoppingapp;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.Product;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ListOfProductActivity extends AppCompatActivity {
 
-    private ImageView ivBack;
     private RecyclerView rvPopularProducts, rvRecentlyProducts, rvAllProducts;
     private RecyclerViewAdapterProduct recyclerViewAdapterProduct;
     private List<Product> popularProductList, recentlyProductList, allProductList;
 
     private FirebaseFirestore db;
     private FirebaseAuth fAuth;
-    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +39,13 @@ public class ListOfProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_of_product);
 
         // init
-        ivBack = findViewById(R.id.ivBackListOfProduct);
+        ImageView ivBack = findViewById(R.id.ivBackListOfProduct);
 
         fAuth = FirebaseAuth.getInstance();
-        user = fAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
         // click on back
-        ivBack.setOnClickListener(view -> {
-            onBackPressed();
-        });
+        ivBack.setOnClickListener(view -> onBackPressed());
 
         String seeMoreStatus = getIntent().getStringExtra("see_more_product");
         String seller = getIntent().getStringExtra("sellerDetail");
@@ -79,29 +69,31 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void showFavoriteProduct() {
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
         db.collection("Users")
-                .document(fAuth.getCurrentUser().getUid())
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
                 .collection("Wishlists")
                 .addSnapshotListener((value, error) -> {
                     List<Product> productList = new ArrayList<>();
-                    productList.clear();
-                    for (DocumentSnapshot documentSnapshot : value) {
-                        db.collection("Products")
-                                .document(documentSnapshot.getId())
-                                .addSnapshotListener((value1, error1) -> {
-                                    if (error1 != null)
-                                        Log.e("showFavoriteProduct", error1.getMessage());
+                    if (value != null) {
+                        for (DocumentSnapshot documentSnapshot : value) {
+                            db.collection("Products")
+                                    .document(documentSnapshot.getId())
+                                    .addSnapshotListener((value1, error1) -> {
+                                        if (error1 != null)
+                                            Log.e("showFavoriteProduct", error1.getMessage());
 
-                                    if (value1!=null) {
-                                        Product product = value1.toObject(Product.class);
-                                        assert product != null;
-                                        product.setProductId(value1.getId());
-                                        productList.add(product);
-                                        recyclerViewAdapterProduct.notifyDataSetChanged();
-                                    }
-                                });
+                                        if (value1 != null) {
+                                            Product product = value1.toObject(Product.class);
+                                            assert product != null;
+                                            product.setProductId(value1.getId());
+                                            productList.add(product);
+                                            recyclerViewAdapterProduct.notifyDataSetChanged();
+                                        }
+                                    });
+                        }
                     }
                     // setup recyclerview: recently products
                     recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(productList, ListOfProductActivity.this);
@@ -123,9 +115,7 @@ public class ListOfProductActivity extends AppCompatActivity {
                         productList.add(product);
                     }
                     productList = productList.stream()
-                            .filter(str -> str.getProductName().trim().contains(searchString.trim()) ||
-                                    str.getProductName().trim().contains(searchString.toLowerCase().trim()) ||
-                                    str.getProductName().trim().contains(searchString.toUpperCase().trim()))
+                            .filter(str -> str.getProductName().toLowerCase().trim().contains(searchString.toLowerCase().trim()))
                             .collect(Collectors.toList());
 
                     // setup recyclerview: recently products
@@ -141,27 +131,24 @@ public class ListOfProductActivity extends AppCompatActivity {
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .whereEqualTo("seller", (seller.equals("own")) ? Objects.requireNonNull(fAuth.getCurrentUser()).getUid() : seller)
                 .orderBy("quantitySold", Query.Direction.DESCENDING)
                 .orderBy("productPrice", Query.Direction.ASCENDING)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                popularProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, ListOfProductActivity.this);
-                            rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
-                            rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            popularProductList.add(product);
                         }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(popularProductList, ListOfProductActivity.this);
+                        rvPopularProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvPopularProducts.setAdapter(recyclerViewAdapterProduct);
+                    } else {
+                        Log.e(TAG, "Error getting documents: ", task.getException());
                     }
                 });
     }
@@ -172,26 +159,23 @@ public class ListOfProductActivity extends AppCompatActivity {
         rvRecentlyProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .whereEqualTo("seller", (seller.equals("own")) ? Objects.requireNonNull(fAuth.getCurrentUser()).getUid() : seller)
                 .orderBy("quantitySold", Query.Direction.ASCENDING)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                recentlyProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, ListOfProductActivity.this);
-                            rvRecentlyProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
-                            rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            recentlyProductList.add(product);
                         }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(recentlyProductList, ListOfProductActivity.this);
+                        rvRecentlyProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvRecentlyProducts.setAdapter(recyclerViewAdapterProduct);
+                    } else {
+                        Log.e(TAG, "Error getting documents: ", task.getException());
                     }
                 });
     }
@@ -202,25 +186,22 @@ public class ListOfProductActivity extends AppCompatActivity {
         rvAllProducts = findViewById(R.id.rvListOfProduct);
 
         db.collection("Products")
-                .whereEqualTo("seller", (seller.equals("own")) ? fAuth.getCurrentUser().getUid() : seller)
+                .whereEqualTo("seller", (seller.equals("own")) ? Objects.requireNonNull(fAuth.getCurrentUser()).getUid() : seller)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Product product = document.toObject(Product.class);
-                                product.setProductId(document.getId());
-                                allProductList.add(product);
-                            }
-
-                            // setup recyclerview: recently products
-                            recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, ListOfProductActivity.this);
-                            rvAllProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
-                            rvAllProducts.setAdapter(recyclerViewAdapterProduct);
-                        } else {
-                            Log.e(TAG, "Error getting documents: ", task.getException());
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Product product = document.toObject(Product.class);
+                            product.setProductId(document.getId());
+                            allProductList.add(product);
                         }
+
+                        // setup recyclerview: recently products
+                        recyclerViewAdapterProduct = new RecyclerViewAdapterProduct(allProductList, ListOfProductActivity.this);
+                        rvAllProducts.setLayoutManager(new GridLayoutManager(ListOfProductActivity.this, 2));
+                        rvAllProducts.setAdapter(recyclerViewAdapterProduct);
+                    } else {
+                        Log.e(TAG, "Error getting documents: ", task.getException());
                     }
                 });
     }

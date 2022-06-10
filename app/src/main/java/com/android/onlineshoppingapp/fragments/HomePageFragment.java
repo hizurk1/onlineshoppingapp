@@ -5,8 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ViewFlipper;
 
 import com.android.onlineshoppingapp.ListOfProductActivity;
 import com.android.onlineshoppingapp.R;
@@ -31,32 +29,21 @@ import com.android.onlineshoppingapp.adapters.BannerImageAdapter;
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.BannerImage;
 import com.android.onlineshoppingapp.models.Product;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class HomePageFragment extends Fragment {
 
     private RecyclerView recyclerTopSaleItem, recyclerForYouItem;
-    private ImageView ivShoppingCart, ivSearchBtn;
     private EditText etSearch;
     private ViewPager2 viewPager2;
-    private BannerImageAdapter bannerImageAdapter;
     private final Handler sliderHandler = new Handler();
-    private List<BannerImage> imageList;
     public List<Product> listTopSale, listForYou;
 
-    private FirebaseAuth fAuth;
-    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,20 +51,15 @@ public class HomePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
         // init
-        ivShoppingCart = view.findViewById(R.id.ivShopCartHome);
-        ivSearchBtn = view.findViewById(R.id.ivSearchBtn);
+        ImageView ivShoppingCart = view.findViewById(R.id.ivShopCartHome);
+        ImageView ivSearchBtn = view.findViewById(R.id.ivSearchBtn);
         etSearch = view.findViewById(R.id.etSearch);
 
-        fAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // click on shopping cart
-        ivShoppingCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ShoppingCartActivity.class));
-            }
-        });
+        ivShoppingCart.setOnClickListener(view12 -> startActivity(new Intent(getActivity(), ShoppingCartActivity.class)));
 
         //set event for search function
         ivSearchBtn.setOnClickListener(view1 -> {
@@ -90,8 +72,8 @@ public class HomePageFragment extends Fragment {
 
         // banner image
         viewPager2 = view.findViewById(R.id.viewPagerBannerHome);
-        imageList = getBannerImage();
-        bannerImageAdapter = new BannerImageAdapter(imageList, viewPager2);
+        List<BannerImage> imageList = getBannerImage();
+        BannerImageAdapter bannerImageAdapter = new BannerImageAdapter(imageList, viewPager2);
         viewPager2.setAdapter(bannerImageAdapter);
 
         viewPager2.setOffscreenPageLimit(3);
@@ -101,12 +83,9 @@ public class HomePageFragment extends Fragment {
 
         CompositePageTransformer transformer = new CompositePageTransformer();
         transformer.addTransformer(new MarginPageTransformer(20));
-        transformer.addTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                float r = 1 - Math.abs(position);
-                page.setScaleY(0.85f + r * 0.15f);
-            }
+        transformer.addTransformer((page, position) -> {
+            float r = 1 - Math.abs(position);
+            page.setScaleY(0.85f + r * 0.15f);
         });
         viewPager2.setPageTransformer(transformer);
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -122,21 +101,20 @@ public class HomePageFragment extends Fragment {
         db.collection("Products")
                 .orderBy("quantitySold", Query.Direction.DESCENDING)
                 .limit(10)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w(TAG, "Listen failed.", error);
-                            return;
-                        }
-                        listTopSale.clear();
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.w(TAG, "Listen failed.", error);
+                        return;
+                    }
+                    listTopSale.clear();
+                    if (value != null) {
                         for (QueryDocumentSnapshot document : value) {
                             Product product = document.toObject(Product.class);
                             product.setProductId(document.getId());
                             listTopSale.add(product);
                         }
                         //Top sell item
-                        recyclerTopSaleItem = (RecyclerView) view.findViewById(R.id.hgTopitem);
+                        recyclerTopSaleItem = view.findViewById(R.id.hgTopitem);
                         recyclerTopSaleItem.setAdapter(new RecyclerViewAdapterProduct(listTopSale));
                         LinearLayoutManager layoutmangerTopitem = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
                         recyclerTopSaleItem.setLayoutManager(layoutmangerTopitem);
@@ -147,31 +125,30 @@ public class HomePageFragment extends Fragment {
         db.collection("Products")
                 .orderBy("likeNumber", Query.Direction.DESCENDING)
                 .limit(20)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if (error != null) {
-                            Log.w(TAG, "Listen failed.", error);
-                            return;
-                        }
-                        listForYou.clear();
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Log.w(TAG, "Listen failed.", error);
+                        return;
+                    }
+                    listForYou.clear();
+                    if (value != null) {
                         for (QueryDocumentSnapshot document : value) {
                             Product product = document.toObject(Product.class);
                             product.setProductId(document.getId());
                             listForYou.add(product);
                         }
-
-                        //For you
-                        recyclerForYouItem = (RecyclerView) view.findViewById(R.id.hgRighPrForYou);
-                        RecyclerViewAdapterProduct adapterProduct = new RecyclerViewAdapterProduct(listForYou);
-                        recyclerForYouItem.setAdapter(adapterProduct);
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-                        recyclerForYouItem.setLayoutManager(gridLayoutManager);
-
-                        int heightOfForYou = (adapterProduct.getItemCount() % 2 == 0) ?
-                                (adapterProduct.getItemCount() * 350) : (adapterProduct.getItemCount() * 460);
-                        recyclerForYouItem.setMinimumHeight(heightOfForYou);
                     }
+
+                    //For you
+                    recyclerForYouItem = view.findViewById(R.id.hgRighPrForYou);
+                    RecyclerViewAdapterProduct adapterProduct = new RecyclerViewAdapterProduct(listForYou);
+                    recyclerForYouItem.setAdapter(adapterProduct);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+                    recyclerForYouItem.setLayoutManager(gridLayoutManager);
+
+                    int heightOfForYou = (adapterProduct.getItemCount() % 2 == 0) ?
+                            (adapterProduct.getItemCount() * 350) : (adapterProduct.getItemCount() * 460);
+                    recyclerForYouItem.setMinimumHeight(heightOfForYou);
                 });
 
 
@@ -190,7 +167,7 @@ public class HomePageFragment extends Fragment {
         sliderHandler.postDelayed(sliderRunnable, 5000);
     }
 
-    private Runnable sliderRunnable = new Runnable() {
+    private final Runnable sliderRunnable = new Runnable() {
         @Override
         public void run() {
             viewPager2.setCurrentItem(viewPager2.getCurrentItem() + 1);
