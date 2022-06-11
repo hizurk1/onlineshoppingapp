@@ -55,12 +55,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.OnProgressListener;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ProfilePageFragment extends Fragment {
@@ -317,6 +320,12 @@ public class ProfilePageFragment extends Fragment {
         user.updateProfile(userProfileChangeRequest)
                 .addOnSuccessListener(unused -> Toast.makeText(getActivity(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getActivity(), "Có lỗi xảy ra " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        Map<String, Object> map = new HashMap<>();
+        map.put("avatarUrl", String.valueOf(uri));
+        db.collection("Users")
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                .set(map, SetOptions.merge())
+                .addOnFailureListener(e -> Log.e("setPhotoUri", e.getMessage()));
     }
 
 }
