@@ -69,7 +69,7 @@ public class MyStoreActivity extends AppCompatActivity {
     private SimpleGalleryRecyclerAdapter simpleGalleryRecyclerAdapter;
 
     private TextView tvShopName, tvSeemorePopular, tvSeemoreRecently, tvSeemoreAll;
-    private CardView cardAddProduct, cardManageProduct;
+    private CardView cardAddProduct, cardManageProduct, cardViewSaleStatistic;
     private ImageView ivVerifyBtnStore, ivBackToProfile, ivAvatarStore;
 
     private Button btnAddImage, btnAddProduct, btnFollowMyStore;
@@ -95,6 +95,7 @@ public class MyStoreActivity extends AppCompatActivity {
         tvShopName = findViewById(R.id.tvShopName);
         cardAddProduct = findViewById(R.id.cardAddProduct);
         cardManageProduct = findViewById(R.id.cardManageProduct);
+        cardViewSaleStatistic = findViewById(R.id.cardViewSaleStatistic);
         ivVerifyBtnStore = findViewById(R.id.ivVerifyBtnStore);
         ivBackToProfile = findViewById(R.id.ivBackToProfile);
         ivAvatarStore = findViewById(R.id.ivAvatarStore);
@@ -256,6 +257,7 @@ public class MyStoreActivity extends AppCompatActivity {
 
         cardAddProduct.setVisibility(View.GONE);
         cardManageProduct.setVisibility(View.GONE);
+        cardViewSaleStatistic.setVisibility(View.GONE);
 
         // customer view part
 
@@ -312,19 +314,13 @@ public class MyStoreActivity extends AppCompatActivity {
         showAllProduct("own");
 
         // click on card add product
-        cardAddProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addProductBottomSheetView();
-            }
-        });
+        cardAddProduct.setOnClickListener(view -> addProductBottomSheetView());
 
         // test
-        cardManageProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MyStoreActivity.this, ManageProductActivity.class));
-            }
+        cardManageProduct.setOnClickListener(view -> startActivity(new Intent(MyStoreActivity.this, ManageProductActivity.class)));
+
+        cardViewSaleStatistic.setOnClickListener(view -> {
+            startActivity(new Intent(MyStoreActivity.this, SaleStatisticActivity.class));
         });
 
         // click on see more

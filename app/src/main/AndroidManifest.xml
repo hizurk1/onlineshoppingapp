@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineShoppingApp.NoActionBar">
         <activity
+            android:name=".SaleStatisticActivity"
+            android:exported="false" />
+        <activity
             android:name=".ListOfFollowActivity"
             android:exported="false" />
         <activity
