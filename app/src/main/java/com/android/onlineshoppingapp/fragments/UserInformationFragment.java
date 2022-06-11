@@ -80,7 +80,6 @@ public class UserInformationFragment extends Fragment {
                                 } else {
                                     tvFullNameInfo.setText(userInformation.getFirstName());
                                 }
-                                tvFullNameInfo.setText(userInformation.getLastName() + " " + userInformation.getFirstName());
                                 tvEmailInfo.setText(userInformation.getEmail());
                                 tvSexInfo.setText(userInformation.getSex());
                                 tvDateOfBirthInfo.setText(new SimpleDateFormat("dd/MM/yyyy").format(userInformation.getDateOfBirth()));

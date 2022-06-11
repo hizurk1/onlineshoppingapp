@@ -199,8 +199,24 @@ public class MyStoreActivity extends AppCompatActivity {
         }
 
         // change shop name
-        String fullname = user.getDisplayName();
-        tvShopName.setText(fullname);
+        db.collection("Users")
+                .document(fAuth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String lastName = documentSnapshot.getString("lastName");
+                        String firstName = documentSnapshot.getString("firstName");
+                        if (lastName.equals("")) {
+                            tvShopName.setText(firstName);
+                        } else {
+                            tvShopName.setText(String.format("%s %s", lastName, firstName));
+                        }
+                        if (documentSnapshot.getString("avatarUrl") != null)
+                            Glide.with(this)
+                                    .load(documentSnapshot.getString("avatarUrl"))
+                                    .into(ivAvatarStore);
+                    }
+                });
 
         // click on verify button store
         verifyStoreBtn();
