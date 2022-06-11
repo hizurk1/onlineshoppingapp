@@ -45,7 +45,7 @@ public class PurchaseOrderActivity extends AppCompatActivity {
                     tab.setText("Đang giao hàng");
                     break;
                 case 3:
-                    tab.setText("Chờ đánh giá");
+                    tab.setText("Đã giao hàng");
                     break;
                 case 4:
                     tab.setText("Đã huỷ");

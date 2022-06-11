@@ -231,13 +231,13 @@
                                         android:layout_marginLeft="15dp"
                                         android:clickable="true"
                                         android:foreground="?android:attr/selectableItemBackground"
-                                        android:src="@drawable/ic_feedback" />
+                                        android:src="@drawable/received_order" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
-                                        android:text="Chờ đánh giá"
+                                        android:text="Đã giao hàng"
                                         android:textAlignment="center" />
 
                                 </LinearLayout>
