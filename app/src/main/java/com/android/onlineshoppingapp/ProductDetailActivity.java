@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -233,7 +234,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     private void removeFromWishlist() {
         db.collection("Users")
-                .document(fAuth.getCurrentUser().getUid())
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
                 .collection("Wishlists")
                 .document(product.getProductId())
                 .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -265,12 +266,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                         ivHeartPD.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.red_error)));
                         Toast.makeText(ProductDetailActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.e("wishList", task.getException().getMessage());
+                        Log.e("wishList", Objects.requireNonNull(task.getException()).getMessage());
                     }
                 });
 
     }
 
+    @SuppressLint({"SetTextI18n", "DefaultLocale"})
     private void setData(Product product) {
 
         tvProductName = findViewById(R.id.tvProductNamePD);
@@ -281,7 +283,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         tvProductName.setText(product.getProductName());
         tvProductDescription.setText(product.getDescription());
-        tvProductSold.setText("Đã bán " + String.valueOf(product.getQuantitySold()));
+        tvProductSold.setText("Đã bán " + product.getQuantitySold());
         tvProductPrice.setText(String.format("%,d", product.getProductPrice()) + "đ");
         productRate.setRating(product.getRate());
     }

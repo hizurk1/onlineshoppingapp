@@ -9,13 +9,11 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,9 +24,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,19 +32,13 @@ import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.adapters.SimpleGalleryRecyclerAdapter;
 import com.android.onlineshoppingapp.models.Product;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,24 +46,20 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class MyStoreActivity extends AppCompatActivity {
 
@@ -86,7 +72,7 @@ public class MyStoreActivity extends AppCompatActivity {
     private CardView cardAddProduct, cardManageProduct;
     private ImageView ivVerifyBtnStore, ivBackToProfile, ivAvatarStore;
 
-    private Button btnAddImage, btnAddProduct;
+    private Button btnAddImage, btnAddProduct, btnFollowMyStore;
 
     private FirebaseAuth fAuth;
     private FirebaseUser user;
@@ -115,6 +101,8 @@ public class MyStoreActivity extends AppCompatActivity {
         tvSeemorePopular = findViewById(R.id.tvSeeMorePopularStore);
         tvSeemoreRecently = findViewById(R.id.tvSeeMoreRecentlyStore);
         tvSeemoreAll = findViewById(R.id.tvSeeMoreAllStore);
+        btnFollowMyStore = findViewById(R.id.btnFollowMyStore);
+
 
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
@@ -135,13 +123,15 @@ public class MyStoreActivity extends AppCompatActivity {
                         if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Bán hàng")) {
                             showForSaleAccount();
                         } else {
-                            showForPurchaseAccount(getIntent().getStringExtra("sellerOfProduct"));
+                            String seller = getIntent().getStringExtra("sellerOfProduct");
+                            showForPurchaseAccount(seller);
                         }
                     }
                 });
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void showForPurchaseAccount(String seller) {
 
 //        if (user.getPhotoUrl() != null) {
@@ -158,10 +148,12 @@ public class MyStoreActivity extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         String lastName = documentSnapshot.getString("lastName");
                         String firstName = documentSnapshot.getString("firstName");
-                        if (lastName.equals("")) {
-                            tvShopName.setText(firstName);
-                        } else {
-                            tvShopName.setText(String.format("%s %s", lastName, firstName));
+                        if (lastName != null) {
+                            if (lastName.equals("")) {
+                                tvShopName.setText(firstName);
+                            } else {
+                                tvShopName.setText(String.format("%s %s", lastName, firstName));
+                            }
                         }
                         if (documentSnapshot.getString("avatarUrl") != null)
                             Glide.with(this)
@@ -169,6 +161,97 @@ public class MyStoreActivity extends AppCompatActivity {
                                     .into(ivAvatarStore);
                     }
                 });
+
+        //set text follow btn
+        AsyncTask.execute(() -> {
+            db.collection("Users")
+                    .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                    .collection("Following")
+                    .addSnapshotListener((value, error) -> {
+                        if (error != null)
+                            Log.e("set text", error.getMessage());
+
+                        if (value != null) {
+                            Boolean aBoolean = true;
+                            btnFollowMyStore.setText("Theo dõi cừa hàng");
+                            for (DocumentSnapshot documentSnapshot1 : value) {
+                                if (seller.equals(documentSnapshot1.getId())) {
+                                    btnFollowMyStore.setText("Đã theo dõi");
+                                    aBoolean = false;
+                                }
+                            }
+                            //set event follow btn
+                            if (aBoolean) {
+                                btnFollowMyStore.setOnClickListener(view -> {
+                                    Map<String, Object> map = new HashMap<>();
+                                    map.put("sellerRef", db.collection("Users").document(seller));
+                                    db.collection("Users")
+                                            .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                                            .collection("Following")
+                                            .document(seller)
+                                            .set(map)
+                                            .addOnSuccessListener(unused -> {
+//                        Toast.makeText(this, "Đã theo dõi", Toast.LENGTH_SHORT).show();
+                                                btnFollowMyStore.setText("Đã theo dõi");
+                                                //increase follower of seller
+                                                //get follower
+                                                db.collection("Users")
+                                                        .document(seller)
+                                                        .get()
+                                                        .addOnSuccessListener(documentSnapshot -> {
+                                                            if (documentSnapshot.exists()) {
+                                                                Map<String, Object> map1 = new HashMap<>();
+                                                                if (documentSnapshot.getLong("followers") != null)
+                                                                    map1.put("followers", documentSnapshot.getLong("followers") + 1);
+                                                                else
+                                                                    map1.put("followers", 1);
+                                                                db.collection("Users")
+                                                                        .document(seller)
+                                                                        .set(map1, SetOptions.merge())
+                                                                        .addOnFailureListener(e -> Log.e("increase follower", e.getMessage()));
+                                                            }
+                                                        });
+
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                                Log.e("follow store", e.getMessage());
+                                            });
+                                });
+                            } else {
+                                btnFollowMyStore.setOnClickListener(view -> {
+                                    db.collection("Users")
+                                            .document(fAuth.getCurrentUser().getUid())
+                                            .collection("Following")
+                                            .document(seller)
+                                            .delete()
+                                            .addOnSuccessListener(unused -> {
+                                                btnFollowMyStore.setText("Theo dõi cửa hàng");
+                                                //decrease follower of seller
+                                                //get follower
+                                                db.collection("Users")
+                                                        .document(seller)
+                                                        .get()
+                                                        .addOnSuccessListener(documentSnapshot -> {
+                                                            if (documentSnapshot.exists()) {
+                                                                Map<String, Object> map1 = new HashMap<>();
+                                                                if (documentSnapshot.getLong("followers") != null)
+                                                                    map1.put("followers", documentSnapshot.getLong("followers") - 1);
+                                                                else
+                                                                    map1.put("followers", 0);
+                                                                db.collection("Users")
+                                                                        .document(seller)
+                                                                        .set(map1, SetOptions.merge())
+                                                                        .addOnFailureListener(e -> Log.e("decrease follower", e.getMessage()));
+                                                            }
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> Log.e("delete seller", e.getMessage()));
+                                });
+                            }
+                        }
+                    });
+        });
 
 
         cardAddProduct.setVisibility(View.GONE);
@@ -200,16 +283,18 @@ public class MyStoreActivity extends AppCompatActivity {
 
         // change shop name
         db.collection("Users")
-                .document(fAuth.getCurrentUser().getUid())
+                .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         String lastName = documentSnapshot.getString("lastName");
                         String firstName = documentSnapshot.getString("firstName");
-                        if (lastName.equals("")) {
-                            tvShopName.setText(firstName);
-                        } else {
-                            tvShopName.setText(String.format("%s %s", lastName, firstName));
+                        if (lastName != null) {
+                            if (lastName.equals("")) {
+                                tvShopName.setText(firstName);
+                            } else {
+                                tvShopName.setText(String.format("%s %s", lastName, firstName));
+                            }
                         }
                         if (documentSnapshot.getString("avatarUrl") != null)
                             Glide.with(this)
