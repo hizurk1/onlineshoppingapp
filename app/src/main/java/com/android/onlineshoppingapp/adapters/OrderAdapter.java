@@ -1,6 +1,7 @@
 package com.android.onlineshoppingapp.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +42,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<Order> orderList;
     private Context context;
     public boolean isShipper = false;
+    public boolean isAdmin = false;
 
     public OrderAdapter(List<Order> orderList, Context context) {
         this.orderList = orderList;
@@ -60,19 +63,76 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         if (order == null) return;
 
         if (order.getOrderStatus() == 0 || order.getOrderStatus() == 1) {
-            holder.btnCancel.setOnClickListener(view -> {
-                Toast.makeText(view.getContext(), "Huỷ", Toast.LENGTH_SHORT).show();
-                Map<String, Object> update = new HashMap<>();
-                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                update.put("address", order.getAddress());
-                update.put("totalPrice", order.getTotalPrice());
-                update.put("orderStatus", 4);
-                FirebaseFirestore.getInstance()
-                        .collection("Orders")
-                        .document(order.getOrderId())
-                        .set(update)
-                        .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
-            });
+
+            if (!isAdmin) {
+                holder.btnCancel.setOnClickListener(view -> {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setCancelable(false).setTitle("Huỷ đơn hàng")
+                            .setMessage("Xác nhận huỷ đơn hàng?")
+                            .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
+                                Toast.makeText(view.getContext(), "Đã huỷ đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                Map<String, Object> update = new HashMap<>();
+                                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                                update.put("address", order.getAddress());
+                                update.put("totalPrice", order.getTotalPrice());
+                                update.put("orderStatus", 4);
+                                FirebaseFirestore.getInstance()
+                                        .collection("Orders")
+                                        .document(order.getOrderId())
+                                        .set(update)
+                                        .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
+                            }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
+                                dialogInterface.dismiss();
+                            }).show();
+
+                });
+            } else {
+                holder.btnCancel.setText("Xác nhận");
+                if (order.getOrderStatus() == 0) {
+                    holder.btnCancel.setOnClickListener(view -> {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setCancelable(false).setTitle("Xác nhận đơn hàng")
+                                .setMessage("Bạn muốn xác nhận đơn hàng này và chuyển sang trạng thái Đang lấy hàng?")
+                                .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
+                                    Toast.makeText(context, "Chuyển trạng thái đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                    Map<String, Object> update = new HashMap<>();
+                                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                                    update.put("address", order.getAddress());
+                                    update.put("totalPrice", order.getTotalPrice());
+                                    update.put("orderStatus", 1);
+                                    FirebaseFirestore.getInstance()
+                                            .collection("Orders")
+                                            .document(order.getOrderId())
+                                            .set(update)
+                                            .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
+                                }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
+                                    dialogInterface.dismiss();
+                                }).show();
+                    });
+                } else {
+                    holder.btnCancel.setOnClickListener(view -> {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setCancelable(false).setTitle("Xác nhận đơn hàng")
+                                .setMessage("Bạn muốn xác nhận đơn hàng này và chuyển sang trạng thái Đang giao hàng?")
+                                .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
+                                    Toast.makeText(context, "Chuyển trạng thái đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                    Map<String, Object> update = new HashMap<>();
+                                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                                    update.put("address", order.getAddress());
+                                    update.put("totalPrice", order.getTotalPrice());
+                                    update.put("orderStatus", 2);
+                                    FirebaseFirestore.getInstance()
+                                            .collection("Orders")
+                                            .document(order.getOrderId())
+                                            .set(update)
+                                            .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
+                                }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
+                                    dialogInterface.dismiss();
+                                }).show();
+                    });
+                }
+            }
+
         }
 
         if (order.getOrderStatus() == 2 || order.getOrderStatus() == 4) {
@@ -81,7 +141,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.btnCancel.setVisibility(View.VISIBLE);
                 holder.btnCancel.setText("Đã giao");
                 holder.btnCancel.setOnClickListener(view -> {
-                    Toast.makeText(view.getContext(), "Đã giao", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "Đã giao hàng thành công", Toast.LENGTH_SHORT).show();
                     Map<String, Object> update = new HashMap<>();
                     update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
                     update.put("address", order.getAddress());
@@ -178,8 +238,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             intent.putExtra("orderId", orderId);
                             context.startActivity(intent);
                         });
-                    }
-                    else {
+                    } else {
                         holder.btnCancel.setVisibility(View.GONE);
                     }
                 });

@@ -7,6 +7,7 @@ public class Order {
     private String orderer;
     private int orderStatus;
     private int totalPrice;
+    private int confirm;
     private List<OrderProduct> listOrderProduct;
     private UserAddress address;
 
@@ -53,7 +54,13 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public int getConfirm() {
+        return confirm;
+    }
 
+    public void setConfirm(int confirm) {
+        this.confirm = confirm;
+    }
 
     public List<OrderProduct> getListOrderProduct() {
         return listOrderProduct;
