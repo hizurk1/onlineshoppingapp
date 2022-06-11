@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.onlineshoppingapp.ListOfFollowActivity;
 import com.android.onlineshoppingapp.ListOfProductActivity;
 import com.android.onlineshoppingapp.LoginActivity;
 import com.android.onlineshoppingapp.MainActivity;
@@ -213,7 +214,7 @@ public class ProfilePageFragment extends Fragment {
 
         // click on card follow
         cardFollow.setOnClickListener(view14 -> {
-
+            startActivity(new Intent(getActivity(), ListOfFollowActivity.class));
         });
 
         // click on card purchased product
