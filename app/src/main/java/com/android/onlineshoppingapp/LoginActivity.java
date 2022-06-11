@@ -47,11 +47,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
@@ -244,66 +247,67 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                     Log.d("GoogleSignIn", "firebaseAuthWithGoogle: success");
 
-                    DocumentReference userRef = FirebaseFirestore.getInstance().collection("Users").document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid());
-                    userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.getResult().exists()) {
+                    DocumentReference userRef = FirebaseFirestore.getInstance()
+                            .collection("Users")
+                            .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid());
+                    userRef.get().addOnCompleteListener(task1 -> {
+                        if (task1.getResult().exists()) {
 //                                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
 //                                        .setDisplayName(task.getResult().getString("lastName") + " " + task.getResult().getString("firstName"))
 //                                        .setPhotoUri(uri)
 //                                        .build();
 //                                fAuth.getCurrentUser().updateProfile(userProfileChangeRequest);
-                                StorageReference ref = FirebaseStorage.getInstance().getReference().child("profileImages").child(fAuth.getCurrentUser().getUid().toString());
-                                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                                                .setDisplayName(task.getResult().getString("lastName") + " " + task.getResult().getString("firstName"))
-                                                .setPhotoUri(uri)
-                                                .build();
-                                        fAuth.getCurrentUser().updateProfile(userProfileChangeRequest);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                                                .setDisplayName(task.getResult().getString("lastName") + " " + task.getResult().getString("firstName"))
-                                                .build();
-                                        fAuth.getCurrentUser().updateProfile(userProfileChangeRequest);
-                                    }
-                                });
+                            StorageReference ref = FirebaseStorage.getInstance().getReference().child("profileImages").child(fAuth.getCurrentUser().getUid());
+                            ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                                //set avatar url to firebase Auth
+                                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(task1.getResult().getString("lastName") + " " + task1.getResult().getString("firstName"))
+                                        .setPhotoUri(uri)
+                                        .build();
+                                fAuth.getCurrentUser().updateProfile(userProfileChangeRequest);
+                                //set avatar url to db
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("avatarUrl", String.valueOf(uri));
+                                db.collection("Users")
+                                        .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                                        .set(map, SetOptions.merge())
+                                        .addOnFailureListener(e -> Log.e("setPhotoUri", e.getMessage()));
+                            }).addOnFailureListener(e -> {
+                                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(task1.getResult().getString("lastName") + " " + task1.getResult().getString("firstName"))
+                                        .build();
+                                fAuth.getCurrentUser().updateProfile(userProfileChangeRequest);
+                            });
 
+                        } else {
+                            // create a user profile on database
+                            SharedPreferences preferences = getSharedPreferences("google_sign_in_info", MODE_PRIVATE);
+                            String displayName = preferences.getString("google_name", "");
+                            String googleEmail = preferences.getString("google_email", "");
+
+                            String lastName = "";
+                            String firstName = "";
+                            if (displayName.split("\\w+").length > 1) {
+
+                                lastName = displayName.substring(displayName.lastIndexOf(" ") + 1);
+                                firstName = displayName.substring(0, displayName.lastIndexOf(" "));
                             } else {
-                                // create a user profile on database
-                                SharedPreferences preferences = getSharedPreferences("google_sign_in_info", MODE_PRIVATE);
-                                String displayName = preferences.getString("google_name", "");
-                                String googleEmail = preferences.getString("google_email", "");
+                                firstName = displayName;
+                            }
 
-                                String lastName = "";
-                                String firstName = "";
-                                if (displayName.split("\\w+").length > 1) {
+                            // create user profile on fire store
+                            Log.d("google_info", displayName + " | " + firstName + " | " + lastName + " | " + googleEmail);
+                            try {
+                                UserInformation userInformation = new UserInformation(firstName,
+                                        lastName, googleEmail,
+                                        "0", "Nam",
+                                        new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000"),
+                                        "Mua hàng");
 
-                                    lastName = displayName.substring(displayName.lastIndexOf(" ") + 1);
-                                    firstName = displayName.substring(0, displayName.lastIndexOf(" "));
-                                } else {
-                                    firstName = displayName;
-                                }
-
-                                // create user profile on fire store
-                                Log.d("google_info", displayName + " | " + firstName + " | " + lastName + " | " + googleEmail);
-                                try {
-                                    UserInformation userInformation = new UserInformation(firstName,
-                                            lastName, googleEmail,
-                                            "0", "Nam",
-                                            new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2000"),
-                                            "Mua hàng");
-
-                                    db.collection("Users").document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
-                                            .set(userInformation).addOnSuccessListener((OnSuccessListener<Void>) unused -> Log.d(TAG, "DocumentSnapshot successfully written!")).addOnFailureListener((OnFailureListener) er -> Log.w(TAG, "Error writing document", er));
-                                } catch (Exception ex) {
-                                    Log.e("Error: ", ex.getMessage());
-                                }
+                                db.collection("Users").document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                                        .set(userInformation).addOnSuccessListener((OnSuccessListener<Void>) unused -> Log.d(TAG, "DocumentSnapshot successfully written!")).addOnFailureListener((OnFailureListener) er -> Log.w(TAG, "Error writing document", er));
+                            } catch (Exception ex) {
+                                Log.e("Error: ", ex.getMessage());
                             }
                         }
                     });

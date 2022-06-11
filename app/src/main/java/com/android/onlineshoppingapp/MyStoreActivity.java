@@ -71,6 +71,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -127,11 +128,11 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         });
 
-        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+        db.collection("Users").document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid()).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                        if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Bán hàng")) {
                             showForSaleAccount();
                         } else {
                             showForPurchaseAccount(getIntent().getStringExtra("sellerOfProduct"));
@@ -143,17 +144,18 @@ public class MyStoreActivity extends AppCompatActivity {
 
     private void showForPurchaseAccount(String seller) {
 
-        if (user.getPhotoUrl() != null) {
-            Glide.with(this)
-                    .load(user.getPhotoUrl())
-                    .into(ivAvatarStore);
-        }
+//        if (user.getPhotoUrl() != null) {
+//            Glide.with(this)
+//                    .load(user.getPhotoUrl())
+//                    .into(ivAvatarStore);
+//        }
 
         // change shop name
-        db.collection("Users").document(seller).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("Users")
+                .document(seller)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
                         String lastName = documentSnapshot.getString("lastName");
                         String firstName = documentSnapshot.getString("firstName");
                         if (lastName.equals("")) {
@@ -161,6 +163,10 @@ public class MyStoreActivity extends AppCompatActivity {
                         } else {
                             tvShopName.setText(String.format("%s %s", lastName, firstName));
                         }
+                        if (documentSnapshot.getString("avatarUrl") != null)
+                            Glide.with(this)
+                                    .load(documentSnapshot.getString("avatarUrl"))
+                                    .into(ivAvatarStore);
                     }
                 });
 
@@ -176,26 +182,11 @@ public class MyStoreActivity extends AppCompatActivity {
         showAllProduct(seller);
 
         // click on see more
-        tvSeemorePopular.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToListOfProduct("popular", seller);
-            }
-        });
+        tvSeemorePopular.setOnClickListener(view -> navigateToListOfProduct("popular", seller));
 
-        tvSeemoreRecently.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToListOfProduct("recently", seller);
-            }
-        });
+        tvSeemoreRecently.setOnClickListener(view -> navigateToListOfProduct("recently", seller));
 
-        tvSeemoreAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToListOfProduct("all", seller);
-            }
-        });
+        tvSeemoreAll.setOnClickListener(view -> navigateToListOfProduct("all", seller));
 
     }
 
