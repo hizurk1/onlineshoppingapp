@@ -104,8 +104,12 @@ public class CheckoutActivity extends AppCompatActivity {
                 tvTotal.setText(String.format("%,dđ", total));
             }
             if (i == R.id.rbFastDeliveryCheckout) {
+                List<String> sellerList = new ArrayList<>();
+                for (cartProduct item : cart.getCartProductList())
+                    if (!sellerList.contains(item.getSeller()))
+                        sellerList.add(item.getSeller());
                 tvShipping.setText(String.format("+%,dđ", fee));
-                total += fee;
+                total += fee * sellerList.size();
                 ship = true;
                 // set total
                 tvTotal.setText(String.format("%,dđ", total));
