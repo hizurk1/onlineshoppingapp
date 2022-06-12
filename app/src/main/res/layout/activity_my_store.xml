@@ -115,7 +115,7 @@
                                 android:id="@+id/tvVerifyStore"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chưa xác minh" />
+                                android:text="Đã xác minh" />
 
                             <ImageView
                                 android:id="@+id/ivVerifyBtnStore"

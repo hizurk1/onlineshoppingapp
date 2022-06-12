@@ -313,8 +313,6 @@ public class MyStoreActivity extends AppCompatActivity {
                     }
                 });
 
-        // click on verify button store
-        verifyStoreBtn();
 
         // show product
         showPopularProduct("own");
@@ -631,24 +629,6 @@ public class MyStoreActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void verifyStoreBtn() {
-        ivVerifyBtnStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MyStoreActivity.this);
-                alertDialog.setTitle("Xác minh cửa hàng")
-                        .setMessage("Bạn cần tối thiểu 100.000 người theo dõi để được chuyển đổi sang trạng thái \nĐÃ XÁC MINH")
-                        .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .show();
-            }
-        });
     }
 
     @Override

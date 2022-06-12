@@ -28,6 +28,7 @@ public class ReviewListActivity extends AppCompatActivity {
 
     private List<Review> reviewList;
     private ReviewListAdapter reviewAdapter;
+    private TextView tvNumberOfReview;
 
     private FirebaseFirestore db;
     private Product product;
@@ -44,7 +45,7 @@ public class ReviewListActivity extends AppCompatActivity {
         ImageView ivBack = findViewById(R.id.ivBackReviewList);
         TextView tvRate = findViewById(R.id.tvRateReviewList);
         RatingBar ratingbarMain = findViewById(R.id.ratingbarReviewList);
-        TextView tvNumberOfReview = findViewById(R.id.tvNumberOfReview);
+        tvNumberOfReview = findViewById(R.id.tvNumberOfReview);
         ChipGroup chipGroup = findViewById(R.id.chipGroupReviewList);
         RecyclerView recyclerView = findViewById(R.id.rvReviewList);
         product = (Product) getIntent().getSerializableExtra("product");
@@ -61,9 +62,8 @@ public class ReviewListActivity extends AppCompatActivity {
         recyclerView.setAdapter(reviewAdapter);
 
         // set values
-        float rateAvg = product.getRate();
+        float rateAvg = Math.round(product.getRate() * 10) / (float) 10;
         tvRate.setText(String.valueOf(rateAvg));
-        tvNumberOfReview.setText(String.valueOf(reviewList.size()));
         ratingbarMain.setRating(rateAvg);
 
         // chips
@@ -262,6 +262,7 @@ public class ReviewListActivity extends AppCompatActivity {
                         for (DocumentSnapshot documentSnapshot : value) {
                             reviewList.add(documentSnapshot.toObject(Review.class));
                         }
+                        tvNumberOfReview.setText(String.valueOf(reviewList.size()));
                         reviewAdapter.notifyDataSetChanged();
                     }
                 }));
