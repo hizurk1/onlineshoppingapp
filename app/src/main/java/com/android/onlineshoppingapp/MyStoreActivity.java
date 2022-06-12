@@ -103,6 +103,7 @@ public class MyStoreActivity extends AppCompatActivity {
         tvSeemoreRecently = findViewById(R.id.tvSeeMoreRecentlyStore);
         tvSeemoreAll = findViewById(R.id.tvSeeMoreAllStore);
         btnFollowMyStore = findViewById(R.id.btnFollowMyStore);
+        btnFollowMyStore.setVisibility(View.GONE);
 
 
         fAuth = FirebaseAuth.getInstance();
@@ -121,11 +122,17 @@ public class MyStoreActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Bán hàng")) {
-                            showForSaleAccount();
+                        String seller = getIntent().getStringExtra("sellerOfProduct");
+                        if (seller != null) {
+                            if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Bán hàng")) {
+                                if (seller.equals(fAuth.getCurrentUser().getUid()))
+                                    showForSaleAccount();
+                                else
+                                    showForPurchaseAccount(seller);
+                            } else
+                                showForPurchaseAccount(seller);
                         } else {
-                            String seller = getIntent().getStringExtra("sellerOfProduct");
-                            showForPurchaseAccount(seller);
+                            showForSaleAccount();
                         }
                     }
                 });
@@ -141,6 +148,7 @@ public class MyStoreActivity extends AppCompatActivity {
 //                    .into(ivAvatarStore);
 //        }
 
+        btnFollowMyStore.setVisibility(View.VISIBLE);
         // change shop name
         db.collection("Users")
                 .document(seller)
