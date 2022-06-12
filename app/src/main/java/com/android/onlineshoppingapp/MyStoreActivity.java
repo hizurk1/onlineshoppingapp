@@ -182,7 +182,7 @@ public class MyStoreActivity extends AppCompatActivity {
 
                         if (value != null) {
                             Boolean aBoolean = true;
-                            btnFollowMyStore.setText("Theo dõi cừa hàng");
+                            btnFollowMyStore.setText("Theo dõi cửa hàng");
                             for (DocumentSnapshot documentSnapshot1 : value) {
                                 if (seller.equals(documentSnapshot1.getId())) {
                                     btnFollowMyStore.setText("Đã theo dõi");
