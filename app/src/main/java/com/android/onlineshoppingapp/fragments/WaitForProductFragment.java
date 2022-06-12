@@ -102,6 +102,8 @@ public class WaitForProductFragment extends Fragment {
                     } else {
                         layoutBlank.setVisibility(View.GONE);
                         adapter = new OrderAdapter(orderList, getContext());
+                        if (seller.equals("seller"))
+                        adapter.isAdmin=true;
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(adapter);
