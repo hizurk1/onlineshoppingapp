@@ -40,6 +40,8 @@ public class WriteReviewProductActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        ivBack.setOnClickListener(view -> onBackPressed());
+
         reviewList = new ArrayList<>();
         List<String> productIdList = (List<String>) getIntent().getSerializableExtra("productList");
         String orderId = getIntent().getStringExtra("orderId");
