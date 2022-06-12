@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.Product;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 public class ListOfProductActivity extends AppCompatActivity {
 
+    private TextView tvTitle;
     private RecyclerView rvPopularProducts, rvRecentlyProducts, rvAllProducts;
     private RecyclerViewAdapterProduct recyclerViewAdapterProduct;
     private List<Product> popularProductList, recentlyProductList, allProductList;
@@ -44,6 +46,8 @@ public class ListOfProductActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        tvTitle = findViewById(R.id.tvTitleListOfProduct);
 
         // click on back
         ivBack.setOnClickListener(view -> onBackPressed());
@@ -77,6 +81,7 @@ public class ListOfProductActivity extends AppCompatActivity {
     }
 
     private void showProductCategory(String category) {
+        tvTitle.setText(category);
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvListOfProduct);
 
@@ -103,6 +108,7 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void showPurchasedProduct() {
+        tvTitle.setText("Sản phẩm đã mua");
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
         db.collection("Users")
                 .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
@@ -144,6 +150,7 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void showFavoriteProduct() {
+        tvTitle.setText("Sản phẩm yêu thích");
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
         db.collection("Users")
                 .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
@@ -208,6 +215,7 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     private void showPopularProduct(String seller) {
 
+        tvTitle.setText("Sản phẩm phổ biến");
         popularProductList = new ArrayList<>();
         rvPopularProducts = findViewById(R.id.rvListOfProduct);
 
@@ -236,6 +244,7 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     private void showRecentlyProduct(String seller) {
 
+        tvTitle.setText("Sản phẩm gần đây");
         recentlyProductList = new ArrayList<>();
         rvRecentlyProducts = findViewById(R.id.rvListOfProduct);
 
@@ -263,6 +272,7 @@ public class ListOfProductActivity extends AppCompatActivity {
 
     private void showAllProduct(String seller) {
 
+        tvTitle.setText("Tất cả sản phẩm");
         allProductList = new ArrayList<>();
         rvAllProducts = findViewById(R.id.rvListOfProduct);
 
