@@ -161,6 +161,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                                     .document("Products/" + item.getProductId() + "/"));
                                     productOrder.put("orderQuantity", item.getOrderQuantity());
                                     productOrder.put("seller", item.getSeller());
+                                    productOrder.put("productPrice", item.getProductPrice());
 
                                     //Add product to Bought Product
                                     Map<String, Object> map = new HashMap<>();
