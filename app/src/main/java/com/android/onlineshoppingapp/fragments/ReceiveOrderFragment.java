@@ -61,11 +61,10 @@ public class ReceiveOrderFragment extends Fragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.getString("accountType").equals("Admin")) {
                         showOrderForAdmin();
-                    } else if (documentSnapshot.getString("accountType").equals("Bán hàng"))
+                    } else if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
                         showOrderForCustomer("seller");
-                    else
+                    } else
                         showOrderForCustomer("orderer");
-
                 });
 
         return view;
@@ -86,23 +85,27 @@ public class ReceiveOrderFragment extends Fragment {
                         return;
                     }
 
-                    for (DocumentSnapshot documentSnapshot : value) {
-                        //get list product
-                        Order order = new Order();
-                        order.setOrderId(documentSnapshot.getId());
-                        order.setOrderer(documentSnapshot.getString("orderer"));
-                        order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
-                        order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
-                        order.setAddress(documentSnapshot.get("address", UserAddress.class));
-                        orderList.add(order);
-
+                    if (value != null) {
+                        for (DocumentSnapshot documentSnapshot : value) {
+                            //get list product
+                            Order order = new Order();
+                            order.setOrderId(documentSnapshot.getId());
+                            order.setOrderer(documentSnapshot.getString("orderer"));
+                            order.setOrderStatus(Integer.parseInt(String.valueOf(documentSnapshot.get("orderStatus"))));
+                            order.setTotalPrice(Integer.parseInt(String.valueOf(documentSnapshot.get("totalPrice"))));
+                            order.setAddress(documentSnapshot.get("address", UserAddress.class));
+                            orderList.add(order);
+                        }
                     }
+
                     // set up
                     if (orderList.isEmpty()) {
                         layoutBlank.setVisibility(View.VISIBLE);
                     } else {
                         layoutBlank.setVisibility(View.GONE);
                         adapter = new OrderAdapter(orderList, getContext());
+                        if (str.equals("seller"))
+                            adapter.isAdmin = true;
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(adapter);
@@ -129,8 +132,8 @@ public class ReceiveOrderFragment extends Fragment {
                         Order order = new Order();
                         order.setOrderId(documentSnapshot.getId());
                         order.setOrderer(documentSnapshot.getString("orderer"));
-                        order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
-                        order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
+                        order.setOrderStatus(Integer.parseInt(String.valueOf(documentSnapshot.get("orderStatus"))));
+                        order.setTotalPrice(Integer.parseInt(String.valueOf(documentSnapshot.get("totalPrice"))));
                         order.setAddress(documentSnapshot.get("address", UserAddress.class));
                         orderList.add(order);
 

@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private Context context;
     public boolean isShipper = false;
     public boolean isAdmin = false;
+    public boolean isSeller = false;
 
     public OrderAdapter(List<Order> orderList, Context context) {
         this.orderList = orderList;
@@ -72,19 +74,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
                                 Toast.makeText(view.getContext(), "Đã huỷ đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                 Map<String, Object> update = new HashMap<>();
-                                update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                                update.put("address", order.getAddress());
-                                update.put("totalPrice", order.getTotalPrice());
                                 update.put("orderStatus", 4);
                                 FirebaseFirestore.getInstance()
                                         .collection("Orders")
                                         .document(order.getOrderId())
-                                        .set(update)
+                                        .set(update, SetOptions.merge())
                                         .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
-                            }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
-                                dialogInterface.dismiss();
-                            }).show();
-
+                            }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> dialogInterface.dismiss()).show();
                 });
             } else {
                 holder.btnCancel.setText("Xác nhận");
@@ -96,14 +92,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                                 .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
                                     Toast.makeText(context, "Chuyển trạng thái đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                     Map<String, Object> update = new HashMap<>();
-                                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                                    update.put("address", order.getAddress());
-                                    update.put("totalPrice", order.getTotalPrice());
                                     update.put("orderStatus", 1);
                                     FirebaseFirestore.getInstance()
                                             .collection("Orders")
                                             .document(order.getOrderId())
-                                            .set(update)
+                                            .set(update, SetOptions.merge())
                                             .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
                                 }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
                                     dialogInterface.dismiss();
@@ -117,14 +110,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                                 .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
                                     Toast.makeText(context, "Chuyển trạng thái đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                     Map<String, Object> update = new HashMap<>();
-                                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                                    update.put("address", order.getAddress());
-                                    update.put("totalPrice", order.getTotalPrice());
                                     update.put("orderStatus", 2);
                                     FirebaseFirestore.getInstance()
                                             .collection("Orders")
                                             .document(order.getOrderId())
-                                            .set(update)
+                                            .set(update, SetOptions.merge())
                                             .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
                                 }).setNegativeButton("Bỏ qua", (dialogInterface, i) -> {
                                     dialogInterface.dismiss();
@@ -143,14 +133,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 holder.btnCancel.setOnClickListener(view -> {
                     Toast.makeText(view.getContext(), "Đã giao hàng thành công", Toast.LENGTH_SHORT).show();
                     Map<String, Object> update = new HashMap<>();
-                    update.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                    update.put("address", order.getAddress());
-                    update.put("totalPrice", order.getTotalPrice());
                     update.put("orderStatus", 3);
                     FirebaseFirestore.getInstance()
                             .collection("Orders")
                             .document(order.getOrderId())
-                            .set(update)
+                            .set(update, SetOptions.merge())
                             .addOnFailureListener(e -> Log.e("orderAdapter", e.getMessage()));
                 });
             }
@@ -228,7 +215,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<String> productList = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot1 : queryDocumentSnapshots) {
-                        if (!documentSnapshot1.getBoolean("isRated"))
+                        if (Boolean.FALSE.equals(documentSnapshot1.getBoolean("isRated")))
                             productList.add(documentSnapshot1.getId());
                     }
                     if (productList.size() > 0) {

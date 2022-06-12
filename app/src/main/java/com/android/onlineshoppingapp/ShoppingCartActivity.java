@@ -82,14 +82,11 @@ public class ShoppingCartActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         // click on select all
-        cbSelectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    setCbSelectAll(true);
-                } else {
-                    setCbSelectAll(false);
-                }
+        cbSelectAll.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b) {
+                setCbSelectAll(true);
+            } else {
+                setCbSelectAll(false);
             }
         });
 
@@ -110,17 +107,19 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 productList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : value) {
                     DocumentReference documentReference = (DocumentReference) doc.get("productRef");
-                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            cartProduct cartProduct = documentSnapshot.toObject(cartProduct.class);
-                            Objects.requireNonNull(cartProduct).setOrderQuantity(Integer.parseInt(String.valueOf(doc.get("orderQuantity"))));
-                            cartProduct.setProductId(documentSnapshot.getId());
-                            cartProduct.setChecked(false);
-                            productList.add(cartProduct);
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
+                    if (documentReference != null) {
+                        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                cartProduct cartProduct = documentSnapshot.toObject(cartProduct.class);
+                                Objects.requireNonNull(cartProduct).setOrderQuantity(Integer.parseInt(String.valueOf(doc.get("orderQuantity"))));
+                                cartProduct.setProductId(documentSnapshot.getId());
+                                cartProduct.setChecked(false);
+                                productList.add(cartProduct);
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
                 }
 //                Log.d(TAG, "Current products in CART: " + productList);
                 // set layout and adapter
