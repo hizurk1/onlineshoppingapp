@@ -275,7 +275,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 orderStatus = "Đang giao hàng";
                 break;
             case 3:
-                orderStatus = "Chờ đánh giá";
+                orderStatus = "Đã giao hàng";
                 break;
             case 4:
                 orderStatus = "Đã huỷ";
