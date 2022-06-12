@@ -164,8 +164,12 @@ public class ProfilePageFragment extends Fragment {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
                             ivShoppingCart.setVisibility(View.INVISIBLE);
+                            cardFollow.setVisibility(View.GONE);
+                            cardLove.setVisibility(View.GONE);
                         } else {
                             ivShoppingCart.setVisibility(View.VISIBLE);
+                            cardFollow.setVisibility(View.VISIBLE);
+                            cardLove.setVisibility(View.VISIBLE);
                         }
                     }
                 });
