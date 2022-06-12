@@ -68,7 +68,7 @@ public class SaleStatisticActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinSaleStatistic);
         tvTotalThisMonth = findViewById(R.id.tvTotalThisMonth);
         tvTotalLastMonth = findViewById(R.id.tvTotalLastMonth);
-        recyclerView = findViewById(R.id.rvBestSellingStatistic);
+//        recyclerView = findViewById(R.id.rvBestSellingStatistic);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
