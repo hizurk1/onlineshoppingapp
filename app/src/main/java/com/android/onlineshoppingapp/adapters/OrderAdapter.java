@@ -226,7 +226,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                             context.startActivity(intent);
                         });
                     } else {
-                        holder.btnCancel.setVisibility(View.GONE);
+                        holder.btnCancel.setVisibility(View.INVISIBLE);
                     }
                 });
     }
