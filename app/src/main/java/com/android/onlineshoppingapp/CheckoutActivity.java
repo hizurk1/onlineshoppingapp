@@ -47,6 +47,7 @@ public class CheckoutActivity extends AppCompatActivity {
     public int total = 0;
     private Cart cart;
     private int indexAddress = 0;
+    private Boolean ship = false;
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -99,12 +100,13 @@ public class CheckoutActivity extends AppCompatActivity {
             if (i == R.id.rbFreeDeliveryCheckout) {
                 tvShipping.setText("+0đ");
                 total = priceOrder;
+                ship = false;
                 tvTotal.setText(String.format("%,dđ", total));
             }
             if (i == R.id.rbFastDeliveryCheckout) {
                 tvShipping.setText(String.format("+%,dđ", fee));
                 total += fee;
-
+                ship = true;
                 // set total
                 tvTotal.setText(String.format("%,dđ", total));
             }
@@ -147,11 +149,18 @@ public class CheckoutActivity extends AppCompatActivity {
                             sellerList.add(item.getSeller());
 
                     for (String seller : sellerList) {
+                        //get total price
+                        Long totalPrice = 0L;
+                        for (cartProduct cartProduct : cart.getCartProductList())
+                            if (cartProduct.getSeller().equals(seller))
+                                totalPrice += cartProduct.getProductPrice() * cartProduct.getOrderQuantity();
+                        if (ship)
+                            totalPrice += 15000;
                         Map<String, Object> order = new HashMap<>();
                         order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
                         order.put("seller", seller);
                         order.put("address", userAddressList.get(indexAddress));
-                        order.put("totalPrice", cart.getTotalPrice());
+                        order.put("totalPrice", totalPrice);
                         order.put("orderStatus", 0);
                         order.put("orderTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
                         CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
