@@ -71,8 +71,9 @@ public class UserAddressFragment extends Fragment {
 //                        UserAddress userAddress = documentSnapshot.toObject(UserAddress.class);
 //                        userAddresses.add(userAddress);
 //                    });
-                    assert value != null;
-                    userAddresses = value.toObjects(UserAddress.class);
+                    if (value != null) {
+                        userAddresses = value.toObjects(UserAddress.class);
+                    }
 
                     if (userAddresses.isEmpty()) {
                         // set Address 1
