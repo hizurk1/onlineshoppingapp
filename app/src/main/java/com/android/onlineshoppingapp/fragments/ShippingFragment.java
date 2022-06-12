@@ -52,8 +52,35 @@ public class ShippingFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         orderList = new ArrayList<>();
+
+        db.collection("Users")
+                .document(firebaseAuth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.getString("accountType").equals("Bán hàng"))
+                        showOrderForCustomer("seller");
+                    else
+                        showOrderForCustomer("orderer");
+                });
+
+
+        // set up
+        if (orderList.isEmpty()) {
+            layoutBlank.setVisibility(View.VISIBLE);
+        } else {
+            layoutBlank.setVisibility(View.GONE);
+            adapter = new OrderAdapter(orderList,getContext());
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+        }
+
+        return view;
+    }
+
+    private void showOrderForCustomer(String seller) {
         db.collection("Orders")
-                .whereEqualTo("orderer", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
+                .whereEqualTo(seller, Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
                 .whereEqualTo("orderStatus", 2)
                 .addSnapshotListener((value, error) -> {
                     orderList.clear();
@@ -64,8 +91,8 @@ public class ShippingFragment extends Fragment {
                         Order order = new Order();
                         order.setOrderId(documentSnapshot.getId());
                         order.setOrderer(documentSnapshot.getString("orderer"));
-                        order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
-                        order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
+                        order.setOrderStatus(Integer.parseInt(String.valueOf(documentSnapshot.get("orderStatus"))));
+                        order.setTotalPrice(Integer.parseInt(String.valueOf(documentSnapshot.get("totalPrice"))));
                         order.setAddress(documentSnapshot.get("address", UserAddress.class));
                         orderList.add(order);
 
@@ -81,18 +108,5 @@ public class ShippingFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
                     }
                 });
-
-        // set up
-        if (orderList.isEmpty()) {
-            layoutBlank.setVisibility(View.VISIBLE);
-        } else {
-            layoutBlank.setVisibility(View.GONE);
-            adapter = new OrderAdapter(orderList,getContext());
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setAdapter(adapter);
-        }
-
-        return view;
     }
 }

@@ -51,27 +51,30 @@ public class WaitForProductFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+
+
         db.collection("Users")
-                .document(firebaseAuth.getCurrentUser().getUid())
+                .document(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.getString("accountType").equals("Admin")) {
+                    if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Admin")) {
                         showOrderForAdmin();
-                    } else {
-                        showOrderForCustomer();
-                    }
+                    } else if (Objects.requireNonNull(documentSnapshot.getString("accountType")).equals("Bán hàng"))
+                        showOrderForCustomer("seller");
+                    else
+                        showOrderForCustomer("orderer");
                 });
 
         return view;
     }
 
-    private void showOrderForCustomer() {
+    private void showOrderForCustomer(String seller) {
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         orderList = new ArrayList<>();
         db.collection("Orders")
-                .whereEqualTo("orderer", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
+                .whereEqualTo(seller, Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
                 .whereEqualTo("orderStatus", 1)
                 .addSnapshotListener((value, error) -> {
                     orderList.clear();
@@ -80,16 +83,18 @@ public class WaitForProductFragment extends Fragment {
                         return;
                     }
 
-                    for (DocumentSnapshot documentSnapshot : value) {
-                        //get list product
-                        Order order = new Order();
-                        order.setOrderId(documentSnapshot.getId());
-                        order.setOrderer(documentSnapshot.getString("orderer"));
-                        order.setOrderStatus(Integer.valueOf(String.valueOf(documentSnapshot.get("orderStatus"))));
-                        order.setTotalPrice(Integer.valueOf(String.valueOf(documentSnapshot.get("totalPrice"))));
-                        order.setAddress(documentSnapshot.get("address", UserAddress.class));
-                        orderList.add(order);
+                    if (value != null) {
+                        for (DocumentSnapshot documentSnapshot : value) {
+                            //get list product
+                            Order order = new Order();
+                            order.setOrderId(documentSnapshot.getId());
+                            order.setOrderer(documentSnapshot.getString("orderer"));
+                            order.setOrderStatus(Integer.parseInt(String.valueOf(documentSnapshot.get("orderStatus"))));
+                            order.setTotalPrice(Integer.parseInt(String.valueOf(documentSnapshot.get("totalPrice"))));
+                            order.setAddress(documentSnapshot.get("address", UserAddress.class));
+                            orderList.add(order);
 
+                        }
                     }
                     // set up
                     if (orderList.isEmpty()) {

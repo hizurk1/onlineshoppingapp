@@ -61,21 +61,23 @@ public class ReceiveOrderFragment extends Fragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.getString("accountType").equals("Admin")) {
                         showOrderForAdmin();
-                    } else {
-                        showOrderForCustomer();
-                    }
+                    } else if (documentSnapshot.getString("accountType").equals("Bán hàng"))
+                        showOrderForCustomer("seller");
+                    else
+                        showOrderForCustomer("orderer");
+
                 });
 
         return view;
     }
 
-    private void showOrderForCustomer() {
+    private void showOrderForCustomer(String str) {
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         orderList = new ArrayList<>();
         db.collection("Orders")
-                .whereEqualTo("orderer", Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
+                .whereEqualTo(str, Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid())
                 .whereEqualTo("orderStatus", 0)
                 .addSnapshotListener((value, error) -> {
                     orderList.clear();

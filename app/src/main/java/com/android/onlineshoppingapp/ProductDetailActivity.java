@@ -196,6 +196,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                     } else {
                                         Map<String, Object> cartProduct = new HashMap<>();
                                         cartProduct.put("orderQuantity", 1);
+                                        cartProduct.put("seller", product.getSeller());
                                         cartProduct.put("productRef", db.document("Products/" + product.getProductId() + "/"));
                                         db.collection("Carts")
                                                 .document(Objects.requireNonNull(fAuth.getCurrentUser()).getUid())

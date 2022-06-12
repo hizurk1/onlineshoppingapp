@@ -141,71 +141,81 @@ public class CheckoutActivity extends AppCompatActivity {
                 .setMessage("Xác nhận thanh toán số tiền " + String.format("%,dđ", total) + " bằng hình thức: Thanh toán khi nhận hàng.")
                 .setCancelable(false)
                 .setPositiveButton("Đồng ý", (dialogInterface, i) -> {
-                    Map<String, Object> order = new HashMap<>();
-                    order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-                    order.put("address", userAddressList.get(indexAddress));
-                    order.put("totalPrice", cart.getTotalPrice());
-                    order.put("orderStatus", 0);
-                    order.put("orderTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
-                    CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
-                    String orderId = orderRef.document().getId();
-                    //Create order
-                    orderRef.document(orderId)
-                            .set(order)
-                            .addOnSuccessListener(unused -> {
-                                for (cartProduct item : cart.getCartProductList()) {
-                                    Map<String, Object> productOrder = new HashMap<>();
-                                    productOrder.put("isRated", false);
-                                    productOrder.put("productRef",
+                    List<String> sellerList = new ArrayList<>();
+                    for (cartProduct item : cart.getCartProductList())
+                        if (!sellerList.contains(item.getSeller()))
+                            sellerList.add(item.getSeller());
+
+                    for (String seller : sellerList) {
+                        Map<String, Object> order = new HashMap<>();
+                        order.put("orderer", Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                        order.put("seller", seller);
+                        order.put("address", userAddressList.get(indexAddress));
+                        order.put("totalPrice", cart.getTotalPrice());
+                        order.put("orderStatus", 0);
+                        order.put("orderTime", new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()));
+                        CollectionReference orderRef = FirebaseFirestore.getInstance().collection("Orders");
+                        String orderId = orderRef.document().getId();
+                        //Create order
+                        orderRef.document(orderId)
+                                .set(order)
+                                .addOnSuccessListener(unused -> {
+                                    for (cartProduct item : cart.getCartProductList()) {
+                                        if (item.getSeller().equals(seller)) {
+                                            Map<String, Object> productOrder = new HashMap<>();
+                                            productOrder.put("isRated", false);
+                                            productOrder.put("productRef",
+                                                    FirebaseFirestore.getInstance()
+                                                            .document("Products/" + item.getProductId() + "/"));
+                                            productOrder.put("orderQuantity", item.getOrderQuantity());
+                                            productOrder.put("seller", item.getSeller());
+                                            productOrder.put("productPrice", item.getProductPrice());
+
+                                            //Add product to Bought Product
+                                            Map<String, Object> map = new HashMap<>();
+                                            map.put("productRef", FirebaseFirestore.getInstance().collection("Products").document(item.getProductId()));
                                             FirebaseFirestore.getInstance()
-                                                    .document("Products/" + item.getProductId() + "/"));
-                                    productOrder.put("orderQuantity", item.getOrderQuantity());
-                                    productOrder.put("seller", item.getSeller());
-                                    productOrder.put("productPrice", item.getProductPrice());
+                                                    .collection("Users")
+                                                    .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .collection("boughtProducts")
+                                                    .document(item.getProductId())
+                                                    .set(map)
+                                                    .addOnFailureListener(e -> Log.e("add bought product", e.getMessage()));
 
-                                    //Add product to Bought Product
-                                    Map<String, Object> map = new HashMap<>();
-                                    map.put("productRef", FirebaseFirestore.getInstance().collection("Products").document(item.getProductId()));
-                                    FirebaseFirestore.getInstance()
-                                            .collection("Users")
-                                            .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .collection("boughtProducts")
-                                            .document(item.getProductId())
-                                            .set(map)
-                                            .addOnFailureListener(e -> Log.e("add bought product", e.getMessage()));
+                                            //add product to order
+                                            orderRef.document(orderId).collection("Products")
+                                                    .document(item.getProductId())
+                                                    .set(productOrder)
+                                                    .addOnSuccessListener(unused1 -> {
+                                                        Toast.makeText(CheckoutActivity.this,
+                                                                "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+                                                        //Delete cart
+                                                        DocumentReference cartRef = FirebaseFirestore.getInstance()
+                                                                .collection("Carts")
+                                                                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                        cartRef.collection("Products")
+                                                                .document(item.getProductId())
+                                                                .delete();
 
-                                    //add product to order
-                                    orderRef.document(orderId).collection("Products")
-                                            .document(item.getProductId())
-                                            .set(productOrder)
-                                            .addOnSuccessListener(unused1 -> {
-                                                Toast.makeText(CheckoutActivity.this,
-                                                        "Thanh toán thành công", Toast.LENGTH_SHORT).show();
-                                                //Delete cart
-                                                DocumentReference cartRef = FirebaseFirestore.getInstance()
-                                                        .collection("Carts")
-                                                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                cartRef.collection("Products")
-                                                        .document(item.getProductId())
-                                                        .delete();
-
-                                                //Reduce quantity and increase quantitySold product
-                                                DocumentReference productRef = FirebaseFirestore.getInstance()
-                                                        .collection("Products")
-                                                        .document(item.getProductId());
-                                                Map<String, Object> product = new HashMap<>();
-                                                product.put("quantitySold", item.getQuantitySold() + item.getOrderQuantity());
-                                                product.put("quantity", item.getQuantity() - item.getOrderQuantity());
-                                                productRef.set(product, SetOptions.merge());
-                                            }).addOnFailureListener(e -> {
-                                                Toast.makeText(CheckoutActivity.this,
-                                                        "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
-                                                Log.e(TAG, e.getMessage());
-                                            });
-                                }
+                                                        //Reduce quantity and increase quantitySold product
+                                                        DocumentReference productRef = FirebaseFirestore.getInstance()
+                                                                .collection("Products")
+                                                                .document(item.getProductId());
+                                                        Map<String, Object> product = new HashMap<>();
+                                                        product.put("quantitySold", item.getQuantitySold() + item.getOrderQuantity());
+                                                        product.put("quantity", item.getQuantity() - item.getOrderQuantity());
+                                                        productRef.set(product, SetOptions.merge());
+                                                    }).addOnFailureListener(e -> {
+                                                        Toast.makeText(CheckoutActivity.this,
+                                                                "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                                        Log.e(TAG, e.getMessage());
+                                                    });
+                                        }
+                                    }
 
 
-                            });
+                                });
+                    }
                     startActivity(new Intent(CheckoutActivity.this, MainActivity.class));
                     finishAffinity();
                 }).setNegativeButton("Từ chối", (dialogInterface, i) -> dialogInterface.dismiss()).show();

@@ -7,19 +7,16 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.android.onlineshoppingapp.adapters.BestSellingAdapter;
 import com.android.onlineshoppingapp.models.Order;
-import com.android.onlineshoppingapp.models.OrderProduct;
-import com.android.onlineshoppingapp.models.Product;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -35,12 +32,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 public class SaleStatisticActivity extends AppCompatActivity {
 
@@ -49,6 +44,7 @@ public class SaleStatisticActivity extends AppCompatActivity {
     private Spinner spinner;
     private RecyclerView recyclerView;
     private BestSellingAdapter adapter;
+    private TextView tvTotalThisMonth, tvTotalLastMonth;
 
     private FirebaseAuth fAuth;
     private FirebaseFirestore db;
@@ -58,9 +54,8 @@ public class SaleStatisticActivity extends AppCompatActivity {
     private Long orderQuantity = 0L;
     private List<Order> orderList = new ArrayList<>();
     private ArrayList<BarEntry> chartModel = new ArrayList<>();
+    private Long saleThisMonth = 0L, saleLastMonth = 0L;
 
-
-    private String[] filters = {"Tháng này", "Tháng trước", "Toàn bộ"};
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -71,13 +66,14 @@ public class SaleStatisticActivity extends AppCompatActivity {
         ivBack = findViewById(R.id.ivBackSaleStatistic);
         barChart = findViewById(R.id.barChartSaleStatistic);
         spinner = findViewById(R.id.spinSaleStatistic);
+        tvTotalThisMonth = findViewById(R.id.tvTotalThisMonth);
+        tvTotalLastMonth = findViewById(R.id.tvTotalLastMonth);
+        recyclerView = findViewById(R.id.rvBestSellingStatistic);
 
         fAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        ivBack.setOnClickListener(view -> {
-            onBackPressed();
-        });
+        ivBack.setOnClickListener(view -> onBackPressed());
 
         //set spinner data
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
@@ -101,26 +97,18 @@ public class SaleStatisticActivity extends AppCompatActivity {
             chartModel.add(new BarEntry(i, 0));
         }
 
+        for (int month = 1; month <= 12; month++) {
+            monthStringList.add("Tháng " + month);
+            monthList.add((long) month);
+        }
+        arrayAdapter.notifyDataSetChanged();
 
         AsyncTask.execute(() -> {
             db.collection("Orders")
                     .get()
                     .addOnCompleteListener(task -> {
-                        monthList.clear();
-                        monthStringList.clear();
                         if (task.getResult() != null) {
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                try {
-                                    LocalDate localDate = new SimpleDateFormat("dd/MM/yyyy").parse(documentSnapshot.getString("orderTime")).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                                    int month = localDate.getMonthValue();
-                                    if (!monthStringList.contains("Tháng " + month)) {
-                                        monthStringList.add("Tháng " + month);
-                                        monthList.add((long) month);
-                                        arrayAdapter.notifyDataSetChanged();
-                                    }
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
                                 Order order = documentSnapshot.toObject(Order.class);
                                 if (order != null) {
                                     order.setOrderId(documentSnapshot.getId());
@@ -128,10 +116,14 @@ public class SaleStatisticActivity extends AppCompatActivity {
                                 orderList.add(order);
                             }
                         }
-
-                        getDataByMonth(monthList.get(monthList.size() - 1));
+                        getDataByMonth(monthList.get(0));
                     });
         });
+
+        saleThisMonth = 0L;
+        saleLastMonth = 0L;
+        tvTotalLastMonth.setText(String.format("%,dđ", saleLastMonth));
+        tvTotalThisMonth.setText(String.format("%,dđ", saleThisMonth));
 
 
         BarDataSet barDataSet = new BarDataSet(chartModel, "Monthly Sales Statistics");
@@ -149,10 +141,15 @@ public class SaleStatisticActivity extends AppCompatActivity {
     }
 
     private void getDataByMonth(Long month) {
-        for (int i = 0; i <= 30; i++) {
-//            chartModel.add(new BarEntry(i, new Random().nextInt(20)));
-            chartModel.set(i,new BarEntry(i, 0));
-        }
+        saleThisMonth = 0L;
+        saleLastMonth = 0L;
+        tvTotalLastMonth.setText(String.format("%,dđ", saleLastMonth));
+        tvTotalThisMonth.setText(String.format("%,dđ", saleThisMonth));
+
+        for (int i = 0; i <= 30; i++)
+            chartModel.set(i, new BarEntry(i, 0));
+
+
         Map<Integer, Long> quantitySaleMap = new HashMap<>();
         for (Order order : orderList) {
             LocalDate localDate = null;
@@ -169,6 +166,7 @@ public class SaleStatisticActivity extends AppCompatActivity {
                                 Long temp = 0L;
                                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                     temp += documentSnapshot.getLong("orderQuantity");
+                                    saleThisMonth += documentSnapshot.getLong("productPrice");
                                 }
                                 try {
                                     int day = new SimpleDateFormat("dd/MM/yyyy").parse(order.getOrderTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getDayOfMonth();
@@ -188,10 +186,21 @@ public class SaleStatisticActivity extends AppCompatActivity {
                                     barChart.setData(barData);
                                     barChart.getDescription().setEnabled(false);
                                     barChart.animateY(1000);
+                                    tvTotalThisMonth.setText(String.format("%,dđ", saleThisMonth));
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-
+                            });
+                } else if (monthTemp == (month - 1)) {
+                    db.collection("Orders")
+                            .document(order.getOrderId())
+                            .collection("Products")
+                            .whereEqualTo("seller", Objects.requireNonNull(fAuth.getCurrentUser()).getUid())
+                            .get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots)
+                                    saleLastMonth += documentSnapshot.getLong("productPrice");
+                                tvTotalLastMonth.setText(String.format("%,dđ", saleLastMonth));
                             });
                 }
             } catch (ParseException e) {
@@ -210,16 +219,25 @@ public class SaleStatisticActivity extends AppCompatActivity {
         Adapter adapterSpinner = adapterView.getAdapter();
         String filter = (String) adapterSpinner.getItem(position);
 
+        resetChart();
         getDataByMonth(monthList.get(position));
 
 
-        if (filter.equals(filters[0])) {
-            Toast.makeText(this, "Tháng này", Toast.LENGTH_SHORT).show();
-        } else if (filter.equals(filters[1])) {
-            Toast.makeText(this, "Tháng trước", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Toàn bộ", Toast.LENGTH_SHORT).show();
-        }
+    }
 
+    private void resetChart() {
+        for (int i = 0; i <= 30; i++)
+            chartModel.set(i, new BarEntry(i, 0));
+        BarDataSet barDataSet = new BarDataSet(chartModel, "Monthly Sales Statistics");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setValueTextSize(12f);
+
+        BarData barData = new BarData(barDataSet);
+
+        barChart.setFitBars(true);
+        barChart.setData(barData);
+        barChart.getDescription().setEnabled(false);
+        barChart.animateY(1000);
     }
 }
