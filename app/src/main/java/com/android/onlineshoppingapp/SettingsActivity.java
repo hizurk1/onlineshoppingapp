@@ -67,7 +67,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ViewPagerAdapterSettings viewPagerAdapterSettings;
     private TabLayout tabLayoutSettings;
     private ViewPager2 viewPager2Settings;
-    private String[] titles = new String[]{"Cá nhân", "Địa chỉ", "Thanh toán"};
+    private String[] titles = new String[]{"Cá nhân", "Địa chỉ"};
 
     private FirebaseAuth fAuth;
     private FirebaseUser user;

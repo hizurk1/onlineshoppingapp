@@ -360,7 +360,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:src="@drawable/shoppingcart"
+                android:src="@drawable/shopping_cart"
                 app:tint="#FF454749" />
 
         </androidx.cardview.widget.CardView>

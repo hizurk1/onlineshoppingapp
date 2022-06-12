@@ -158,6 +158,17 @@ public class ProfilePageFragment extends Fragment {
         });
 
         // click on shopping cart
+        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                            ivShoppingCart.setVisibility(View.INVISIBLE);
+                        } else {
+                            ivShoppingCart.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         ivShoppingCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

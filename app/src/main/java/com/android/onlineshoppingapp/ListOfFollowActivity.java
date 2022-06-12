@@ -42,11 +42,8 @@ public class ListOfFollowActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rvListOfFollow);
 
         followingList = new ArrayList<>();
-//        followingList.add(new Following("1", "Shop hey"));
-//        followingList.add(new Following("2", "Shop wow"));
-//        followingList.add(new Following("3", "Shop uwu"));
-//        followingList.add(new Following("4", "Shop 123"));
-//        followingList.add(new Following("5", "Shop qweqwe"));
+
+        ivBack.setOnClickListener(view -> onBackPressed());
 
         //get following
         db.collection("Users")

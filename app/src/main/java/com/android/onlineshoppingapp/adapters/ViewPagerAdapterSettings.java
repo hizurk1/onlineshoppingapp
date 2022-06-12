@@ -7,11 +7,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.android.onlineshoppingapp.fragments.UserAddressFragment;
 import com.android.onlineshoppingapp.fragments.UserInformationFragment;
-import com.android.onlineshoppingapp.fragments.UserPaymentInfoFragment;
 
 public class ViewPagerAdapterSettings extends FragmentStateAdapter {
 
-    private String[] titles = new String[]{"Cá nhân", "Địa chỉ", "Thanh toán"};
+    private String[] titles = new String[]{"Cá nhân", "Địa chỉ"};
 
     public ViewPagerAdapterSettings(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -25,8 +24,6 @@ public class ViewPagerAdapterSettings extends FragmentStateAdapter {
                 return new UserInformationFragment();
             case 1:
                 return new UserAddressFragment();
-            case 2:
-                return new UserPaymentInfoFragment();
         }
         return new UserInformationFragment();
     }

@@ -43,7 +43,7 @@ public class CategoryPageFragment extends Fragment {
                 for (QueryDocumentSnapshot doc : task.getResult()) {
                     categoryList.add(doc.getString("name"));
                 }
-                categoryAdapter = new CategoryAdapter(categoryList);
+                categoryAdapter = new CategoryAdapter(categoryList, getActivity());
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 recyclerView.setLayoutManager(linearLayoutManager);
                 recyclerView.setAdapter(categoryAdapter);

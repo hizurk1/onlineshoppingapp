@@ -29,6 +29,10 @@ import com.android.onlineshoppingapp.adapters.BannerImageAdapter;
 import com.android.onlineshoppingapp.adapters.RecyclerViewAdapterProduct;
 import com.android.onlineshoppingapp.models.BannerImage;
 import com.android.onlineshoppingapp.models.Product;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,6 +45,7 @@ public class HomePageFragment extends Fragment {
     private RecyclerView recyclerTopSaleItem, recyclerForYouItem;
     private EditText etSearch;
     private ViewPager2 viewPager2;
+    private FloatingActionButton floatingActionButton;
     private final Handler sliderHandler = new Handler();
     public List<Product> listTopSale, listForYou;
 
@@ -51,15 +56,31 @@ public class HomePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
         // init
-        ImageView ivShoppingCart = view.findViewById(R.id.ivShopCartHome);
         ImageView ivSearchBtn = view.findViewById(R.id.ivSearchBtn);
+        floatingActionButton = view.findViewById(R.id.floatingBtnHome);
         etSearch = view.findViewById(R.id.etSearch);
 
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
         // click on shopping cart
-        ivShoppingCart.setOnClickListener(view12 -> startActivity(new Intent(getActivity(), ShoppingCartActivity.class)));
+        db.collection("Users").document(fAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.getString("accountType").equals("Bán hàng")) {
+                            floatingActionButton.setVisibility(View.INVISIBLE);
+                        } else {
+                            floatingActionButton.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ShoppingCartActivity.class));
+            }
+        });
 
         //set event for search function
         ivSearchBtn.setOnClickListener(view1 -> {
@@ -176,10 +197,10 @@ public class HomePageFragment extends Fragment {
 
     private List<BannerImage> getBannerImage() {
         List<BannerImage> list = new ArrayList<>();
-        list.add(new BannerImage(R.drawable.banner1));
-        list.add(new BannerImage(R.drawable.banner2));
         list.add(new BannerImage(R.drawable.banner3));
-
+        list.add(new BannerImage(R.drawable.banner4));
+        list.add(new BannerImage(R.drawable.banner9));
+        list.add(new BannerImage(R.drawable.banner10));
         return list;
     }
 

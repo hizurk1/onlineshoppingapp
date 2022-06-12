@@ -1,6 +1,8 @@
 package com.android.onlineshoppingapp.adapters;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +18,16 @@ import com.android.onlineshoppingapp.R;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
+import java.util.Random;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<String> categoryList;
+    private Context context;
 
-    public CategoryAdapter(List<String> categoryList) {
+    public CategoryAdapter(List<String> categoryList, Context context) {
         this.categoryList = categoryList;
+        this.context = context;
     }
 
     @NonNull
