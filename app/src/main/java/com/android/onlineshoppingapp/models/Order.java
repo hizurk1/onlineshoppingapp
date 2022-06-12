@@ -5,11 +5,23 @@ import java.util.List;
 public class Order {
     private String orderId;
     private String orderer;
+    private String orderTime;
     private int orderStatus;
     private int totalPrice;
     private int confirm;
     private List<OrderProduct> listOrderProduct;
     private UserAddress address;
+
+    public Order(String orderId, String orderer, String orderTime, int orderStatus, int totalPrice, int confirm, List<OrderProduct> listOrderProduct, UserAddress address) {
+        this.orderId = orderId;
+        this.orderer = orderer;
+        this.orderTime = orderTime;
+        this.orderStatus = orderStatus;
+        this.totalPrice = totalPrice;
+        this.confirm = confirm;
+        this.listOrderProduct = listOrderProduct;
+        this.address = address;
+    }
 
     public Order(String orderId, String orderer, int orderStatus, int totalPrice, List<OrderProduct> listOrderProduct, UserAddress address) {
         this.orderId = orderId;
@@ -76,5 +88,13 @@ public class Order {
 
     public void setAddress(UserAddress address) {
         this.address = address;
+    }
+
+    public String getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = orderTime;
     }
 }

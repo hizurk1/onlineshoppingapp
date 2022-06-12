@@ -160,6 +160,7 @@ public class CheckoutActivity extends AppCompatActivity {
                                             FirebaseFirestore.getInstance()
                                                     .document("Products/" + item.getProductId() + "/"));
                                     productOrder.put("orderQuantity", item.getOrderQuantity());
+                                    productOrder.put("seller", item.getSeller());
 
                                     //Add product to Bought Product
                                     Map<String, Object> map = new HashMap<>();
