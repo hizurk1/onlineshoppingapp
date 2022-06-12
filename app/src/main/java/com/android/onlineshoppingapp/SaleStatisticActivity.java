@@ -140,6 +140,7 @@ public class SaleStatisticActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("DefaultLocale")
     private void getDataByMonth(Long month) {
         saleThisMonth = 0L;
         saleLastMonth = 0L;
@@ -174,7 +175,7 @@ public class SaleStatisticActivity extends AppCompatActivity {
                                         quantitySaleMap.put(day, quantitySaleMap.get(day) + temp);
                                     else
                                         quantitySaleMap.put(day, temp);
-                                    chartModel.set(day, new BarEntry(day, quantitySaleMap.get(day)));
+                                    chartModel.set(day-1, new BarEntry(day, quantitySaleMap.get(day)));
                                     BarDataSet barDataSet = new BarDataSet(chartModel, "Monthly Sales Statistics");
                                     barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
                                     barDataSet.setValueTextColor(Color.BLACK);
